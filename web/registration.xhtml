@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Diskuto | Registracija</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputLabel value="Korisničko ime:"/>
+                <h:inputText id="username" value="#{registration.username}"/>
+
+                <h:outputLabel value="E-Mail:"/>
+                <h:inputText id="email" value="#{registration.email}" />
+
+                <h:outputLabel value="Lozinka:"/>
+                <h:inputSecret id="password" value="#{registration.password}" />
+
+                <h:outputLabel value="Ponovite lozinku:"/>
+                <h:inputSecret id="rpassword" value="#{registration.rpassword}" />
+            </h:panelGrid>
+            <h:commandButton value="Registriraj se" action="#{registration.doRegistration}">
+                <f:ajax event="action" execute="username email password rpassword" render="@form"/>
+            </h:commandButton>
+            <c:forEach items="#{registration.errorText}" var="value">
+                <h:outputLabel value="#{value}" />
+            </c:forEach>
+        </h:form>
+    </h:body>
+</html>
+
