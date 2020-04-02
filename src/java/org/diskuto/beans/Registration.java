@@ -11,7 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import org.diskuto.helpers.Database;
+import org.diskuto.models.User;
 import org.xmldb.api.base.ResourceSet;
 
 /**
@@ -27,7 +29,7 @@ public class Registration {
     private String password;
     private String rpassword;
     private List<String> errorText = new ArrayList();
-    
+
     /**
      * Creates a new instance of Registration
      */
@@ -73,60 +75,51 @@ public class Registration {
     public void setErrorText(List<String> errorText) {
         this.errorText = errorText;
     }
-    
+
     public void doRegistration() throws Exception {
         errorText.clear();
-        if(check()) {
-            //User user = new User();
-            //user.register();
-            //preusmjeri korisnika na uspješnu registraciju
+        if (check()) {
+            User user = new User(email, username, password);
+            user.register();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration.xhtml");
         }
     }
 
     private boolean check() throws Exception {
-        
+
         Matcher matcher;
         ResourceSet resultEmail, resultUsername;
-        boolean error = false;
-        
+        boolean error = true;
+
         if (email.length() == 0 || username.length() == 0 || password.length() == 0 || rpassword.length() == 0) {
             error = printError("Niste unijeli sve podatke");
-        }
-        else {
+        } else {
             matcher = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email);
-            
+
             Database db = new Database();
-            resultEmail = db.xquery("");
-            resultUsername = db.xquery("");
+            resultEmail = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
+            resultUsername = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" return $x");
             db.close();
-            
-            if(!matcher.find()) {
+
+            if (!matcher.find()) {
                 error = printError("E-mail nije ispravan");
-            }
-            else if(resultEmail.getSize() > 0) {
+            } else if (resultEmail.getSize() > 0) {
                 error = printError("E-mail već postoji u bazi");
-            }
-            else if(username.length() < 3) {
-                error = printError("Korisničko ime je prekratko");                
-            }
-            else if(resultUsername.getSize() > 0) {
+            } else if (username.length() < 3) {
+                error = printError("Korisničko ime je prekratko");
+            } else if (resultUsername.getSize() > 0) {
                 error = printError("Korisničko ime već postoji u bazi");
-            }
-            else if(password.length() < 8) {
+            } else if (password.length() < 8) {
                 error = printError("Lozinka je preslaba");
-            }
-            else if(!password.equals(rpassword)) {
+            } else if (!password.equals(rpassword)) {
                 error = printError("Lozinke ne odgovaraju");
             }
-            
         }
-        
         return error;
     }
 
     private boolean printError(String errorText) {
         this.errorText.add(errorText);
-        return true;
+        return false;
     }
-    
 }
