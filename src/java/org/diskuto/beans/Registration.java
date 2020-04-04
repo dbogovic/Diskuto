@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import org.diskuto.helpers.Database;
+import org.diskuto.listeners.Listener;
 import org.diskuto.models.User;
 import org.xmldb.api.base.ResourceSet;
 
@@ -81,6 +82,7 @@ public class Registration {
         if (check()) {
             User user = new User(email, username, password);
             user.register();
+            Listener.addToSession("user", user);
             FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration.xhtml");
         }
     }

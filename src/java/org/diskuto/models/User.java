@@ -7,6 +7,10 @@ package org.diskuto.models;
 
 import java.util.Random;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -24,7 +28,11 @@ public class User {
         this.username = username;
         this.password = password;
         this.confirmCode = new Random().nextInt(899999) + 100000;
+    }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -60,7 +68,15 @@ public class User {
     }
 
     public void register() throws Exception {
-        
+        sendConfirmMail();
+        Database db = new Database();
+        db.xquery("update insert <user><email>" + email + "</email><name>" + username
+                + "</name><password>" + password + "</password><code>" + confirmCode
+                + "</code></user> into /users");
+        db.close();
+    }
+
+    public void sendConfirmMail() {
         /* https://projects.eclipse.org/projects/ee4j.glassfish/downloads
             String from = "no-reply@diskuto.com";
             Properties properties = System.getProperties();
@@ -74,11 +90,33 @@ public class User {
             message.setText("Kod za registraciju je: " + confirmCode);
             Transport.send(message);
          */
-        
+    }
+
+    public void confirmUser() throws Exception {
+        setConfirmCode(-1);
         Database db = new Database();
-        db.xquery("update insert <user><email>"+email+"</email><name>"+username+
-                "</name><password>"+password+"</password><code>"+confirmCode+
-                "</code></user> into /users");
+        db.xquery("for $x in /users/user where $x/email=\"" + this.email + "\" return update value $x/code with \"-1\"");
         db.close();
+    }
+
+    public boolean login() throws Exception {
+        Database db = new Database();
+        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" and $x/password=\"" + password + "\" return $x");
+        db.close();
+
+        if (result.getSize() != 0) {
+            ResourceIterator iterator = result.getIterator();
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            Object object = helper.makeObject("user");
+
+            setEmail(helper.makeValue("email", object));
+            setConfirmCode(Integer.parseInt(helper.makeValue("code", object)));
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }
