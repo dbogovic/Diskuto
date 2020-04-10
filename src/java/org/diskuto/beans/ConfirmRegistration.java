@@ -68,7 +68,7 @@ public class ConfirmRegistration {
         }
     }
     
-    public String sendNewMail(){
+    public String sendNewMail() throws Exception {
         getRegisteredUser().sendConfirmMail();
         return "";
     }

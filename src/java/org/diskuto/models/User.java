@@ -5,7 +5,13 @@
  */
 package org.diskuto.models;
 
+import java.util.Properties;
 import java.util.Random;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
 import org.xmldb.api.base.Resource;
@@ -76,20 +82,20 @@ public class User {
         db.close();
     }
 
-    public void sendConfirmMail() {
-        /* https://projects.eclipse.org/projects/ee4j.glassfish/downloads
-            String from = "no-reply@diskuto.com";
-            Properties properties = System.getProperties();
-            properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-            properties.put("mail.smtp.starttls.enable", "true");
-            Session session = Session.getInstance(properties);
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            message.setSubject("Potvrdite registraciju");
-            message.setText("Kod za registraciju je: " + confirmCode);
-            Transport.send(message);
-         */
+    public void sendConfirmMail() throws Exception {
+        /*String from = "no-reply@diskuto.com";
+        Properties properties = System.getProperties();
+        properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        Session session = Session.getInstance(properties);
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(from));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        message.setSubject("Potvrdite registraciju");
+        message.setText("Kod za registraciju je: " + confirmCode);
+        Transport.send(message);
+        System.out.println("Poslanoooo");*/
     }
 
     public void confirmUser() throws Exception {
