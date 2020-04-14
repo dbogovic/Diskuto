@@ -5,6 +5,7 @@
  */
 package org.diskuto.models;
 
+import com.sun.mail.util.MailSSLSocketFactory;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Message;
@@ -83,19 +84,27 @@ public class User {
     }
 
     public void sendConfirmMail() throws Exception {
-        /*String from = "no-reply@diskuto.com";
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-        Session session = Session.getInstance(properties);
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(from));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        message.setSubject("Potvrdite registraciju");
-        message.setText("Kod za registraciju je: " + confirmCode);
-        Transport.send(message);
-        System.out.println("Poslanoooo");*/
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustAllHosts(true); 
+        Properties props = System.getProperties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.port", "587");
+        props.put("mail.smtp.socketFactory.fallback", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.trust", "*");
+        props.put("mail.smtp.ssl.socketFactory", sf);
+        Session mailSession = Session.getDefaultInstance(props, null);
+        mailSession.setDebug(true);
+        Message mailMessage = new MimeMessage(mailSession);
+        mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        mailMessage.setSubject("Potvrdite registraciju");
+        mailMessage.setText("Kod za registraciju je: " + confirmCode);
+        Transport transport = mailSession.getTransport("smtp");
+        transport.connect("smtp.gmail.com", "diskutoapp", "diskutoapp123");
+        transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
     }
 
     public void confirmUser() throws Exception {
