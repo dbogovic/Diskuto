@@ -54,7 +54,7 @@ public class Index {
     public void setErrorText(List<String> errorText) {
         this.errorText = errorText;
     }
-    
+
     public void doLogin() throws Exception {
         User user = new User(username, password);
         if(user.login()) {
@@ -71,8 +71,8 @@ public class Index {
         }
     }
     
-    public void newPassword(){
-        
+    public String newPassword(){
+        return "newPassword.xhtml";
     }
     
     public String register(){
