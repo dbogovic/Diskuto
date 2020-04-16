@@ -24,6 +24,7 @@ public class Index {
     private String username;
     private String password;
     private List<String> errorText = new ArrayList();
+    private boolean login;
     
     /**
      * Creates a new instance of Index
@@ -55,6 +56,14 @@ public class Index {
         this.errorText = errorText;
     }
 
+    public boolean isLogin() {
+        return Listener.getFromSession("user") != null;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+    
     public void doLogin() throws Exception {
         User user = new User(username, password);
         if(user.login()) {
@@ -69,6 +78,11 @@ public class Index {
         else {
             this.errorText.add("Neuspjela prijava");
         }
+    }
+    
+    public String logOut() {
+        Listener.deleteFromSession("user");
+        return "";
     }
     
     public String newPassword(){

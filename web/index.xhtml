@@ -9,39 +9,48 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:panelGrid columns="2">
-                <h:outputLabel value="Korisničko ime:"/>
-                <h:inputText id="username" value="#{index.username}"/>
+            <h:panelGroup rendered="#{!index.login}">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Korisničko ime:"/>
+                    <h:inputText id="username" value="#{index.username}"/>
 
-                <h:outputLabel value="Lozinka:"/>
-                <h:inputSecret id="password" value="#{index.password}" />
-            </h:panelGrid>
-            <h:commandButton value="Prijavi se" action="#{index.doLogin}">
-                <f:ajax event="action" execute="username password" render="@form"/>
-            </h:commandButton>
-            <c:forEach items="#{index.errorText}" var="value">
-                <h:outputLabel value="#{value}" />
-            </c:forEach>
-            <h:commandLink value="Zaboravili ste lozinku? Zatražite novu" action="#{index.newPassword}" />
-            <h:commandLink value="Nemate korisnički račun? Registrirajte se" action="#{index.register}" />
-            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
-            <script>
-                jsf.ajax.addOnEvent(function (data) {
-                    var ajaxstatus = data.status;
-                    var ajaxloader = document.getElementById("ajaxloader");
+                    <h:outputLabel value="Lozinka:"/>
+                    <h:inputSecret id="password" value="#{index.password}" />
+                </h:panelGrid>
+                <h:commandButton value="Prijavi se" action="#{index.doLogin}">
+                    <f:ajax event="action" execute="username password" render="@form"/>
+                </h:commandButton>
+                <c:forEach items="#{index.errorText}" var="value">
+                    <h:outputLabel value="#{value}" />
+                </c:forEach>
+                <h:commandLink value="Zaboravili ste lozinku? Zatražite novu" action="#{index.newPassword}" />
+                <h:commandLink value="Nemate korisnički račun? Registrirajte se" action="#{index.register}" />
+                <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+                <script>
+                    jsf.ajax.addOnEvent(function (data) {
+                        var ajaxstatus = data.status;
+                        var ajaxloader = document.getElementById("ajaxloader");
 
-                    switch (ajaxstatus) {
-                        case "begin":
-                            ajaxloader.style.display = 'block';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                            break;
-                        case "success":
-                            break;
-                    }
-                });
-            </script>
+                        switch (ajaxstatus) {
+                            case "begin":
+                                ajaxloader.style.display = 'block';
+                                break;
+                            case "complete":
+                                ajaxloader.style.display = 'none';
+                                break;
+                            case "success":
+                                break;
+                        }
+                    });
+                </script>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{index.login}">
+                <h:commandLink value="Odjava" action="#{index.logOut}" />
+                <h:commandLink value="Moja diskuta" action="myDiskuto.xhtml" />
+                <h:commandLink value="Moje poruke" />
+                <h:commandLink value="Pretplaćena diskuta" />
+                <h:commandLink value="Postavke" />
+            </h:panelGroup>
         </h:form>
     </h:body>
 </html>
