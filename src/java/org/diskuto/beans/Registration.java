@@ -78,7 +78,7 @@ public class Registration {
     }
 
     public void doRegistration() throws Exception {
-        errorText.clear();
+        this.errorText.clear();
         if (check()) {
             User user = new User(email, username, password);
             user.register();

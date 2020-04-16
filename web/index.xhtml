@@ -5,7 +5,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Diskuto</title>
     </h:head>
     <h:body>
         <h:form>
@@ -24,6 +24,24 @@
             </c:forEach>
             <h:commandLink value="Zaboravili ste lozinku? Zatražite novu" action="#{index.newPassword}" />
             <h:commandLink value="Nemate korisnički račun? Registrirajte se" action="#{index.register}" />
+            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <script>
+                jsf.ajax.addOnEvent(function (data) {
+                    var ajaxstatus = data.status;
+                    var ajaxloader = document.getElementById("ajaxloader");
+
+                    switch (ajaxstatus) {
+                        case "begin":
+                            ajaxloader.style.display = 'block';
+                            break;
+                        case "complete":
+                            ajaxloader.style.display = 'none';
+                            break;
+                        case "success":
+                            break;
+                    }
+                });
+            </script>
         </h:form>
     </h:body>
 </html>
