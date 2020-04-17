@@ -10,33 +10,51 @@
     <h:body>
         <h:form>
             <h:panelGrid columns="2">
-                <h:outputLabel value="Naziv:" />
+                <h:outputLabel value="Naziv:*" />
                 <h:inputText id="name" value="#{editDiskuto.name}" />
 
-                <h:outputLabel value="Opis:" />
+                <h:outputLabel value="Opis:*" />
                 <h:inputTextarea id="description" value="#{editDiskuto.description}" />
 
-                <h:outputLabel value="Kategorija:" />
+                <h:outputLabel value="Kategorija:*" />
                 <h:panelGroup>
-                    <h:inputText id="nameCategory" />
-                    <h:commandButton id="addCategory" value="+" action="return false;" />
+                    <h:inputText id="nameCategory" value="#{editDiskuto.nameCategory}" />
+                    <h:commandButton id="addCategory" value="+" action="#{editDiskuto.addCategory}" >
+                        <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>
+                    </h:commandButton>
                 </h:panelGroup>
 
-                <c:forEach items="#{registration.errorText}" var="value">
-                    <h:outputLabel value="#{value}" />
-                </c:forEach>
-                
+                <h:panelGroup>
+                    <c:forEach items="#{editDiskuto.categories}" var="value">
+                        <h:outputLabel value="#{value}" />
+                        <h:commandButton id="dropCategory" value="-" action="#{editDiskuto.dropCategory(value)}" >
+                            <f:ajax event="action" render ="@form" />
+                        </h:commandButton>
+                        <br/>
+                    </c:forEach>
+                </h:panelGroup>
+                <h:outputText value="" />
+
                 <h:outputLabel value="Moderatori:" />
                 <h:panelGroup>
-                    <h:inputText id="nameModerator" />
-                    <h:commandButton id="addModerator" value="+" action="return false;" />
+                    <h:inputText id="nameModerator" value="#{editDiskuto.nameModerator}" />
+                    <h:commandButton id="addModerator" value="+" action="#{editDiskuto.addModerator}" >
+                        <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>                    
+                    </h:commandButton>
                 </h:panelGroup>
-                
-                <c:forEach items="#{registration.errorText}" var="value">
-                    <h:outputLabel value="#{value}" />
-                </c:forEach>
-                
-                <h:outputLabel value="Pravila: " />
+
+                <h:panelGroup>
+                    <c:forEach items="#{editDiskuto.moderators}" var="value">
+                        <h:outputLabel value="#{value}" />
+                        <h:commandButton id="dropModerator" value="-" action="#{editDiskuto.dropModerator(value)}" >
+                            <f:ajax event="action" render ="@form" />
+                        </h:commandButton>
+                        <br/>
+                    </c:forEach>
+                </h:panelGroup>
+                <h:outputText value="" />
+
+                <h:outputLabel value="Pravila:*" />
                 <h:inputTextarea id="rules" value="#{editDiskuto.rules}" />
 
                 <!--
@@ -44,9 +62,30 @@
                 <h:outputLabel value="Tema: "/>
                 !-->
             </h:panelGrid>
-            <h:commandButton value="Spremi" action="#{registration.doRegistration}">
-                <f:ajax event="action" execute="username email password rpassword" render="@form"/>
+            <h:commandButton value="Spremi" action="#{editDiskuto.save}">
+                <f:ajax event="action" execute="name description rules" render="@form"/>
             </h:commandButton>
+            <c:forEach items="#{editDiskuto.errorText}" var="value">
+                <h:outputLabel value="#{value}" />
+            </c:forEach>
+            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <script>
+                jsf.ajax.addOnEvent(function (data) {
+                    var ajaxstatus = data.status;
+                    var ajaxloader = document.getElementById("ajaxloader");
+
+                    switch (ajaxstatus) {
+                        case "begin":
+                            ajaxloader.style.display = 'block';
+                            break;
+                        case "complete":
+                            ajaxloader.style.display = 'none';
+                            break;
+                        case "success":
+                            break;
+                    }
+                });
+            </script>
         </h:form>
     </h:body>
 </html>

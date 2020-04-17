@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/myDiskuto.xhtml</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/registration.xhtml</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/Index.java</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/editDiskuto.java</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/listeners/Listener.java</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/index.xhtml</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/editDiskuto.xhtml</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -5,6 +5,7 @@
  */
 package org.diskuto.beans;
 
+import java.io.Serializable;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 
@@ -14,7 +15,7 @@ import javax.faces.view.ViewScoped;
  */
 @Named(value = "myDiskuto")
 @ViewScoped
-public class myDiskuto {
+public class myDiskuto implements Serializable {
 
     /**
      * Creates a new instance of myDiskuto
