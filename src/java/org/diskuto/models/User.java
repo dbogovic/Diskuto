@@ -23,12 +23,12 @@ public class User {
     private String username;
     private String password;
     private int confirmCode;
+    private long created;
 
     public User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.confirmCode = new Random().nextInt(899999) + 100000;
     }
 
     public User(String username, String password) {
@@ -68,12 +68,24 @@ public class User {
         this.confirmCode = confirmCode;
     }
 
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
     public void register() throws Exception {
+        this.confirmCode = new Random().nextInt(899999) + 100000;
+        this.created = System.currentTimeMillis() / 1000L;
+        
         sendConfirmMail();
         Database db = new Database();
         db.xquery("update insert <user><email>" + email + "</email><name>" + username
                 + "</name><password>" + password + "</password><code>" + confirmCode
-                + "</code></user> into /users");
+                + "</code><created>" + created + "</created>"
+                + "</user> into /users");
         db.close();
     }
 

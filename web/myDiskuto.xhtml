@@ -10,6 +10,16 @@
     <h:body>
         <h:form>
             <h:commandLink value="Novi diskuto" action="editDiskuto.xhtml" />
+            <c:forEach items="#{myDiskuto.owner}" var="value">
+                <h:commandLink value="#{value}" action="#{value}" />
+                <h:commandButton value="Uredi diskuto" action="return false;" />
+                <br/>
+            </c:forEach>
+            <c:forEach items="#{myDiskuto.moderator}" var="value">
+                <h:commandLink value="#{value}" action="#{value}" />
+                <h:commandButton value="Uredi diskuto" action="return false" />
+                <br/>
+            </c:forEach>
         </h:form>
     </h:body>
 </html>

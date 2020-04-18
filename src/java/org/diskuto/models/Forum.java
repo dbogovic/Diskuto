@@ -6,8 +6,8 @@
 package org.diskuto.models;
 
 import java.util.List;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
-import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -21,19 +21,21 @@ public class Forum {
     private List<String> moderators;
     private String rules;
     private String owner;
+    private long created;
 
-    public Forum(String name, String description, List<String> categories, List<String> moderators, String rules) {
+    public Forum(String name, String description, List<String> categories, List<String> moderators, String rules) throws Exception {
         this.name = name;
         this.description = description;
         this.categories = categories;
         this.moderators = moderators;
         this.rules = rules;
-        
-        User user = (User) Listener.getFromSession("user");
-        owner = user.getUsername();
+        this.created = System.currentTimeMillis() / 1000L;
+        owner = AppHelper.getActiveUser().getUsername();
     }
 
     public void register() throws Exception {
+        Database db = new Database();
+        
         StringBuilder query = new StringBuilder("update insert <forum>");
         query.append("<name>").append(name).append("</name>");
         query.append("<description>").append(description).append("</description>");
@@ -49,10 +51,10 @@ public class Forum {
         }
         query.append("</moderators>");
         query.append("<rules>").append(rules).append("</rules>");
+        query.append("<created>").append(created).append("</created>");
         query.append("<subscribers>0</subscribers>");
         query.append("</forum> into /forums");
         
-        Database db = new Database();
         db.xquery(query.toString());
         db.close();
     }

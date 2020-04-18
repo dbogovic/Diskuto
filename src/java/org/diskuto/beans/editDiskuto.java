@@ -11,6 +11,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.listeners.Listener;
 import org.diskuto.models.Forum;
@@ -23,7 +24,7 @@ import org.xmldb.api.base.ResourceSet;
  */
 @Named(value = "editDiskuto")
 @ViewScoped
-public class editDiskuto implements Serializable {
+public class EditDiskuto implements Serializable {
 
     private String name;
     private String description;
@@ -37,7 +38,7 @@ public class editDiskuto implements Serializable {
     /**
      * Creates a new instance of editDiskuto
      */
-    public editDiskuto() {
+    public EditDiskuto() {
     }
 
     public String getName() {
@@ -125,14 +126,13 @@ public class editDiskuto implements Serializable {
     
     public void addModerator() throws Exception {
         errorText.clear();
-        
-        User user = (User) Listener.getFromSession("user");
+
         
         Database db = new Database();
         ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + nameModerator + "\" return $x");
         db.close();
         
-        if(user.getUsername().equals(nameModerator)) {
+        if(AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
             errorText.add("Vi ste već vlasnik Diskuta");
         }
         else if(result.getSize() == 0) {
