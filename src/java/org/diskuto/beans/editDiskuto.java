@@ -13,9 +13,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
-import org.diskuto.listeners.Listener;
 import org.diskuto.models.Forum;
-import org.diskuto.models.User;
 import org.xmldb.api.base.ResourceSet;
 
 /**
