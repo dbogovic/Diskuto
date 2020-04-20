@@ -8,6 +8,10 @@ package org.diskuto.models;
 import java.util.List;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -22,6 +26,10 @@ public class Forum {
     private String rules;
     private String owner;
     private long created;
+    private int subscribers;
+
+    public Forum() {
+    }
 
     public Forum(String name, String description, List<String> categories, List<String> moderators, String rules) throws Exception {
         this.name = name;
@@ -29,24 +37,36 @@ public class Forum {
         this.categories = categories;
         this.moderators = moderators;
         this.rules = rules;
-        this.created = System.currentTimeMillis() / 1000L;
-        owner = AppHelper.getActiveUser().getUsername();
+    }
+
+    public Forum(String name, String description, List<String> categories, List<String> moderators, String rules, String owner, long created, int subscribers) {
+        this.name = name;
+        this.description = description;
+        this.categories = categories;
+        this.moderators = moderators;
+        this.rules = rules;
+        this.owner = owner;
+        this.created = created;
+        this.subscribers = subscribers;
     }
 
     public void register() throws Exception {
+        this.created = System.currentTimeMillis() / 1000L;
+        owner = AppHelper.getActiveUser().getUsername();
+
         Database db = new Database();
-        
+
         StringBuilder query = new StringBuilder("update insert <forum>");
         query.append("<name>").append(name).append("</name>");
         query.append("<description>").append(description).append("</description>");
         query.append("<categories>");
-        for(String category : categories) {
+        for (String category : categories) {
             query.append("<category>").append(category).append("</category>");
         }
         query.append("</categories>");
         query.append("<owner>").append(owner).append("</owner>");
         query.append("<moderators>");
-        for(String moderator : moderators) {
+        for (String moderator : moderators) {
             query.append("<moderator>").append(moderator).append("</moderator>");
         }
         query.append("</moderators>");
@@ -54,9 +74,37 @@ public class Forum {
         query.append("<created>").append(created).append("</created>");
         query.append("<subscribers>0</subscribers>");
         query.append("</forum> into /forums");
-        
+
         db.xquery(query.toString());
         db.close();
     }
-    
+
+    public Forum getForum(String name) throws Exception {
+
+        Database db = new Database();
+        ResourceSet info = db.xquery("for $x in/forums/forum where $x/name=\"" + name + "\" return $x");
+        db.close();
+
+        ResourceIterator iterator = info.getIterator();
+
+        if (iterator.hasMoreResources()) {
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            Object objekt = helper.makeObject("forum");
+
+            String _categories = helper.makeValue("categories", objekt);
+            System.out.println(_categories);
+            
+            /*
+            return new Forum(helper.makeValue("name", objekt), helper.makeValue("description", objekt),
+            /*kategorije*/ /*moderatori*//*, helper.makeValue("rules", objekt),
+            helper.makeValue("owner", objekt), Long.parseLong(helper.makeValue("created", objekt)),
+            Integer.parseInt(helper.makeValue("subscribers", objekt)));
+            */
+        }
+
+        return null;
+    }
+
 }

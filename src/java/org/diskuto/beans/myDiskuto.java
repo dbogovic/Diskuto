@@ -60,4 +60,8 @@ public class MyDiskuto implements Serializable {
         }
     }
     
+    public String openDiskuto(String name) {
+        return "forum.xhtml?name=" + name;
+    }
+    
 }

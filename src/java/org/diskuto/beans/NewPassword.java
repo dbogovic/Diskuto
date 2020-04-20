@@ -8,11 +8,11 @@ package org.diskuto.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
 import org.xmldb.api.base.ResourceSet;
@@ -36,10 +36,7 @@ public class NewPassword implements Serializable {
      * Creates a new instance of NewPassword
      */
     public NewPassword() {
-        Map<String, String> params = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap();
-        String code = params.get("code");
-        System.out.println(apCode);
+        String code = AppHelper.param("code");
         if (code != null) {
             apCode = code;
             abolishedPassword = true;

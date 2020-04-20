@@ -164,7 +164,12 @@ public class EditDiskuto implements Serializable {
                 description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
             errorText.add("Niste unijeli sve podatke");
             return false;
-        } else {
+        } 
+        else if(name.contains(" ")){
+            errorText.add("Naziv ne smije imati razmake");
+            return false;
+        }
+        else {
 
             Database db = new Database();
             ResourceSet resultDiskuto = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");

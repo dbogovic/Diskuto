@@ -5,6 +5,8 @@
  */
 package org.diskuto.helpers;
 
+import java.util.Map;
+import javax.faces.context.FacesContext;
 import org.diskuto.listeners.Listener;
 import org.diskuto.models.User;
 
@@ -16,6 +18,12 @@ public class AppHelper {
     
     public static User getActiveUser(){
         return (User) Listener.getFromSession("user");
+    }
+    
+    public static String param(String key) {
+        Map<String, String> params = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap();
+        return params.get(key);
     }
     
 }
