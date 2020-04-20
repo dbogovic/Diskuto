@@ -50,6 +50,70 @@ public class Forum {
         this.subscribers = subscribers;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public List<String> getModerators() {
+        return moderators;
+    }
+
+    public void setModerators(List<String> moderators) {
+        this.moderators = moderators;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public int getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(int subscribers) {
+        this.subscribers = subscribers;
+    }
+
     public void register() throws Exception {
         this.created = System.currentTimeMillis() / 1000L;
         owner = AppHelper.getActiveUser().getUsername();
@@ -81,6 +145,8 @@ public class Forum {
 
     public Forum getForum(String name) throws Exception {
 
+        System.out.println(name);
+        
         Database db = new Database();
         ResourceSet info = db.xquery("for $x in/forums/forum where $x/name=\"" + name + "\" return $x");
         db.close();
@@ -94,7 +160,7 @@ public class Forum {
             Object objekt = helper.makeObject("forum");
 
             String _categories = helper.makeValue("categories", objekt);
-            System.out.println(_categories);
+            System.out.println("k:" + _categories);
             
             /*
             return new Forum(helper.makeValue("name", objekt), helper.makeValue("description", objekt),

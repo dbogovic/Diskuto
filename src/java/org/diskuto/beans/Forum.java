@@ -26,5 +26,13 @@ public class Forum implements Serializable {
     public Forum() throws Exception {
         this.chosen = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
     }
+
+    public org.diskuto.models.Forum getChosen() {
+        return chosen;
+    }
+
+    public void setChosen(org.diskuto.models.Forum chosen) {
+        this.chosen = chosen;
+    }
     
 }
