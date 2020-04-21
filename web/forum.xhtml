@@ -9,7 +9,22 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:outputText value="#{forum.chosen.getName()}" />
+            <h:outputText value="#{forum.chosen.name}" />
+            <c:forEach items="#{forum.chosen.categories}" var="value">
+                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <br/>
+            </c:forEach>
+            <h:commandButton value="Pretplati se" action="return false;" />
+            <h:outputText value="#{forum.chosen.subscribers} pretplaćenih" />
+            <h:outputText value="Opis: #{forum.chosen.description}" />
+            <h:outputText value="Pravila: #{forum.chosen.rules}" />
+            <h:outputText value="Šefovi:" />
+            <h:link value="#{forum.chosen.owner}" outcome="forum.xhtml" />
+            <c:forEach items="#{forum.chosen.moderators}" var="value">
+                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <br/>
+            </c:forEach>
+            <h:outputText value="Kreirano: #{forum.chosen.created}" />
         </h:form>
     </h:body>
 </html>

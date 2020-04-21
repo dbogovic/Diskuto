@@ -17,9 +17,9 @@ import org.diskuto.models.User;
  *
  * @author dario
  */
-@Named(value = "index")
+@Named(value = "home")
 @RequestScoped
-public class Index {
+public class Home {
 
     private String username;
     private String password;
@@ -29,7 +29,7 @@ public class Index {
     /**
      * Creates a new instance of Index
      */
-    public Index() {
+    public Home() {
     }
 
     public String getUsername() {

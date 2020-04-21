@@ -6,11 +6,12 @@
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/forum.xhtml</file>
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/Forum.java</file>
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/myDiskuto.xhtml</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/Index.java</file>
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/confirmRegistration.xhtml</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/Home.java</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/WEB-INF/web.xml</file>
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/MyDiskuto.java</file>
             <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/models/Forum.java</file>
-            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/index.xhtml</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/home.xhtml</file>
         </group>
     </open-files>
 </project-private>

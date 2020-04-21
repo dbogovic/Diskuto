@@ -5,6 +5,7 @@
  */
 package org.diskuto.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
@@ -145,8 +146,6 @@ public class Forum {
 
     public Forum getForum(String name) throws Exception {
 
-        System.out.println(name);
-        
         Database db = new Database();
         ResourceSet info = db.xquery("for $x in/forums/forum where $x/name=\"" + name + "\" return $x");
         db.close();
@@ -159,18 +158,26 @@ public class Forum {
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("forum");
 
-            String _categories = helper.makeValue("categories", objekt);
-            System.out.println("k:" + _categories);
-            
-            /*
             return new Forum(helper.makeValue("name", objekt), helper.makeValue("description", objekt),
-            /*kategorije*/ /*moderatori*//*, helper.makeValue("rules", objekt),
-            helper.makeValue("owner", objekt), Long.parseLong(helper.makeValue("created", objekt)),
-            Integer.parseInt(helper.makeValue("subscribers", objekt)));
-            */
+                    fillIn(helper.makeValue("categories", objekt).split("\n")),
+                    fillIn(helper.makeValue("moderators", objekt).split("\n")), helper.makeValue("rules", objekt),
+                    helper.makeValue("owner", objekt), Long.parseLong(helper.makeValue("created", objekt)),
+                    Integer.parseInt(helper.makeValue("subscribers", objekt)));
         }
 
         return null;
+    }
+
+    public List<String> fillIn(String[] array) {
+        List<String> list = new ArrayList();
+
+        for (String element : array) {
+            if (element.trim().length() > 0) {
+                list.add(element.trim());
+            }
+        }
+
+        return list;
     }
 
 }
