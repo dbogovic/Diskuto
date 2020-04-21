@@ -154,7 +154,7 @@ public class EditDiskuto implements Serializable {
         if(check()){
             Forum forum = new Forum(name, description, categories, moderators, rules);
             forum.register();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");
         }
     }
 

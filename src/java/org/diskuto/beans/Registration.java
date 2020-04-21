@@ -83,7 +83,7 @@ public class Registration {
             User user = new User(email, username, password);
             user.register();
             Listener.addToSession("user", user);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration");
         }
     }
 

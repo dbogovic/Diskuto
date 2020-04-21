@@ -9,14 +9,14 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:commandLink value="Novi diskuto" action="editDiskuto.xhtml" />
+            <h:commandLink value="Novi diskuto" action="editDiskuto" />
             <c:forEach items="#{myDiskuto.owner}" var="value">
-                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <h:link value="#{value}" outcome="forum?name=#{value}" />
                 <h:commandButton value="Uredi diskuto" action="return false;" />
                 <br/>
             </c:forEach>
             <c:forEach items="#{myDiskuto.moderator}" var="value">
-                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <h:link value="#{value}" outcome="forum?name=#{value}" />
                 <h:commandButton value="Uredi diskuto" action="return false" />
                 <br/>
             </c:forEach>

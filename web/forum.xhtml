@@ -11,7 +11,7 @@
         <h:form>
             <h:outputText value="#{forum.chosen.name}" />
             <c:forEach items="#{forum.chosen.categories}" var="value">
-                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <h:link value="#{value}" outcome="" />
                 <br/>
             </c:forEach>
             <h:commandButton value="Pretplati se" action="return false;" />
@@ -19,9 +19,9 @@
             <h:outputText value="Opis: #{forum.chosen.description}" />
             <h:outputText value="Pravila: #{forum.chosen.rules}" />
             <h:outputText value="Šefovi:" />
-            <h:link value="#{forum.chosen.owner}" outcome="forum.xhtml" />
+            <h:link value="#{forum.chosen.owner}" outcome="" />
             <c:forEach items="#{forum.chosen.moderators}" var="value">
-                <h:link value="#{value}" outcome="forum.xhtml?name=#{value}" />
+                <h:link value="#{value}" outcome="" />
                 <br/>
             </c:forEach>
             <h:outputText value="Kreirano: #{forum.chosen.created}" />

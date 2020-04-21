@@ -23,8 +23,8 @@
                 <c:forEach items="#{home.errorText}" var="value">
                     <h:outputLabel value="#{value}" />
                 </c:forEach>
-                <h:commandLink value="Zaboravili ste lozinku? Zatražite novu" action="#{home.newPassword}" />
-                <h:commandLink value="Nemate korisnički račun? Registrirajte se" action="#{home.register}" />
+                <h:link value="Zaboravili ste lozinku? Zatražite novu" outcome="newPassword" />
+                <h:link value="Nemate korisnički račun? Registrirajte se" outcome="registration" />
                 <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
                 <script>
                     jsf.ajax.addOnEvent(function (data) {
@@ -46,10 +46,10 @@
             </h:panelGroup>
             <h:panelGroup rendered="#{home.login}">
                 <h:commandLink value="Odjava" action="#{home.logOut}" />
-                <h:commandLink value="Moja diskuta" action="myDiskuto.xhtml" />
-                <h:commandLink value="Moje poruke" />
-                <h:commandLink value="Pretplaćena diskuta" />
-                <h:commandLink value="Postavke" />
+                <h:link value="Moja diskuta" outcome="myDiskuto" />
+                <h:link value="Moje poruke" />
+                <h:link value="Pretplaćena diskuta" />
+                <h:link value="Postavke" />
             </h:panelGroup>
         </h:form>
     </h:body>

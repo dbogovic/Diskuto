@@ -19,6 +19,10 @@
         <url-pattern>/home</url-pattern>
         <url-pattern>/myDiskuto</url-pattern>
         <url-pattern>/forum</url-pattern>
+        <url-pattern>/confirmRegistration</url-pattern>
+        <url-pattern>/editDiskuto</url-pattern>
+        <url-pattern>/registration</url-pattern>
+        <url-pattern>/newPassword</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

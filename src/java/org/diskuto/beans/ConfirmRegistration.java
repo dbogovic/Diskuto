@@ -60,7 +60,7 @@ public class ConfirmRegistration {
                 this.errorText.add("Potvrdili ste registraciju");   
                 getRegisteredUser().confirmUser();
                 //discover page umjesto toga
-                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             }
         }
         catch(Exception ex){

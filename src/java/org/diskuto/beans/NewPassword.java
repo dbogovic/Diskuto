@@ -105,7 +105,7 @@ public class NewPassword implements Serializable {
             this.errorText.add("Upute za kreiranje nove lozinke su poslane na vaš e-mail");
             MailHelper mh = new MailHelper(email, "Nova lozinka",
                     "Slijedite ovu poveznicu kako bi ste unesli novu lozinku: "
-                    + "http://127.0.0.1:3000/Diskuto/faces/newPassword.xhtml?code="
+                    + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
                     + abolishPasswordCode);
             mh.sendMail();
         } else {
@@ -124,7 +124,7 @@ public class NewPassword implements Serializable {
             db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + apCode
                     + "\" return update delete $x/abolishPasswordCode");
             db.close();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("home");
         }
     }
 

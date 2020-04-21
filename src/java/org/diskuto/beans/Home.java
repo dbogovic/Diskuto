@@ -69,10 +69,10 @@ public class Home {
         if(user.login()) {
             Listener.addToSession("user", user);
             if(user.getConfirmCode() != -1) {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration");
             }
             else {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             }
         }
         else {
@@ -83,13 +83,5 @@ public class Home {
     public String logOut() {
         Listener.deleteFromSession("user");
         return "";
-    }
-    
-    public String newPassword(){
-        return "newPassword.xhtml";
-    }
-    
-    public String register(){
-        return "registration.xhtml";
     }
 }
