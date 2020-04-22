@@ -19,20 +19,37 @@ import org.diskuto.helpers.AppHelper;
 public class Forum implements Serializable {
 
     private org.diskuto.models.Forum chosen;
-    
+    private String f_created;
+    private String cat;
+    private boolean boss;
+
     /**
      * Creates a new instance of Forum
      */
     public Forum() throws Exception {
         this.chosen = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
+        this.cat = AppHelper.param("cat");
     }
 
     public org.diskuto.models.Forum getChosen() {
         return chosen;
     }
 
-    public void setChosen(org.diskuto.models.Forum chosen) {
-        this.chosen = chosen;
+    public String getF_created() {
+        return AppHelper.date(chosen.getCreated());
     }
-    
+
+    public String getCat() {
+        return cat;
+    }
+
+    public boolean isBoss() {
+        if (AppHelper.getActiveUser() == null) {
+            return false;
+        } else if (this.chosen.getName().equals(AppHelper.getActiveUser().getUsername())
+                || this.chosen.getModerators().contains(AppHelper.getActiveUser().getUsername())) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -5,26 +5,35 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Diskuto | Moja diskuta</title>
+        <title>Diskuto | #{forum.chosen.name}</title>
     </h:head>
     <h:body>
         <h:form>
-            <h:outputText value="#{forum.chosen.name}" />
+            <h:outputLabel value="#{forum.chosen.name}" />
+            <h:outputLabel rendered="#{forum.cat != null}" value="#{forum.cat}" />
             <c:forEach items="#{forum.chosen.categories}" var="value">
-                <h:link value="#{value}" outcome="" />
-                <br/>
+                <h:link rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
+                    <f:param name="name" value="#{forum.chosen.name}" />
+                    <f:param name="cat" value="#{value}" />
+                </h:link>
             </c:forEach>
-            <h:commandButton value="Pretplati se" action="return false;" />
-            <h:outputText value="#{forum.chosen.subscribers} pretplaćenih" />
-            <h:outputText value="Opis: #{forum.chosen.description}" />
-            <h:outputText value="Pravila: #{forum.chosen.rules}" />
-            <h:outputText value="Šefovi:" />
-            <h:link value="#{forum.chosen.owner}" outcome="" />
+            <h:commandButton rendered="#{!forum.boss}" value="Pretplati se" action="return false;" />
+            <h:commandButton rendered="#{forum.boss}" value="Postavke" action="return false;" />
+            <h:outputLabel value="#{forum.chosen.subscribers} pretplaćenih" />
+            <h:outputLabel value="Opis: #{forum.chosen.description}" />
+            <h:outputLabel value="Pravila: #{forum.chosen.rules}" />
+            <h:outputLabel value="Šefovi:" />
+            <h:link value="#{forum.chosen.owner}" outcome="profile" >
+                <f:param name="name" value="#{forum.chosen.owner}" />
+            </h:link>
             <c:forEach items="#{forum.chosen.moderators}" var="value">
-                <h:link value="#{value}" outcome="" />
+                <h:link value="#{value}" outcome="profile" >
+                    <f:param name="name" value="#{value}" />
+                </h:link>
                 <br/>
             </c:forEach>
-            <h:outputText value="Kreirano: #{forum.chosen.created}" />
+            <h:outputLabel value="Kreirano: #{forum.f_created}" />
+            <h:outputLabel value="Postovi" />
         </h:form>
     </h:body>
 </html>

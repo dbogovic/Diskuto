@@ -8,6 +8,8 @@ package org.diskuto.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -32,7 +34,7 @@ public class EditDiskuto implements Serializable {
     private String nameModerator;
     private List<String> moderators = new ArrayList();
     private List<String> errorText = new ArrayList();
-    
+
     /**
      * Creates a new instance of editDiskuto
      */
@@ -102,56 +104,55 @@ public class EditDiskuto implements Serializable {
     public void setErrorText(List<String> errorText) {
         this.errorText = errorText;
     }
- 
-    public void addCategory(){
+
+    public void addCategory() {
         errorText.clear();
-        
-        if(nameCategory == null || nameCategory.length() == 0) {
+
+        if (nameCategory == null || nameCategory.length() == 0) {
             errorText.add("Niste unijeli naziv kategorije");
-        }
-        else if(categories.contains(nameCategory)) {
+        } else if (categories.contains(nameCategory)) {
             errorText.add("Već ste unijeli tu kategoriju");
-        }
-        else {
-            categories.add(nameCategory);
+        } else {
+            Matcher matcher = Pattern.compile("^[\\w\\d\\s]+$", Pattern.CASE_INSENSITIVE).matcher(name);
+            if (!matcher.find()) {
+                errorText.add("Naziv kategorije smije imati samo brojeve i slova");
+            } else {
+                categories.add(nameCategory);
+            }
         }
     }
-    
+
     public void dropCategory(Object category) {
         errorText.clear();
         categories.remove(category);
     }
-    
+
     public void addModerator() throws Exception {
         errorText.clear();
 
-        
         Database db = new Database();
         ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + nameModerator + "\" return $x");
         db.close();
-        
-        if(AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
+
+        if (AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
             errorText.add("Vi ste već vlasnik Diskuta");
-        }
-        else if(result.getSize() == 0) {
+        } else if (result.getSize() == 0) {
             errorText.add("Korisnik pod tim korisničkim imenom ne postoji");
-        }
-        else if(moderators.contains(nameModerator)) {
+        } else if (moderators.contains(nameModerator)) {
             errorText.add("Već ste unijeli tog moderatora");
-        }
-        else {
+        } else {
             moderators.add(nameModerator);
         }
     }
-    
+
     public void dropModerator(Object moderator) {
         errorText.clear();
         moderators.remove(moderator);
     }
-    
+
     public void save() throws Exception {
         errorText.clear();
-        if(check()){
+        if (check()) {
             Forum forum = new Forum(name, description, categories, moderators, rules);
             forum.register();
             FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");
@@ -160,17 +161,17 @@ public class EditDiskuto implements Serializable {
 
     private boolean check() throws Exception {
 
-        if (name == null || description == null || rules == null || name.length() == 0 || 
-                description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
+        if (name == null || description == null || rules == null || name.length() == 0
+                || description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
             errorText.add("Niste unijeli sve podatke");
             return false;
-        } 
-        else if(name.contains(" ")){
-            errorText.add("Naziv ne smije imati razmake");
-            return false;
-        }
-        else {
+        } else {
 
+            Matcher matcher = Pattern.compile("^[\\w\\d]+$", Pattern.CASE_INSENSITIVE).matcher(name);
+            if (!matcher.find()) {
+                errorText.add("Naziv smije imati samo brojeve i slova bez razmaka");
+                return false;
+            }
             Database db = new Database();
             ResourceSet resultDiskuto = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");
             db.close();
@@ -180,7 +181,7 @@ public class EditDiskuto implements Serializable {
                 return false;
             }
         }
-        
+
         return true;
     }
 }
