@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,6 +10,7 @@ import java.util.List;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
+import org.w3c.dom.Node;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
@@ -159,8 +160,8 @@ public class Forum {
             Object objekt = helper.makeObject("forum");
 
             return new Forum(helper.makeValue("name", objekt), helper.makeValue("description", objekt),
-                    fillIn(helper.makeValue("categories", objekt).split("\n")),
-                    fillIn(helper.makeValue("moderators", objekt).split("\n")), helper.makeValue("rules", objekt),
+                    helper.makeRawValue("/forum/categories/category"),
+                    helper.makeRawValue("/forum/moderators/moderator"), helper.makeValue("rules", objekt),
                     helper.makeValue("owner", objekt), Long.parseLong(helper.makeValue("created", objekt)),
                     Integer.parseInt(helper.makeValue("subscribers", objekt)));
         }
@@ -168,16 +169,27 @@ public class Forum {
         return null;
     }
 
-    public List<String> fillIn(String[] array) {
-        List<String> list = new ArrayList();
+    public void update() throws Exception {
 
-        for (String element : array) {
-            if (element.trim().length() > 0) {
-                list.add(element.trim());
-            }
+        Database db = new Database();
+        db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/description with \"" + description + "\"");
+        db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/rules with \"" + rules + "\"");
+
+        StringBuilder query = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/categories with <categories>");
+        for (String category : categories) {
+            query.append("<category>").append(category).append("</category>");
         }
+        query.append("</categories>");
+        db.xquery(query.toString());
 
-        return list;
+        StringBuilder query2 = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/moderators with <moderators>");
+        for (String moderator : moderators) {
+            query2.append("<moderator>").append(moderator).append("</moderator>");
+        }
+        query2.append("</moderators>");
+        db.xquery(query2.toString());
+
+        db.close();
     }
 
 }

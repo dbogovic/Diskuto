@@ -84,7 +84,7 @@ public class User {
         Database db = new Database();
         db.xquery("update insert <user><email>" + email + "</email><name>" + username
                 + "</name><password>" + password + "</password><code>" + confirmCode
-                + "</code><created>" + created + "</created>"
+                + "</code><created>" + created + "</created><subscriptions/>"
                 + "</user> into /users");
         db.close();
     }

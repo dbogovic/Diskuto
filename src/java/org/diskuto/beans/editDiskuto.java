@@ -34,11 +34,21 @@ public class EditDiskuto implements Serializable {
     private String nameModerator;
     private List<String> moderators = new ArrayList();
     private List<String> errorText = new ArrayList();
+    private Forum existing;
 
     /**
      * Creates a new instance of editDiskuto
      */
-    public EditDiskuto() {
+    public EditDiskuto() throws Exception {
+        existing = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
+
+        if (existing != null) {
+            this.name = existing.getName();
+            this.description = existing.getDescription();
+            this.rules = existing.getRules();
+            this.categories = existing.getCategories();
+            this.moderators = existing.getModerators();
+        }
     }
 
     public String getName() {
@@ -105,6 +115,10 @@ public class EditDiskuto implements Serializable {
         this.errorText = errorText;
     }
 
+    public Forum getExisting() {
+        return existing;
+    }
+
     public void addCategory() {
         errorText.clear();
 
@@ -120,6 +134,8 @@ public class EditDiskuto implements Serializable {
                 categories.add(nameCategory);
             }
         }
+        
+        nameCategory = "";
     }
 
     public void dropCategory(Object category) {
@@ -143,6 +159,8 @@ public class EditDiskuto implements Serializable {
         } else {
             moderators.add(nameModerator);
         }
+        
+        nameModerator = "";
     }
 
     public void dropModerator(Object moderator) {
@@ -153,8 +171,27 @@ public class EditDiskuto implements Serializable {
     public void save() throws Exception {
         errorText.clear();
         if (check()) {
-            Forum forum = new Forum(name, description, categories, moderators, rules);
-            forum.register();
+
+            if (existing == null) {
+                Database db = new Database();
+                ResourceSet resultDiskuto = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");
+                db.close();
+
+                if (resultDiskuto.getSize() > 0) {
+                    errorText.add("Diskuto pod tim nazivom već postoji");
+                } else {
+                    Forum forum = new Forum(name, description, categories, moderators, rules);
+                    forum.register();
+                }
+            } else {
+                existing.setDescription(description);
+                existing.setRules(rules);
+                existing.setCategories(categories);
+                existing.setModerators(moderators);
+                
+                existing.update();
+            }
+
             FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");
         }
     }
@@ -172,14 +209,7 @@ public class EditDiskuto implements Serializable {
                 errorText.add("Naziv smije imati samo brojeve i slova bez razmaka");
                 return false;
             }
-            Database db = new Database();
-            ResourceSet resultDiskuto = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");
-            db.close();
 
-            if (resultDiskuto.getSize() > 0) {
-                errorText.add("Diskuto pod tim nazivom već postoji");
-                return false;
-            }
         }
 
         return true;

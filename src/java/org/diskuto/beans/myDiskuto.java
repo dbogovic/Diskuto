@@ -59,5 +59,4 @@ public class MyDiskuto implements Serializable {
             list.add(helper.makeValue("name", objekt));
         }
     }
-    
 }

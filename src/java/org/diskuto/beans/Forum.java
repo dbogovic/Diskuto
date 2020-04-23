@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
+import org.diskuto.helpers.Database;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -22,6 +24,7 @@ public class Forum implements Serializable {
     private String f_created;
     private String cat;
     private boolean boss;
+    private boolean subscribed;
 
     /**
      * Creates a new instance of Forum
@@ -46,10 +49,42 @@ public class Forum implements Serializable {
     public boolean isBoss() {
         if (AppHelper.getActiveUser() == null) {
             return false;
-        } else if (this.chosen.getName().equals(AppHelper.getActiveUser().getUsername())
+        } else if (this.chosen.getOwner().equals(AppHelper.getActiveUser().getUsername())
                 || this.chosen.getModerators().contains(AppHelper.getActiveUser().getUsername())) {
             return true;
         }
         return false;
+    }
+
+    public boolean isSubscribed() throws Exception {
+        Database db = new Database();
+        ResourceSet subscribed = db.xquery("/users/user[name=\"" + AppHelper.getActiveUser().getUsername()
+                + "\"]/subscriptions[forum=\"" + this.chosen.getName() + "\"]");
+        db.close();
+
+        this.subscribed = subscribed.getSize() > 0;
+        return this.subscribed;
+    }
+
+    public void subscribe() throws Exception {
+
+        Database db = new Database();
+
+        if (!this.subscribed) {
+            this.chosen.setSubscribers(this.chosen.getSubscribers() + 1);
+            db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
+                    + "\" return update insert <forum>" + this.chosen.getName() + "</forum> into $x/subscriptions");
+            this.subscribed = true;
+        } else {
+            this.chosen.setSubscribers(this.chosen.getSubscribers() - 1);
+            db.xquery("for $x in /users/user[name=\"" + AppHelper.getActiveUser().getUsername()
+                    + "\"]/subscriptions[forum=\"" + this.chosen.getName() + "\"] return update delete $x/forum");
+            this.subscribed = false;
+        }
+
+        db.xquery("for $x in /forums/forum where $x/name=\"" + this.chosen.getName()
+                + "\" return update value $x/subscribers with \"" + this.chosen.getSubscribers() + "\"");
+
+        db.close();
     }
 }

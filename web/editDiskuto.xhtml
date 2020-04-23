@@ -11,7 +11,7 @@
         <h:form>
             <h:panelGrid columns="2">
                 <h:outputLabel value="Naziv:*" />
-                <h:inputText id="name" value="#{editDiskuto.name}" />
+                <h:inputText id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.existing != null ? 'true' : 'false'}" />
 
                 <h:outputLabel value="Opis:*" />
                 <h:inputTextarea id="description" value="#{editDiskuto.description}" />
