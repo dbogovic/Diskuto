@@ -6,6 +6,7 @@
 package org.diskuto.beans;
 
 import java.io.Serializable;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
@@ -32,6 +33,10 @@ public class Forum implements Serializable {
     public Forum() throws Exception {
         this.chosen = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
         this.cat = AppHelper.param("cat");
+
+        if (this.chosen == null) {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
+        }
     }
 
     public org.diskuto.models.Forum getChosen() {

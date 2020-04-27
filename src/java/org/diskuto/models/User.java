@@ -5,6 +5,7 @@
  */
 package org.diskuto.models;
 
+import java.util.List;
 import java.util.Random;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
@@ -24,6 +25,7 @@ public class User {
     private String password;
     private int confirmCode;
     private long created;
+    private List<String> subscriptions;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -34,6 +36,10 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+    
+    public User(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -84,7 +90,7 @@ public class User {
         Database db = new Database();
         db.xquery("update insert <user><email>" + email + "</email><name>" + username
                 + "</name><password>" + password + "</password><code>" + confirmCode
-                + "</code><created>" + created + "</created><subscriptions/>"
+                + "</code><created>" + created + "</created><subscriptions/><ignore/>"
                 + "</user> into /users");
         db.close();
     }
@@ -116,6 +122,28 @@ public class User {
 
             setEmail(helper.makeValue("email", object));
             setConfirmCode(Integer.parseInt(helper.makeValue("code", object)));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean retrieveData() throws Exception {
+        Database db = new Database();
+        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" return $x");
+        db.close();
+        
+        if (result.getSize() != 0) {
+            ResourceIterator iterator = result.getIterator();
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            Object object = helper.makeObject("user");
+
+            this.username = helper.makeValue("name", object);
+            this.created = Long.parseLong(helper.makeValue("created", object));
+            this.subscriptions = helper.makeRawValue("/user/subscriptions/forum");
 
             return true;
         } else {

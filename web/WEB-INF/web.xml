@@ -23,6 +23,9 @@
         <url-pattern>/editDiskuto</url-pattern>
         <url-pattern>/registration</url-pattern>
         <url-pattern>/newPassword</url-pattern>
+        <url-pattern>/profile</url-pattern>
+        <url-pattern>/settings</url-pattern>
+        <url-pattern>/message</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
