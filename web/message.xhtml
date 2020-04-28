@@ -23,8 +23,9 @@
                 <h:outputLabel value="#{message.formatted(value.time)}" />
                 <br/>
             </c:forEach>
-            <h:inputTextarea id="reply" value="#{message.reply}" >
-                <f:ajax listener="#{message.enableButton}" execute="reply" render="send" />
+            <h:inputTextarea disabled="#{message.me}" id="reply" value="#{message.reply}" 
+                             onkeypress="if (event.keyCode === 13) { onchange(); return false; }" >
+                <f:ajax event="keydown" listener="#{message.enableButton}" execute="reply" render="send" />
             </h:inputTextarea>
             <h:commandButton id="send" value="Send" action="#{message.send()}" disabled="#{!message.enabledButton}" />
         </h:form>

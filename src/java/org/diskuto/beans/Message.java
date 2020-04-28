@@ -7,7 +7,6 @@ package org.diskuto.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import javax.faces.context.FacesContext;
@@ -40,9 +39,8 @@ public class Message implements Serializable {
      */
     public Message() throws Exception {
         String _user = AppHelper.param("with");
-        if (_user.equals(AppHelper.getActiveUser().getUsername()) || _user == null) {
+        if (_user == null || _user.equals(AppHelper.getActiveUser().getUsername())) {
             me = true;
-            this.chosen = AppHelper.getActiveUser();
         } else {
             this.chosen = new User(_user);
             if (!this.chosen.retrieveData()) {
@@ -64,13 +62,16 @@ public class Message implements Serializable {
         messages = new ArrayList();
 
         if (!me) {
+            
+            ResourceSet result;
+            ResourceIterator iterator;
             Database db = new Database();
-            ResourceSet result = db.xquery("for $x in /messages/message where ($x/recipient=\""
+            
+            result = db.xquery("for $x in /messages/message where ($x/recipient=\""
                     + AppHelper.getActiveUser().getUsername() + "\" and $x/sender=\"" + this.chosen.getUsername()
-                    + "\") or return $x");
-            db.close();
+                    + "\") return $x");
 
-            ResourceIterator iterator = result.getIterator();
+            iterator = result.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
                 String value = (String) r.getContent();
@@ -78,10 +79,27 @@ public class Message implements Serializable {
                 Object object = helper.makeObject("message");
 
                 org.diskuto.models.Message m = new org.diskuto.models.Message(Long.parseLong(helper.makeValue("time", object)),
-                        AppHelper.getActiveUser(), this.chosen, helper.makeValue("text", object),
-                        Integer.parseInt(helper.makeValue("seen", object)) == 1 ? true : false);
+                        AppHelper.getActiveUser(), this.chosen, helper.makeValue("text", object), (Integer.parseInt(helper.makeValue("seen", object)) == 1));
                 messages.add(m);
             }
+            
+            result = db.xquery("for $x in /messages/message where ($x/sender=\""
+                    + AppHelper.getActiveUser().getUsername() + "\" and $x/recipient=\"" + this.chosen.getUsername()
+                    + "\") return $x");
+
+            iterator = result.getIterator();
+            while (iterator.hasMoreResources()) {
+                Resource r = iterator.nextResource();
+                String value = (String) r.getContent();
+                XmlHelper helper = new XmlHelper(value);
+                Object object = helper.makeObject("message");
+
+                org.diskuto.models.Message m = new org.diskuto.models.Message(Long.parseLong(helper.makeValue("time", object)),
+                        this.chosen, AppHelper.getActiveUser(), helper.makeValue("text", object), (Integer.parseInt(helper.makeValue("seen", object)) == 1));
+                messages.add(m);
+            }
+            
+            db.close();
         }
 
         return messages;
@@ -125,21 +143,15 @@ public class Message implements Serializable {
         this.reply = reply;
     }
 
-    public String send() throws Exception {
+    public void send() throws Exception {
         org.diskuto.models.Message message = new org.diskuto.models.Message(System.currentTimeMillis() / 1000L, 
                 this.chosen, AppHelper.getActiveUser(), this.reply, false);
         message.send();
-        
-        this.reply = "";
-        return "";
+        FacesContext.getCurrentInstance().getExternalContext().redirect("message?with="+this.chosen.getUsername());
     }
 
     public void enableButton() {
-        if (this.reply.length() > 0) {
-            this.enabledButton = true;
-        } else {
-            this.enabledButton = false;
-        }
+        this.enabledButton = !"".equals(this.reply);
     }
 
     public boolean isEnabledButton() {
