@@ -1,16 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Diskuto | Postavke</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:outputLabel value="Korisničko ime:"/>
+            <h:inputText disabled="true" value="#{settings.username}" />
+            <br/>
+
+            <h:outputLabel value="E-Mail:"/>
+            <h:inputText id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
+            <h:commandButton value="#{!settings.wantEmail ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changeEmail()}">
+                <f:ajax event="action" execute="email" render="@form"/>
+            </h:commandButton>
+            <h:outputLabel rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
+            <br/>
+
+            <h:outputLabel value="Lozinka:"/>
+            <h:inputSecret id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
+                <f:passThroughAttribute name="placeholder" value="promijeni lozinku"/>
+            </h:inputSecret>
+            <h:commandButton value="#{!settings.wantPassword ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changePassword()}">
+                <f:ajax event="action" execute="password" render="@form"/>
+            </h:commandButton>
+            <h:outputLabel rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
+            <br/>
+
+            <h:outputLabel value="Pretplaćena diskuta:" />
+            <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
+                <h:link value="#{value.name}" outcome="forum" >
+                    <f:param name="name" value="#{value.name}" />
+                </h:link>
+                <h:commandButton value="Ukloni pretplatu" action="#{settings.unsubscribe(value)}">
+                    <f:ajax event="action" execute="subscribed" render="@form"/>
+                </h:commandButton>
+            </c:forEach>
+            <br/>
+
+            <h:outputLabel value="Blokirani korisnici: " />
+            <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
+                <h:link value="#{value.username}" outcome="profile" >
+                    <f:param name="name" value="#{value.username}" />
+                </h:link>
+                <h:commandButton value="Deblokiraj" action="#{settings.unignore(value)}">
+                    <f:ajax event="action" execute="ignored" render="@form"/>
+                </h:commandButton>
+            </c:forEach>
+            <br/>
+
+            <h:outputLabel value="Privatnost" /><br/>
+            <h:outputLabel value="Jezik" /><br/>
+            <h:outputLabel value="Obriši račun" /><br/>
+        </h:form>
+    </h:body>
 </html>

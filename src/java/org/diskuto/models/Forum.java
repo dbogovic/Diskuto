@@ -5,12 +5,10 @@
  */
 package org.diskuto.models;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
-import org.w3c.dom.Node;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
