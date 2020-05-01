@@ -17,6 +17,9 @@
                     <f:param name="cat" value="#{value}" />
                 </h:link>
             </c:forEach>
+            <h:commandButton value="Nova objava" action="newPost" >
+                <f:param name="on" value="#{forum.chosen.name}" />
+            </h:commandButton>
             <h:commandButton rendered="#{!forum.boss}" value="#{forum.subscribed ? 'Ukloni pretplatu' : 'Pretplati se'}" action="#{forum.subscribe}" >
                 <f:ajax event="action" render="@form" />
             </h:commandButton>

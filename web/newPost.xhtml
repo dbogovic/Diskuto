@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Diskuto | Novi post</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGrid columns="2" >
+                <h:outputLabel value="Diskuto:" />
+                <h:inputText value="" />
+
+                <h:outputLabel value="Naslov:" />
+                <h:inputText value="" />
+
+                <h:outputLabel value="Opis:" />
+                <h:inputText value="" />
+
+                <h:outputLabel value="Kategorija:" />
+                <h:inputText value="" />
+            </h:panelGrid>
+            <h:commandButton value="Spremi" action="#{newPost.post}">
+                <f:ajax event="action" execute="name description rules" render="@form"/>
+            </h:commandButton>
+            <c:forEach items="#{newPost.errorText}" var="value">
+                <h:outputLabel value="#{value}" />
+            </c:forEach>
+            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <script>
+                jsf.ajax.addOnEvent(function (data) {
+                    var ajaxstatus = data.status;
+                    var ajaxloader = document.getElementById("ajaxloader");
+
+                    switch (ajaxstatus) {
+                        case "begin":
+                            ajaxloader.style.display = 'block';
+                            break;
+                        case "complete":
+                            ajaxloader.style.display = 'none';
+                            break;
+                        case "success":
+                            break;
+                    }
+                });
+            </script>
+        </h:form>
+    </h:body>
+</html>

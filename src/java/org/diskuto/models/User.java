@@ -26,7 +26,6 @@ public class User {
     private int confirmCode;
     private long created;
     private boolean disabled;
-    private List<String> subscriptions;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -152,7 +151,6 @@ public class User {
 
             this.username = helper.makeValue("name", object);
             this.created = Long.parseLong(helper.makeValue("created", object));
-            this.subscriptions = helper.makeRawValue("/user/subscriptions/forum");
 
             return true;
         } else {
