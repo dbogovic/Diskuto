@@ -26,6 +26,7 @@
         <url-pattern>/profile</url-pattern>
         <url-pattern>/settings</url-pattern>
         <url-pattern>/message</url-pattern>
+        <url-pattern>/disabled</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

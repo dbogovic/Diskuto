@@ -25,6 +25,7 @@ public class User {
     private String password;
     private int confirmCode;
     private long created;
+    private boolean disabled;
     private List<String> subscriptions;
 
     public User(String email, String username, String password) {
@@ -82,6 +83,14 @@ public class User {
         this.created = created;
     }
 
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public void register() throws Exception {
         this.confirmCode = new Random().nextInt(899999) + 100000;
         this.created = System.currentTimeMillis() / 1000L;
@@ -91,7 +100,7 @@ public class User {
         db.xquery("update insert <user><email>" + email + "</email><name>" + username
                 + "</name><password>" + password + "</password><code>" + confirmCode
                 + "</code><created>" + created + "</created><subscriptions/><ignore/>"
-                + "</user> into /users");
+                + "<disabled>0</disabled></user> into /users");
         db.close();
     }
 

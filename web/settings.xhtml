@@ -55,7 +55,16 @@
 
             <h:outputLabel value="Privatnost" /><br/>
             <h:outputLabel value="Jezik" /><br/>
-            <h:outputLabel value="Obriši račun" /><br/>
+            
+            <h:commandLink value="Obriši račun" action="#{settings.disableAccount}" /><br/>
+            <h:panelGroup rendered="#{settings.wantDisable}" >
+                <h:outputLabel value="Unesite lozinku za potvrdu: " />
+                <h:inputSecret id="disable_password" value="#{settings.password}" />
+                <h:commandButton value="Potvrdi" action="#{settings.disableAccount()}">
+                    <f:ajax event="action" execute="disable_password" render="@form"/>
+                </h:commandButton>
+                <h:outputLabel rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
+            </h:panelGroup>
         </h:form>
     </h:body>
 </html>

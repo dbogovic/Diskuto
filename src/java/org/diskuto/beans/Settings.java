@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
+import org.diskuto.listeners.Listener;
 import org.diskuto.models.User;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
@@ -32,7 +34,7 @@ public class Settings implements Serializable {
     private String username;
     private String email;
     private String password;
-    private boolean wantEmail, wantPassword, errorEmail, errorPassword;
+    private boolean wantEmail, wantPassword, wantDisable, errorEmail, errorPassword, errorDisable;
     private List<org.diskuto.models.Forum> listDiskuto = new ArrayList();
     private List<User> ignoredUsers = new ArrayList();
 
@@ -46,7 +48,6 @@ public class Settings implements Serializable {
         me = AppHelper.getActiveUser();
         this.username = me.getUsername();
         this.email = me.getEmail();
-        this.password = me.getPassword();
         this.wantEmail = false;
         this.wantPassword = false;
 
@@ -139,6 +140,22 @@ public class Settings implements Serializable {
         this.errorPassword = errorPassword;
     }
 
+    public boolean isWantDisable() {
+        return wantDisable;
+    }
+
+    public void setWantDisable(boolean wantDisable) {
+        this.wantDisable = wantDisable;
+    }
+
+    public boolean isErrorDisable() {
+        return errorDisable;
+    }
+
+    public void setErrorDisable(boolean errorDisable) {
+        this.errorDisable = errorDisable;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -164,6 +181,7 @@ public class Settings implements Serializable {
                     wantEmail = false;
 
                     db.xquery("update value /users/user[name=\"" + me.getUsername() + "\"]/email with '" + email + "'");
+                    me.setEmail(email);
                 }
 
                 db.close();
@@ -187,6 +205,7 @@ public class Settings implements Serializable {
                 Database db = new Database();
                 db.xquery("update value /users/user[name=\"" + me.getUsername() + "\"]/password with '" + this.password + "'");
                 db.close();
+                me.setPassword(password);
             }
         }
     }
@@ -205,6 +224,26 @@ public class Settings implements Serializable {
                     + "\"]/ignore[user=\"" + u.getUsername() + "\"] return update delete $x/user");
         db.close();
         this.ignoredUsers.remove(u);
+    }
+    
+    public void disableAccount() throws Exception{
+        errorDisable = false;
+
+        if (!wantDisable) {
+            wantDisable = true;
+            this.password = "";
+        } else {
+            if (!password.equals(me.getPassword())) {
+                errorDisable = true;
+                this.password = "";
+            } else {
+                Database db = new Database();
+                db.xquery("update value /users/user[name=\"" + me.getUsername() + "\"]/disabled with '1'");
+                db.close();
+                Listener.deleteFromSession("user");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("disabled");
+            }
+        }
     }
 
 }
