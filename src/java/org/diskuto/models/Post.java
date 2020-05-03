@@ -106,16 +106,40 @@ public class Post {
         return upvote;
     }
 
-    public void setUpvote(List<String> upvote) {
-        this.upvote = upvote;
+    public void addUpvote(String newUpvote) throws Exception {
+        this.upvote.add(newUpvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.getId()
+                    + "\" return update insert <user>" + newUpvote + "</user> into $x/upvote");
+        db.close();
+    }
+    
+    public void dropUpvote(String upvote) throws Exception {
+        this.upvote.remove(upvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\""+ this.getId() +
+                    "\" return update delete $x/upvote/user[.=\"" + upvote + "\"]");
+        db.close();
     }
 
     public List<String> getDownvote() {
         return downvote;
     }
 
-    public void setDownvote(List<String> downvote) {
-        this.downvote = downvote;
+    public void addDownvote(String newDownvote) throws Exception {
+        this.downvote.add(newDownvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.getId()
+                    + "\" return update insert <user>" + newDownvote + "</user> into $x/downvote");
+        db.close();
+    }
+    
+    public void dropDownvote(String downvote) throws Exception {
+        this.downvote.remove(downvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\""+ this.getId() +
+                    "\" return update delete $x/downvote/user[.=\"" + downvote + "\"]");
+        db.close();
     }
     
     private int generateId() throws Exception {

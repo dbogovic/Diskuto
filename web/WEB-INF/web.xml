@@ -28,6 +28,7 @@
         <url-pattern>/message</url-pattern>
         <url-pattern>/disabled</url-pattern>
         <url-pattern>/newPost</url-pattern>
+        <url-pattern>/post</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

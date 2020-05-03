@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Diskuto | Stranica ne postoji</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:link value="#{post.chosen.category}" outcome="forum" >
+                <f:param name="name" value="#{post.chosen.diskuto.name}" />
+                <f:param name="cat" value="#{post.chosen.category}" />
+            </h:link>
+            <h:outputLabel value="#{post.chosen.headline}" /><br/>
+            <h:outputLabel value="#{post.chosen.description}" /><br/>
+            <h:link value="#{post.chosen.owner.username}" outcome="profile" >
+                <f:param name="name" value="#{post.chosen.owner.username}" />
+            </h:link>
+            <h:outputLabel value="#{post.p_created}" /><br/>
+            <h:commandButton value="-" action="#{post.downvotePost}" >
+                <f:ajax event="action" render="karma"/>
+            </h:commandButton>
+            <h:outputLabel id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size()}" />
+            <h:commandButton value="+" action="#{post.upvotePost}" >
+                <f:ajax event="action" render="karma"/>
+            </h:commandButton><br/>
+            
+            <h:inputTextarea id="comment" value="#{post.myComment}" />
+            <h:commandButton value="send" action="#{post.sendComment}" /><br/>
+            
+            <!-- lista komentara !-->
+        </h:form>
+    </h:body>
+</html>
