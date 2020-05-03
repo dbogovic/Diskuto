@@ -88,7 +88,7 @@ public class NewPost implements Serializable {
         else {
             Post post = new Post(headline, description, AppHelper.getActiveUser(), chosen, selectedCategory);
             post.save();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
         }
         
     }
