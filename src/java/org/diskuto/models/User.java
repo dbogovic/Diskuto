@@ -5,7 +5,6 @@
  */
 package org.diskuto.models;
 
-import java.util.List;
 import java.util.Random;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;

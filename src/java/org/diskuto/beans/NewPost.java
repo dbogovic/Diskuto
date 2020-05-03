@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.models.Forum;
+import org.diskuto.models.Post;
 
 /**
  *
@@ -26,9 +27,8 @@ public class NewPost implements Serializable {
     private List<String> errorText = new ArrayList();
     private String headline;
     private String description;
-    private List<Forum> listDiskuto;
-    private List<String> listCategory;
-    
+    private String selectedCategory;
+
     /**
      * Creates a new instance of newPost
      */
@@ -67,25 +67,30 @@ public class NewPost implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public List<Forum> getListDiskuto() {
-        return listDiskuto;
+    
+    public String getSelectedCategory() {
+        return selectedCategory;
     }
 
-    public void setListDiskuto(List<Forum> listDiskuto) {
-        this.listDiskuto = listDiskuto;
-    }
-
-    public List<String> getListCategory() {
-        return listCategory;
-    }
-
-    public void setListCategory(List<String> listCategory) {
-        this.listCategory = listCategory;
+    public void setSelectedCategory(String selectedCategory) {
+        this.selectedCategory = selectedCategory;
     }
     
     public void post() throws Exception {
+        errorText.clear();
+        
+        if(headline == null || headline.length() == 0) {
+            errorText.add("Naslov je obavezan");
+        }
+        else if(description == null || description.length() == 0) {
+            errorText.add("Opis je obavezan");
+        }
+        else {
+            Post post = new Post(headline, description, AppHelper.getActiveUser(), chosen, selectedCategory);
+            post.save();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
+        }
         
     }
-    
+
 }
