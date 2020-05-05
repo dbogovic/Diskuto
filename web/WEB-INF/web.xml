@@ -29,6 +29,8 @@
         <url-pattern>/disabled</url-pattern>
         <url-pattern>/newPost</url-pattern>
         <url-pattern>/post</url-pattern>
+        <url-pattern>/search</url-pattern>
+        <url-pattern>/discover</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

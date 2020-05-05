@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Diskuto | Stranica ne postoji</title>
     </h:head>
@@ -25,11 +26,31 @@
             <h:commandButton value="+" action="#{post.upvotePost}" >
                 <f:ajax event="action" render="karma"/>
             </h:commandButton><br/>
-            
-            <h:inputTextarea id="comment" value="#{post.myComment}" />
-            <h:commandButton value="send" action="#{post.sendComment}" /><br/>
-            
-            <!-- lista komentara !-->
+
+            <h:inputTextarea id="comment" value="#{post.myComment}"
+                             onkeypress="if (event.keyCode === 13) {
+                                         onchange();
+                                         return false;
+                                     }" >
+                <f:ajax event="keydown" listener="#{post.enableButton}" execute="comment" render="send" />
+            </h:inputTextarea>
+            <h:commandButton id="send" value="Pošalji" action="#{post.sendComment}" disabled="#{!post.enabledButton}" /><br/>
+
+            <c:forEach items="#{post.comments}" var="value">
+                <h:link value="#{value.owner}" outcome="profile" >
+                    <f:param name="name" value="#{value.owner}" />
+                </h:link>
+                <h:outputLabel value="#{post.formatted(value.created)}" />
+                <h:commandButton value="-" action="#{post.downvoteComment(value)}" >
+                    <f:ajax event="action" render="c_karma#{value.id}"/>
+                </h:commandButton>
+                <h:outputLabel id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size()}" />
+                <h:commandButton value="+" action="#{post.upvoteComment(value)}" >
+                    <f:ajax event="action" render="c_karma#{value.id}"/>
+                </h:commandButton>
+                
+                <br/><h:outputLabel value="#{value.text}" /><br/>
+            </c:forEach>
         </h:form>
     </h:body>
 </html>

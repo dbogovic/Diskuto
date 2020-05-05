@@ -5,6 +5,7 @@
  */
 package org.diskuto.models;
 
+import java.util.List;
 import java.util.Random;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
@@ -25,6 +26,7 @@ public class User {
     private int confirmCode;
     private long created;
     private boolean disabled;
+    private List<Forum> subscriptions;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -87,6 +89,14 @@ public class User {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public List<Forum> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Forum> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public void register() throws Exception {
