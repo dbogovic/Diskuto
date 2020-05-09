@@ -147,7 +147,8 @@ public class Comment {
                 + "\"]/comments/comment/id)");
         db.close();
 
-        return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
+        if(rs.getSize() > 0) return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
+        else return 1;
     }
     
     public void save() throws Exception {

@@ -147,7 +147,8 @@ public class Post {
         ResourceSet rs = db.xquery("max(/posts/post/id)");
         db.close();
 
-        return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
+        if(rs.getSize()>0) return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
+        else return 1;
     }
 
     public void save() throws Exception {
@@ -156,7 +157,7 @@ public class Post {
                 + "</headline><description>" + this.description + "</description><created>" + created
                 + "</created><owner>" + this.owner.getUsername() + "</owner><diskuto>" + this.diskuto.getName()
                 + "</diskuto><category>" + this.category + "</category><upvote><user>" + this.owner.getUsername()
-                + "</user></upvote><downvote/></post> into /posts");
+                + "</user></upvote><downvote/><comments/></post> into /posts");
         db.close();
     }
 
