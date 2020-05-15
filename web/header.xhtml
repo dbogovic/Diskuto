@@ -2,6 +2,29 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <a href="home.xhtml"><img src="resources/pages/logo.png" /></a>
+    <h:outputStylesheet library="css" name="header.css"/>
+    <h:form prependId="false">
+        <div id="header">
+            <a href="home.xhtml"><img id="logo" src="resources/pages/logo.png" /></a>
+            <h:inputText class="search" value="#{search.term}" a:placeholder="pretraživanje" />
+            <h:commandButton class="button" value="Traži" action="search" >
+                <f:param name="term" value="#{search.term}"/>
+            </h:commandButton>
+            <div id="rightElements">
+                <h:panelGroup rendered="#{!home.login}">
+                    <h:link class="button" id="login" value="Prijava" outcome="registration" />
+                    <h:link class="button" id="registration" value="Registracija" outcome="registration" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{home.login}">
+                    <h:outputLabel value="Prijavljeni ste kao " />
+                    <h:link value="#{home.user.username}" outcome="profile" >
+                        <f:param name="name" value="#{home.user.username}" />
+                    </h:link>
+                    <h:commandLink id="logOut" value="Odjava" action="#{home.logOut}" />
+                </h:panelGroup>
+            </div>
+        </div>
+    </h:form>
 </ui:composition>

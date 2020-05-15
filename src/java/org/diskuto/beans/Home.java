@@ -24,6 +24,7 @@ public class Home {
     private String username;
     private String password;
     private List<String> errorText = new ArrayList();
+    private User user;
     private boolean login;
     
     /**
@@ -62,6 +63,10 @@ public class Home {
 
     public void setLogin(boolean login) {
         this.login = login;
+    }
+
+    public User getUser() {
+        return (User) Listener.getFromSession("user");
     }
     
     public void doLogin() throws Exception {
