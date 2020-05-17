@@ -1,0 +1,46 @@
+#sider {
+    background: #FDFDFD;
+    border: 1px solid #D3D3D3;
+    border-width: 1px 1px 2px;
+    border-radius: 2px;
+    padding: 1%;
+    min-width: 315px;
+    width: 25%;
+}
+
+#sider a {
+    color: darkcyan;
+    display: block;
+    margin-top: 0.5%;
+    font-variant-caps: all-petite-caps;
+}
+
+#loginTable {
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+#loginTable input {
+    width: 100%;
+    padding: 2.5%;
+    margin-left: 5%;
+}
+
+#loginButton {
+    padding: 10px;
+}
+
+#ajaxloader {
+    display: none;
+    width: 6%;
+    margin-left: 2.5%;
+    position: relative;
+    top: 5px;
+}
+
+.errorText {
+    font-size: 12px;
+    color: red;
+    font-weight: bold;
+    margin-left: 0.5%;
+}

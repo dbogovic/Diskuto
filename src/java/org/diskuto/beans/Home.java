@@ -70,6 +70,7 @@ public class Home {
     }
     
     public void doLogin() throws Exception {
+        this.errorText.clear();
         User user = new User(username, password);
         if(user.login()) {
             Listener.addToSession("user", user);
