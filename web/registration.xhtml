@@ -6,9 +6,13 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Diskuto | Registracija</title>
+        <h:outputStylesheet library="css" name="global.css"/>
+        <h:outputStylesheet library="css" name="registration.css"/>
+        <link rel="icon" href="resources/pages/favicon.ico" />
     </h:head>
     <h:body>
-        <h:form>
+        <h:form id="registration" prependId="false">
+            <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
             <h:panelGrid columns="2">
                 <h:outputLabel value="Korisničko ime:"/>
                 <h:inputText id="username" value="#{registration.username}"/>
@@ -22,13 +26,13 @@
                 <h:outputLabel value="Ponovite lozinku:"/>
                 <h:inputSecret id="rpassword" value="#{registration.rpassword}" />
             </h:panelGrid>
-            <h:commandButton value="Registriraj se" action="#{registration.doRegistration}">
+            <h:commandButton id="registerButton" class="button" value="Registriraj se" action="#{registration.doRegistration}">
                 <f:ajax event="action" execute="username email password rpassword" render="@form"/>
             </h:commandButton>
+            <img id="ajaxloader" src="./resources/pages/loading.gif" />
             <c:forEach items="#{registration.errorText}" var="value">
-                <h:outputLabel value="#{value}" />
+                <h:outputLabel class="errorText" value="#{value}" />
             </c:forEach>
-            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
             <script>
                 jsf.ajax.addOnEvent(function (data) {
                     var ajaxstatus = data.status;
@@ -36,7 +40,7 @@
 
                     switch (ajaxstatus) {
                         case "begin":
-                            ajaxloader.style.display = 'block';
+                            ajaxloader.style.display = 'initial';
                             break;
                         case "complete":
                             ajaxloader.style.display = 'none';

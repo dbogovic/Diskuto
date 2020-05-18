@@ -1,0 +1,32 @@
+* {
+    font-family: Tahoma;
+}
+
+.search {
+    border: 1px solid;
+    height: 45px;
+    padding-left: 1%;
+    align-self: center;
+    width: 50%;
+}
+
+.button {
+    background: linear-gradient(to bottom,#A7DEFF,#91D5FF);
+    border: solid #D1D1D1;
+    border-width: 1px 1px 2px;
+    border-color: #61AFE0;
+    color: #2B4758;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 15px;
+    height: 50%;
+    align-self: center;
+    text-decoration: none;
+}
+
+.errorText {
+    font-size: 12px;
+    color: red;
+    font-weight: bold;
+    margin-left: 0.5%;
+}
