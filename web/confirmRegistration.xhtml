@@ -6,22 +6,26 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Diskuto | Potvrda registracije</title>
+        <h:outputStylesheet library="css" name="global.css"/>
+        <h:outputStylesheet library="css" name="account-manage.css"/>
+        <link rel="icon" href="resources/pages/favicon.ico" />
     </h:head>
     <h:body>
-        <h:form>
-            <h:outputLabel value="Aktivacijski kod je poslan na #{confirmRegistration.registeredUser.email}"/>
+        <h:form id="account-manage" prependId="false">
+            <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
+            <h:outputLabel id="mailMessage" value="Aktivacijski kod je poslan na #{confirmRegistration.registeredUser.email}"/>
             <h:panelGrid columns="2">
                 <h:outputLabel value="Unesite kod: " />
                 <h:inputText id="insertedCode" value="#{confirmRegistration.insertedCode}"/>
             </h:panelGrid>
-            <h:commandLink value="Niste dobili mail? Zatražite ponovno slanje." action="#{confirmRegistration.sendNewMail}" />
-            <h:commandButton value="OK" action="#{confirmRegistration.validate}">
+            <h:commandButton class="button" id="amBtn" value="Potvrdi" action="#{confirmRegistration.validate}">
                 <f:ajax event="action" execute="insertedCode" render="@form"/>
             </h:commandButton>
-            <c:forEach items="#{confirmRegistration.errorText}" var="value">
-                <h:outputLabel value="#{value}" />
-            </c:forEach>
             <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <c:forEach items="#{confirmRegistration.errorText}" var="value">
+                <h:outputLabel class="errorText" value="#{value}" />
+            </c:forEach>
+            <h:commandLink value="Niste dobili mail? Zatražite ponovno slanje." action="#{confirmRegistration.sendNewMail}" />
             <script>
                 jsf.ajax.addOnEvent(function (data) {
                     var ajaxstatus = data.status;

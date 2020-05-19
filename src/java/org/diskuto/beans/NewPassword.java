@@ -25,7 +25,7 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class NewPassword implements Serializable {
 
-    private boolean abolishedPassword;
+    private int abolishedPassword;
     private String email;
     private List<String> errorText = new ArrayList();
     private String apCode;
@@ -39,17 +39,17 @@ public class NewPassword implements Serializable {
         String code = AppHelper.param("code");
         if (code != null) {
             apCode = code;
-            abolishedPassword = true;
+            abolishedPassword = 2;
         } else {
-            abolishedPassword = false;
+            abolishedPassword = 1;
         }
     }
 
-    public boolean isAbolishedPassword() {
+    public int getAbolishedPassword() {
         return abolishedPassword;
     }
 
-    public void setAbolishedPassword(boolean abolishedPassword) {
+    public void setAbolishedPassword(int abolishedPassword) {
         this.abolishedPassword = abolishedPassword;
     }
 
@@ -87,6 +87,8 @@ public class NewPassword implements Serializable {
 
     public void abolishPassword() throws Exception {
 
+        this.errorText.clear();
+        
         Database db = new Database();
         ResourceSet resultEmail = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
         db.close();
@@ -108,6 +110,7 @@ public class NewPassword implements Serializable {
                     + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
                     + abolishPasswordCode);
             mh.sendMail();
+            this.abolishedPassword = 3;
         } else {
             this.errorText.add("Unijeli ste nepostojeći e-mail");
         }
