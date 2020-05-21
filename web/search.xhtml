@@ -12,23 +12,34 @@
     </h:head>
     <h:body>
         <ui:include src="/header.xhtml" />
-        <h:form id='search' prependId="false" rendered="#{search.term != null}">
+        <h:form id='search' prependId="false">
             <h:outputText id='title' value="Rezultati pretraživanja za '#{search.term}':" />
-            <c:forEach items="#{search.diskutoResults}" var="value" >
-                <h:link value="#{value.name}" outcome="forum" >
-                    <f:param name="name" value="#{value.name}" />
-                </h:link>
-            </c:forEach>
+            <ui:repeat value="#{search.diskutoResults}" var="value" >
+                <div class="diskutoResults">
+                    <h:link class="diskutoName" value="#{value.name}" outcome="forum" >
+                        <f:param name="name" value="#{value.name}" />
+                    </h:link>
+                    <h:commandButton class="button" value="#{search.subscribed(value) ? 'Ukloni pretplatu' : 'Pretplati se'}" 
+                                     action="#{search.subscribe(value)}" >
+                        <f:ajax event="action" render="@form"/>
+                    </h:commandButton>
+                    <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pratitelja" />
+                    <h:outputText class="diskutoDescription" value="#{value.description}" />
+                </div>
+            </ui:repeat>
+            <h:outputText rendered="#{search.diskutoResults == null}" class="no-results" value="Nema pronađenih Diskuta" />
             <c:forEach items="#{search.userResults}" var="value" >
                 <h:link value="#{value.username}" outcome="profile" >
-                    <f:param name="name" value="#{value.headline}" />
+                    <f:param name="name" value="#{value.username}" />
                 </h:link>
             </c:forEach>
+            <h:outputText rendered="#{search.userResults == null}" class="no-results" value="Nema pronađenih profila" />
             <c:forEach items="#{search.postResults}" var="value" >
                 <h:link value="#{value.headline}" outcome="post" >
                     <f:param name="id" value="#{value.id}" />
                 </h:link>
             </c:forEach>
+            <h:outputText rendered="#{search.postResults == null}" class="no-results" value="Nema pronađenih objava" />
         </h:form>
         <ui:include src="/sider.xhtml" />
         <ui:include src="/footer.xhtml" />

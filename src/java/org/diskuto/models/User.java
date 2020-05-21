@@ -5,6 +5,7 @@
  */
 package org.diskuto.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.diskuto.helpers.Database;
@@ -26,7 +27,7 @@ public class User {
     private int confirmCode;
     private long created;
     private boolean disabled;
-    private List<Forum> subscriptions;
+    private List<String> subscriptions;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -91,11 +92,11 @@ public class User {
         this.disabled = disabled;
     }
 
-    public List<Forum> getSubscriptions() {
+    public List<String> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(List<Forum> subscriptions) {
+    public void setSubscriptions(List<String> subscriptions) {
         this.subscriptions = subscriptions;
     }
 
@@ -160,7 +161,21 @@ public class User {
 
             this.username = helper.makeValue("name", object);
             this.created = Long.parseLong(helper.makeValue("created", object));
+            this.subscriptions = new ArrayList();
+            
+            ResourceSet result2 = db.xquery("/users/user[name=\"" + this.username + "\"]/subscriptions/forum");
+            ResourceIterator iterator2 = result2.getIterator();
 
+            while(iterator2.hasMoreResources()) {
+                Resource r2 = iterator2.nextResource();
+                String value2 = (String) r2.getContent();
+                XmlHelper helper2 = new XmlHelper(value2);
+                List<String> results = helper.makeRawValue("/forum");
+                for (String s : results) {
+                    subscriptions.add(s);
+                }
+            }
+            
             return true;
         } else {
             return false;

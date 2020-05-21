@@ -2,9 +2,45 @@
     margin-left: 2.5%;
     margin-top: 2.5%;
     float: left;
+    width: 65%;
 }
 
 #title {
     font-size: 18px;
     font-weight: bold;
+    display: block;
+    margin-bottom: 2.5%;
+}
+
+.no-results{
+    display: block;
+    font-size: 13px;
+    margin-top: 1%;
+    color: grey;
+}
+
+.diskutoResults {
+    margin-top: 2%;
+}
+
+.diskutoName {
+    color: darkcyan;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.diskutoDescription {
+    display: block;
+    font-size: 13px;
+    width: 50%;
+}
+
+.diskutoSubscribers {
+    font-size: 11px;
+}
+
+.diskutoResults > input {
+    font-size: 10px;
+    padding: 2px;
+    margin: 0% 0.5% 0% 1%;
 }

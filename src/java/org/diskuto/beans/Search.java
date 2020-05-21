@@ -5,24 +5,31 @@
  */
 package org.diskuto.beans;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
+import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Forum;
 import org.diskuto.models.Post;
 import org.diskuto.models.User;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
  * @author dario
  */
 @Named(value = "search")
-@RequestScoped
-public class Search {
-    
+@ViewScoped
+public class Search implements Serializable {
+
     private String term;
     private List<User> userResults;
     private List<org.diskuto.models.Forum> diskutoResults;
@@ -31,14 +38,62 @@ public class Search {
     /**
      * Creates a new instance of Search
      */
-    public Search() {
+    public Search() throws Exception {
         this.term = AppHelper.param("term");
 
-        if (this.term == null || !"".equals(this.term)) {
+        if (this.term != null && !"".equals(this.term)) {
             userResults = new ArrayList<>();
             diskutoResults = new ArrayList<>();
             postResults = new ArrayList<>();
-            
+
+            Database db = new Database();
+            ResourceSet query;
+            ResourceIterator iterator;
+
+            query = db.xquery("for $x in /forums/forum where contains(lower-case($x/name), \""
+                    + this.term.toLowerCase() + "\") return $x/name");
+            iterator = query.getIterator();
+            while (iterator.hasMoreResources()) {
+                Resource r = iterator.nextResource();
+                String value = (String) r.getContent();
+                XmlHelper helper = new XmlHelper(value);
+                List<String> results = helper.makeRawValue("/name");
+                for (String s : results) {
+                    diskutoResults.add(new Forum().getForum(s));
+                }
+            }
+
+            query = db.xquery("for $x in /users/user where contains(lower-case($x/name), \""
+                    + this.term.toLowerCase() + "\") return $x/name");
+            iterator = query.getIterator();
+            while (iterator.hasMoreResources()) {
+                Resource r = iterator.nextResource();
+                String value = (String) r.getContent();
+                XmlHelper helper = new XmlHelper(value);
+                List<String> results = helper.makeRawValue("/name");
+                for (String s : results) {
+                    User user = new User(s);
+                    user.retrieveData();
+                    userResults.add(user);
+                }
+            }
+
+            query = db.xquery("for $x in /posts/post where contains(lower-case($x/headline), \""
+                    + this.term.toLowerCase() + "\") return $x/id");
+            iterator = query.getIterator();
+            while (iterator.hasMoreResources()) {
+                Resource r = iterator.nextResource();
+                String value = (String) r.getContent();
+                XmlHelper helper = new XmlHelper(value);
+                List<String> results = helper.makeRawValue("/id");
+                for (String s : results) {
+                    Post post = new Post(Integer.parseInt(s));
+                    post.retrieveData();
+                    postResults.add(post);
+                }
+            }
+
+            db.close();
         }
     }
 
@@ -73,5 +128,33 @@ public class Search {
     public void setPostResults(List<Post> postResults) {
         this.postResults = postResults;
     }
-    
+
+    public void subscribe(org.diskuto.models.Forum forum) throws Exception {
+        Database db = new Database();
+
+        if (!this.subscribed(forum)) {
+            forum.setSubscribers(forum.getSubscribers() + 1);
+            db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
+                    + "\" return update insert <forum>" + forum.getName() + "</forum> into $x/subscriptions");
+            AppHelper.getActiveUser().getSubscriptions().add(forum.getName());
+        } else {
+            forum.setSubscribers(forum.getSubscribers() - 1);
+            db.xquery("for $x in /users/user[name=\"" + AppHelper.getActiveUser().getUsername()
+                    + "\"]/subscriptions[forum=\"" + forum.getName() + "\"] return update delete $x/forum");
+            AppHelper.getActiveUser().getSubscriptions().remove(forum.getName());
+        }
+
+        db.xquery("for $x in /forums/forum where $x/name=\"" + forum.getName()
+                + "\" return update value $x/subscribers with \"" + forum.getSubscribers() + "\"");
+
+        db.close();
+    }
+
+    public boolean subscribed(org.diskuto.models.Forum forum) {
+        return AppHelper.getActiveUser().getSubscriptions().contains(forum.getName());
+    }
+
+    public void showResults() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("search?term=" + term);
+    }
 }

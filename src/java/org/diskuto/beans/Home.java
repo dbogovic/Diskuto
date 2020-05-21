@@ -73,6 +73,7 @@ public class Home {
         this.errorText.clear();
         User user = new User(username, password);
         if(user.login()) {
+            user.retrieveData();
             Listener.addToSession("user", user);
             if(user.getConfirmCode() != -1) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration");
