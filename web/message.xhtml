@@ -19,8 +19,8 @@
             </c:forEach>
             <br/>
             <c:forEach rendered="#{!message.me}" items="#{message.messages}" var="value">
-                <h:outputLabel value="#{value.text}" />
-                <h:outputLabel value="#{message.formatted(value.time)}" />
+                <h:outputText value="#{value.text}" />
+                <h:outputText value="#{message.formatted(value.time)}" />
                 <br/>
             </c:forEach>
             <h:inputTextarea disabled="#{message.me}" id="reply" value="#{message.reply}" 

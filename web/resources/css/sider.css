@@ -6,6 +6,7 @@
     padding: 1%;
     min-width: 315px;
     width: 25%;
+    float: right;
 }
 
 #sider a {

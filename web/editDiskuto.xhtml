@@ -10,13 +10,13 @@
     <h:body>
         <h:form>
             <h:panelGrid columns="2">
-                <h:outputLabel value="Naziv:*" />
+                <h:outputText value="Naziv:*" />
                 <h:inputText id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.existing != null ? 'true' : 'false'}" />
 
-                <h:outputLabel value="Opis:*" />
+                <h:outputText value="Opis:*" />
                 <h:inputTextarea id="description" value="#{editDiskuto.description}" />
 
-                <h:outputLabel value="Kategorija:*" />
+                <h:outputText value="Kategorija:*" />
                 <h:panelGroup>
                     <h:inputText id="nameCategory" value="#{editDiskuto.nameCategory}" />
                     <h:commandButton id="addCategory" value="+" action="#{editDiskuto.addCategory}" >
@@ -26,7 +26,7 @@
 
                 <h:panelGroup>
                     <c:forEach items="#{editDiskuto.categories}" var="value">
-                        <h:outputLabel value="#{value}" />
+                        <h:outputText value="#{value}" />
                         <h:commandButton id="dropCategory" value="-" action="#{editDiskuto.dropCategory(value)}" >
                             <f:ajax event="action" render ="@form" />
                         </h:commandButton>
@@ -35,7 +35,7 @@
                 </h:panelGroup>
                 <h:outputText value="" />
 
-                <h:outputLabel value="Moderatori:" />
+                <h:outputText value="Moderatori:" />
                 <h:panelGroup>
                     <h:inputText id="nameModerator" value="#{editDiskuto.nameModerator}" />
                     <h:commandButton id="addModerator" value="+" action="#{editDiskuto.addModerator}" >
@@ -45,7 +45,7 @@
 
                 <h:panelGroup>
                     <c:forEach items="#{editDiskuto.moderators}" var="value">
-                        <h:outputLabel value="#{value}" />
+                        <h:outputText value="#{value}" />
                         <h:commandButton id="dropModerator" value="-" action="#{editDiskuto.dropModerator(value)}" >
                             <f:ajax event="action" render ="@form" />
                         </h:commandButton>
@@ -54,19 +54,19 @@
                 </h:panelGroup>
                 <h:outputText value="" />
 
-                <h:outputLabel value="Pravila:*" />
+                <h:outputText value="Pravila:*" />
                 <h:inputTextarea id="rules" value="#{editDiskuto.rules}" />
 
                 <!--
-                <h:outputLabel value="Blokirani korisnici:" />
-                <h:outputLabel value="Tema: "/>
+                <h:outputText value="Blokirani korisnici:" />
+                <h:outputText value="Tema: "/>
                 !-->
             </h:panelGrid>
             <h:commandButton value="Spremi" action="#{editDiskuto.save}">
                 <f:ajax event="action" execute="name description rules" render="@form"/>
             </h:commandButton>
             <c:forEach items="#{editDiskuto.errorText}" var="value">
-                <h:outputLabel value="#{value}" />
+                <h:outputText value="#{value}" />
             </c:forEach>
             <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
             <script>

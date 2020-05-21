@@ -14,16 +14,16 @@
         <h:form id="account-manage" prependId="false">
             <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
             <h:panelGrid columns="2">
-                <h:outputLabel value="Korisničko ime:"/>
+                <h:outputText value="Korisničko ime:"/>
                 <h:inputText id="username" value="#{registration.username}"/>
 
-                <h:outputLabel value="E-Mail:"/>
+                <h:outputText value="E-Mail:"/>
                 <h:inputText id="email" value="#{registration.email}" />
 
-                <h:outputLabel value="Lozinka:"/>
+                <h:outputText value="Lozinka:"/>
                 <h:inputSecret id="password" value="#{registration.password}" />
 
-                <h:outputLabel value="Ponovite lozinku:"/>
+                <h:outputText value="Ponovite lozinku:"/>
                 <h:inputSecret id="rpassword" value="#{registration.rpassword}" />
             </h:panelGrid>
             <h:commandButton id="amBtn" class="button" value="Registriraj se" action="#{registration.doRegistration}">
@@ -31,7 +31,7 @@
             </h:commandButton>
             <img id="ajaxloader" src="./resources/pages/loading.gif" />
             <c:forEach items="#{registration.errorText}" var="value">
-                <h:outputLabel class="errorText" value="#{value}" />
+                <h:outputText class="errorText" value="#{value}" />
             </c:forEach>
             <script>
                 jsf.ajax.addOnEvent(function (data) {

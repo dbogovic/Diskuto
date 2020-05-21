@@ -7,6 +7,9 @@
     min-width: 315px;
     width: 25%;
     font-size: 12px;
+    width: 100%;
+    text-align: center;
+    clear: both;
 }
 
 #footer label {

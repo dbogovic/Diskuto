@@ -18,7 +18,7 @@
                 <h:link class="button" id="registration" value="Registracija" outcome="registration" />
             </h:panelGroup>
             <h:panelGroup rendered="#{home.login}">
-                <h:outputLabel value="Prijavljeni ste kao " />
+                <h:outputText value="Prijavljeni ste kao " />
                 <h:link value="#{home.user.username}" outcome="profile" >
                     <f:param name="name" value="#{home.user.username}" />
                 </h:link>

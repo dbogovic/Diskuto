@@ -9,7 +9,7 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:outputLabel value="Popularna diskuta"/>
+            <h:outputText value="Popularna diskuta"/>
             <c:forEach items="#{discover.popular}" var="value" >
                 <h:link value="#{value.name}" outcome="forum" >
                     <f:param name="name" value="#{value.name}" />
@@ -19,7 +19,7 @@
                     <f:ajax event="action" render="@form"/>
                 </h:commandButton>
             </c:forEach>
-            <h:outputLabel value="Nova diskuta"/>
+            <h:outputText value="Nova diskuta"/>
             <c:forEach items="#{discover.newest}" var="value" >
                 <h:link value="#{value.name}" outcome="forum" >
                     <f:param name="name" value="#{value.name}" />

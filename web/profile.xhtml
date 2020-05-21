@@ -8,8 +8,8 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:outputLabel value="#{profile.chosen.username}"/>
-            <h:outputLabel value="Član od: #{profile.p_created}" />
+            <h:outputText value="#{profile.chosen.username}"/>
+            <h:outputText value="Član od: #{profile.p_created}" />
             <h:panelGroup rendered="#{profile.me}">
                 <h:commandButton value="Postavke" action="settings" />
             </h:panelGroup>
@@ -21,8 +21,8 @@
                     <f:param name="with" value="#{profile.chosen.username}" />
                 </h:commandButton>
             </h:panelGroup>
-            <h:outputLabel value="Objave" />
-            <h:outputLabel value="Komentari" />
+            <h:outputText value="Objave" />
+            <h:outputText value="Komentari" />
         </h:form>
     </h:body>
 </html>

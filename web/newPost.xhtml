@@ -10,16 +10,16 @@
     <h:body>
         <h:form>
             <h:panelGrid columns="2" >
-                <h:outputLabel value="Diskuto:" />
+                <h:outputText value="Diskuto:" />
                 <h:inputText disabled="true" id="diskuto" value="#{newPost.chosen.name}" />
 
-                <h:outputLabel value="Naslov:" />
+                <h:outputText value="Naslov:" />
                 <h:inputText id="headline" value="#{newPost.headline}"/>
 
-                <h:outputLabel value="Opis:" />
+                <h:outputText value="Opis:" />
                 <h:inputTextarea id="description" value="#{newPost.description}" />
 
-                <h:outputLabel value="Kategorija:" />
+                <h:outputText value="Kategorija:" />
                 <h:selectOneMenu id="category" value="#{newPost.selectedCategory}">
                     <f:selectItems value="#{newPost.chosen.categories}" var="var" itemValue="#{var}" itemLabel="#{var}" />
                 </h:selectOneMenu>
@@ -28,7 +28,7 @@
                 <f:ajax event="action" execute="diskuto headline description category" render="@form"/>
             </h:commandButton>
             <c:forEach items="#{newPost.errorText}" var="value">
-                <h:outputLabel value="#{value}" />
+                <h:outputText value="#{value}" />
             </c:forEach>
             <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
             <script>

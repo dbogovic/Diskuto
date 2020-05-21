@@ -3,24 +3,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Diskuto | Pretraga</title>
+        <link rel="icon" href="resources/pages/favicon.ico" />
+        <h:outputStylesheet library="css" name="search.css"/>
     </h:head>
     <h:body>
-        <h:form>
-            <h:inputText id="term" value="#{search.term}" />
-            <h:commandButton value="Pretraži" action="search" >
-                <f:param name="term" value="#{search.term}"/>
-            </h:commandButton>
-            <c:forEach items="#{search.userResults}" var="value" >
-                <h:link value="#{value.username}" outcome="profile" >
-                    <f:param name="name" value="#{value.username}" />
-                </h:link>
-            </c:forEach>
+        <ui:include src="/header.xhtml" />
+        <h:form id='search' prependId="false" rendered="#{search.term != null}">
+            <h:outputText id='title' value="Rezultati pretraživanja za '#{search.term}':" />
             <c:forEach items="#{search.diskutoResults}" var="value" >
                 <h:link value="#{value.name}" outcome="forum" >
                     <f:param name="name" value="#{value.name}" />
+                </h:link>
+            </c:forEach>
+            <c:forEach items="#{search.userResults}" var="value" >
+                <h:link value="#{value.username}" outcome="profile" >
+                    <f:param name="name" value="#{value.headline}" />
                 </h:link>
             </c:forEach>
             <c:forEach items="#{search.postResults}" var="value" >
@@ -29,5 +30,7 @@
                 </h:link>
             </c:forEach>
         </h:form>
+        <ui:include src="/sider.xhtml" />
+        <ui:include src="/footer.xhtml" />
     </h:body>
 </html>

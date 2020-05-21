@@ -9,8 +9,8 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:outputLabel value="#{forum.chosen.name}" />
-            <h:outputLabel rendered="#{forum.cat != null}" value="#{forum.cat}" />
+            <h:outputText value="#{forum.chosen.name}" />
+            <h:outputText rendered="#{forum.cat != null}" value="#{forum.cat}" />
             <c:forEach items="#{forum.chosen.categories}" var="value">
                 <h:link rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
                     <f:param name="name" value="#{forum.chosen.name}" />
@@ -26,10 +26,10 @@
             <h:commandButton rendered="#{forum.boss}" value="Postavke" action="editDiskuto" >
                 <f:param name="name" value="#{forum.chosen.name}"/>
             </h:commandButton>
-            <h:outputLabel value="#{forum.chosen.subscribers} pretplaćenih" />
-            <h:outputLabel value="Opis: #{forum.chosen.description}" />
-            <h:outputLabel value="Pravila: #{forum.chosen.rules}" />
-            <h:outputLabel value="Šefovi:" />
+            <h:outputText value="#{forum.chosen.subscribers} pretplaćenih" />
+            <h:outputText value="Opis: #{forum.chosen.description}" />
+            <h:outputText value="Pravila: #{forum.chosen.rules}" />
+            <h:outputText value="Šefovi:" />
             <h:link value="#{forum.chosen.owner}" outcome="profile" >
                 <f:param name="name" value="#{forum.chosen.owner}" />
             </h:link>
@@ -39,8 +39,8 @@
                 </h:link>
                 <br/>
             </c:forEach>
-            <h:outputLabel value="Kreirano: #{forum.f_created}" />
-            <h:outputLabel value="Postovi" />
+            <h:outputText value="Kreirano: #{forum.f_created}" />
+            <h:outputText value="Postovi" />
         </h:form>
     </h:body>
 </html>

@@ -13,16 +13,16 @@
                 <f:param name="name" value="#{post.chosen.diskuto.name}" />
                 <f:param name="cat" value="#{post.chosen.category}" />
             </h:link>
-            <h:outputLabel value="#{post.chosen.headline}" /><br/>
-            <h:outputLabel value="#{post.chosen.description}" /><br/>
+            <h:outputText value="#{post.chosen.headline}" /><br/>
+            <h:outputText value="#{post.chosen.description}" /><br/>
             <h:link value="#{post.chosen.owner.username}" outcome="profile" >
                 <f:param name="name" value="#{post.chosen.owner.username}" />
             </h:link>
-            <h:outputLabel value="#{post.p_created}" /><br/>
+            <h:outputText value="#{post.p_created}" /><br/>
             <h:commandButton value="-" action="#{post.downvotePost}" >
                 <f:ajax event="action" render="karma"/>
             </h:commandButton>
-            <h:outputLabel id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size()}" />
+            <h:outputText id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size()}" />
             <h:commandButton value="+" action="#{post.upvotePost}" >
                 <f:ajax event="action" render="karma"/>
             </h:commandButton><br/>
@@ -40,16 +40,16 @@
                 <h:link value="#{value.owner}" outcome="profile" >
                     <f:param name="name" value="#{value.owner}" />
                 </h:link>
-                <h:outputLabel value="#{post.formatted(value.created)}" />
+                <h:outputText value="#{post.formatted(value.created)}" />
                 <h:commandButton value="-" action="#{post.downvoteComment(value)}" >
                     <f:ajax event="action" render="c_karma#{value.id}"/>
                 </h:commandButton>
-                <h:outputLabel id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size()}" />
+                <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size()}" />
                 <h:commandButton value="+" action="#{post.upvoteComment(value)}" >
                     <f:ajax event="action" render="c_karma#{value.id}"/>
                 </h:commandButton>
                 
-                <br/><h:outputLabel value="#{value.text}" /><br/>
+                <br/><h:outputText value="#{value.text}" /><br/>
             </c:forEach>
         </h:form>
     </h:body>

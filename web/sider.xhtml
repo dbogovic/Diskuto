@@ -10,10 +10,10 @@
     <h:form id="sider" prependId="false">
         <h:panelGroup rendered="#{!home.login}">
             <h:panelGrid id="loginTable" columns="2">
-                <h:outputLabel value="Korisničko ime:"/>
+                <h:outputText value="Korisničko ime:"/>
                 <h:inputText id="username" value="#{home.username}"/>
 
-                <h:outputLabel value="Lozinka:"/>
+                <h:outputText value="Lozinka:"/>
                 <h:inputSecret id="password" value="#{home.password}" />
             </h:panelGrid>
             <h:commandButton id="loginButton" class="button" value="Prijavi se" action="#{home.doLogin}">
@@ -21,7 +21,7 @@
             </h:commandButton>
             <img id="ajaxloader" src="./resources/pages/loading.gif" />
             <c:forEach items="#{home.errorText}" var="value">
-                <h:outputLabel class="errorText" value="#{value}" />
+                <h:outputText class="errorText" value="#{value}" />
             </c:forEach>
             <h:link value="Zaboravili ste lozinku?" outcome="newPassword" />
             <h:link value="Nemate korisnički račun?" outcome="registration" />

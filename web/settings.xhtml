@@ -9,29 +9,29 @@
     </h:head>
     <h:body>
         <h:form>
-            <h:outputLabel value="Korisničko ime:"/>
+            <h:outputText value="Korisničko ime:"/>
             <h:inputText disabled="true" value="#{settings.username}" />
             <br/>
 
-            <h:outputLabel value="E-Mail:"/>
+            <h:outputText value="E-Mail:"/>
             <h:inputText id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
             <h:commandButton value="#{!settings.wantEmail ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changeEmail()}">
                 <f:ajax event="action" execute="email" render="@form"/>
             </h:commandButton>
-            <h:outputLabel rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
+            <h:outputText rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
             <br/>
 
-            <h:outputLabel value="Lozinka:"/>
+            <h:outputText value="Lozinka:"/>
             <h:inputSecret id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
                 <f:passThroughAttribute name="placeholder" value="promijeni lozinku"/>
             </h:inputSecret>
             <h:commandButton value="#{!settings.wantPassword ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changePassword()}">
                 <f:ajax event="action" execute="password" render="@form"/>
             </h:commandButton>
-            <h:outputLabel rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
+            <h:outputText rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
             <br/>
 
-            <h:outputLabel value="Pretplaćena diskuta:" />
+            <h:outputText value="Pretplaćena diskuta:" />
             <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
                 <h:link value="#{value.name}" outcome="forum" >
                     <f:param name="name" value="#{value.name}" />
@@ -42,7 +42,7 @@
             </c:forEach>
             <br/>
 
-            <h:outputLabel value="Blokirani korisnici: " />
+            <h:outputText value="Blokirani korisnici: " />
             <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
                 <h:link value="#{value.username}" outcome="profile" >
                     <f:param name="name" value="#{value.username}" />
@@ -53,17 +53,17 @@
             </c:forEach>
             <br/>
 
-            <h:outputLabel value="Privatnost" /><br/>
-            <h:outputLabel value="Jezik" /><br/>
+            <h:outputText value="Privatnost" /><br/>
+            <h:outputText value="Jezik" /><br/>
             
             <h:commandLink value="Obriši račun" action="#{settings.disableAccount}" /><br/>
             <h:panelGroup rendered="#{settings.wantDisable}" >
-                <h:outputLabel value="Unesite lozinku za potvrdu: " />
+                <h:outputText value="Unesite lozinku za potvrdu: " />
                 <h:inputSecret id="disable_password" value="#{settings.password}" />
                 <h:commandButton value="Potvrdi" action="#{settings.disableAccount()}">
                     <f:ajax event="action" execute="disable_password" render="@form"/>
                 </h:commandButton>
-                <h:outputLabel rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
+                <h:outputText rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
             </h:panelGroup>
         </h:form>
     </h:body>
