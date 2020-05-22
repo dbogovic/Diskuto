@@ -14,9 +14,9 @@
         <ui:include src="/header.xhtml" />
         <h:form id='search' prependId="false">
             <h:outputText id='title' value="Rezultati pretraživanja za '#{search.term}':" />
-            <ui:repeat value="#{search.diskutoResults}" var="value" >
-                <div class="diskutoResults">
-                    <h:link class="diskutoName" value="#{value.name}" outcome="forum" >
+            <c:forEach items="#{search.diskutoResults}" var="value" >
+                <div class="searchResults">
+                    <h:link class="searchTitle" value="#{value.name}" outcome="forum" >
                         <f:param name="name" value="#{value.name}" />
                     </h:link>
                     <h:commandButton class="button" value="#{search.subscribed(value) ? 'Ukloni pretplatu' : 'Pretplati se'}" 
@@ -26,20 +26,39 @@
                     <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pratitelja" />
                     <h:outputText class="diskutoDescription" value="#{value.description}" />
                 </div>
-            </ui:repeat>
-            <h:outputText rendered="#{search.diskutoResults == null}" class="no-results" value="Nema pronađenih Diskuta" />
+            </c:forEach>
+            <h:outputText rendered="#{search.diskutoResults == null || search.diskutoResults.size() == 0}" class="no-results" value="Nema pronađenih Diskuta" />
             <c:forEach items="#{search.userResults}" var="value" >
-                <h:link value="#{value.username}" outcome="profile" >
-                    <f:param name="name" value="#{value.username}" />
-                </h:link>
+                <div class="searchResults">
+                    <h:link class="searchTitle" value="#{value.username}" outcome="profile" >
+                        <f:param name="name" value="#{value.username}" />
+                    </h:link>
+                    <h:commandButton class="button" value="Poruka" action="message" >
+                        <f:param name="with" value="#{value.username}" />
+                    </h:commandButton>
+                </div>
             </c:forEach>
-            <h:outputText rendered="#{search.userResults == null}" class="no-results" value="Nema pronađenih profila" />
+            <h:outputText rendered="#{search.userResults == null || search.userResults.size() == 0}" class="no-results" value="Nema pronađenih profila" />
+            <h:outputText id="postTitle" rendered="#{search.postResults.size() > 0}" value="Objave" />
             <c:forEach items="#{search.postResults}" var="value" >
-                <h:link value="#{value.headline}" outcome="post" >
-                    <f:param name="id" value="#{value.id}" />
-                </h:link>
+                <div class="searchResults">
+                    <h:link class="searchTitle" value="#{value.headline}" outcome="post" >
+                        <f:param name="id" value="#{value.id}" />
+                    </h:link>
+                    <h:panelGroup class="postDescription" >
+                        <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
+                        <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
+                        <h:link value="#{value.diskuto.name} • " outcome="forum" >
+                            <f:param name="name" value="#{value.diskuto.name}" />
+                        </h:link>
+                        <h:link value="#{value.owner.username} • " outcome="profile" >
+                            <f:param name="name" value="#{value.owner.username}" />
+                        </h:link>
+                        <h:outputText value="#{message.formatted(value.created)}" />
+                    </h:panelGroup>
+                </div>
             </c:forEach>
-            <h:outputText rendered="#{search.postResults == null}" class="no-results" value="Nema pronađenih objava" />
+            <h:outputText rendered="#{search.postResults == null || search.postResults.size() == 0}" class="no-results" value="Nema pronađenih objava" />
         </h:form>
         <ui:include src="/sider.xhtml" />
         <ui:include src="/footer.xhtml" />

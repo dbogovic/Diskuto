@@ -3,7 +3,7 @@
     border: 1px solid #D1D1D1;
     border-width: 1px 1px 2px;
     border-radius: 2px;
-    padding: 1%;
+    padding: 1% 0%;
     min-width: 315px;
     width: 25%;
     font-size: 12px;
@@ -14,7 +14,7 @@
 
 #footer label {
     display: block;
-    margin-top: 1%;
+    margin-top: 0.5%;
 }
 
 #footer label a {
