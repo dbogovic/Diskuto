@@ -28,6 +28,7 @@ public class User {
     private long created;
     private boolean disabled;
     private List<String> subscriptions;
+    private int unread;
 
     public User(String email, String username, String password) {
         this.email = email;
@@ -100,6 +101,14 @@ public class User {
         this.subscriptions = subscriptions;
     }
 
+    public int getUnread() {
+        return unread;
+    }
+
+    public void setUnread(int unread) {
+        this.unread = unread;
+    }
+
     public void register() throws Exception {
         this.confirmCode = new Random().nextInt(899999) + 100000;
         this.created = System.currentTimeMillis() / 1000L;
@@ -170,11 +179,14 @@ public class User {
                 Resource r2 = iterator2.nextResource();
                 String value2 = (String) r2.getContent();
                 XmlHelper helper2 = new XmlHelper(value2);
-                List<String> results = helper.makeRawValue("/forum");
+                List<String> results = helper2.makeRawValue("/forum");
                 for (String s : results) {
                     subscriptions.add(s);
                 }
             }
+            
+            ResourceSet result3 = db.xquery("count(/messages/message[recipient=\"" + this.username + "\" and seen=\"0\"])");
+            this.unread = Integer.parseInt(result3.getIterator().nextResource().getContent().toString());
             
             return true;
         } else {

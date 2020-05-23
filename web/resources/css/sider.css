@@ -7,6 +7,7 @@
     min-width: 315px;
     width: 25%;
     float: right;
+    margin: 2.5% 0%;
 }
 
 #sider a {
@@ -14,6 +15,60 @@
     display: block;
     margin-top: 0.5%;
     font-variant-caps: all-petite-caps;
+}
+
+.menu{
+    display: flex;
+    margin-bottom: 5%;
+}
+
+.menu a:hover {
+    color: cornflowerblue !important;
+}
+
+.menu:last-of-type {
+    margin-bottom: 0%;
+}
+
+.menu > img {
+    width: 7.5%;
+    margin-right: 2.5%;
+}
+
+.menu-option {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.diskutos-parent {
+    display: flow-root;
+    width: 100%;
+    margin-bottom: 2.5%;
+}
+
+.diskutos {
+    border-radius: 20px;
+    margin: 0% 2.5% 2.5% 0%;
+    padding: 0% 2.5% 1% 2.5%;
+    background:#f6f7f8;
+    border-style: solid;
+    text-decoration: none;
+    height: 100%;
+    float: left;
+    border-width: thin;
+}
+
+#nmbMessages {
+    background: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 5%;
+    text-align: center;
+    margin-left: 2.5%;
+    padding: 1.5%;
 }
 
 #loginTable {

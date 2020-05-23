@@ -44,10 +44,42 @@
             </script>
         </h:panelGroup>
         <h:panelGroup rendered="#{home.login}">
-            <h:link value="Moja diskuta" outcome="myDiskuto" />
-            <h:link value="Pretplaćena diskuta" />
-            <h:link value="Moje poruke" outcome="message" />
-            <h:link value="Postavke" outcome="settings" />
+            <div class="menu">
+                <h:graphicImage value="resources/pages/favicon.ico" />
+                <h:link class="menu-option" value="Moja diskuta" outcome="myDiskuto" />
+            </div>
+            <div class="diskutos-parent">
+                <c:forEach items="#{myDiskuto.owner}" var="value">
+                    <h:link class="diskutos" value="#{value}" outcome="forum" >
+                        <f:param name="name" value="#{value}" />
+                    </h:link>
+                </c:forEach>
+                <c:forEach items="#{myDiskuto.moderator}" var="value">
+                    <h:link class="diskutos" value="#{value}" outcome="forum" >
+                        <f:param name="name" value="#{value}" />
+                    </h:link>
+                </c:forEach>
+            </div>
+            <div class="menu">
+                <h:graphicImage value="resources/pages/plus.png" />
+                <h:link class="menu-option" value="Pretplaćena diskuta" outcome="discover" />
+            </div>
+            <div class="diskutos-parent">
+                <c:forEach items="#{home.user.subscriptions}" var="value">
+                    <h:link class="diskutos" value="#{value}" outcome="forum" >
+                        <f:param name="name" value="#{value}" />
+                    </h:link>
+                </c:forEach>
+            </div>
+            <div class="menu">
+                <h:graphicImage value="resources/pages/message.png" />
+                <h:link class="menu-option" value="Moje poruke" outcome="message" />
+                <h:outputText rendered="#{home.user.unread > 0}" id="nmbMessages" value="#{home.user.unread}" />
+            </div>
+            <div class="menu">
+                <h:graphicImage value="resources/pages/settings.png" />
+                <h:link class="menu-option" value="Postavke" outcome="settings" />
+            </div>
         </h:panelGroup>
     </h:form>
 </ui:composition>

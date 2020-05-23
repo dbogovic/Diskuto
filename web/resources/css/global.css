@@ -2,6 +2,10 @@
     font-family: Tahoma;
 }
 
+body {
+    margin: 1%;
+}
+
 .search {
     border: 1px solid;
     height: 45px;

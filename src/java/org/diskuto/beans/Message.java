@@ -46,6 +46,7 @@ public class Message implements Serializable {
             if (!this.chosen.retrieveData()) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("message");
             }
+            //postavi pročitane poruke na 0
         }
     }
 
