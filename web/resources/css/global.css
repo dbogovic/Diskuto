@@ -40,3 +40,16 @@ body {
     font-weight: bold;
     margin-left: 0.5%;
 }
+
+.no-results{
+    display: block;
+    font-size: 13px;
+    margin-top: 1%;
+    color: grey;
+}
+
+.ajaxloader-centered {
+    width: 5%;
+    margin: auto;
+    display: none;
+}

@@ -26,11 +26,64 @@
                     </h:commandButton>
                 </h:panelGroup>
             </div>
-            <h:outputText id="profileDescription" value="Član od: #{profile.p_created}" />
-            <h:outputText value="Objave" />
-            <h:outputText value="Komentari" />
+            <div class="profileDescription">
+                <h:outputText value="Član od: " />
+                <h:outputText class="profileData" value="#{profile.p_created}" />
+                <h:outputText value="Karma: " />
+                <h:outputText class="profileData" value="#{profile.upvotes - profile.downvotes > 0 ? '+' : ''}#{profile.upvotes - profile.downvotes} (#{profile.upvotes}/#{profile.downvotes})" />
+            </div>
+            <h:outputText class="postTitle" value="Objave" />
+            <ui:include src="thing.xhtml">
+                <ui:param name="items" value="#{profile.posts}" />
+            </ui:include>
+            <h:commandButton rendered="#{profile.totalPosts > profile.postsIteratorId}" class="button" value="Učitaj još" action="#{profile.loadPosts()}" >
+                <f:ajax event="action" render="@form" onevent="ajaxload1" />
+            </h:commandButton>
+            <img id="ajaxloader1" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+            <h:outputText rendered="#{profile.posts.size() == 0}" class="no-results" value="Nema pronađenih objava" />
+            <h:outputText class="postTitle" value="Komentari" />
+            <ui:include src="comments.xhtml">
+                <ui:param name="items" value="#{profile.comments}" />
+            </ui:include>
+            <h:commandButton rendered="#{profile.totalComments > profile.commentsIteratorId}" class="button" value="Učitaj još" action="#{profile.loadComments()}" >
+                <f:ajax event="action" render="@form" onevent="ajaxload2" />
+            </h:commandButton>
+            <img id="ajaxloader2" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+            <h:outputText rendered="#{profile.comments.size() == 0}" class="no-results" value="Nema pronađenih komentara" />
         </h:form>
         <ui:include src="/sider.xhtml" />
         <ui:include src="/footer.xhtml" />
+        <script>
+            function ajaxload1(data) {
+                var ajaxstatus = data.status;
+                var ajaxloader = document.getElementById("ajaxloader1");
+
+                switch (ajaxstatus) {
+                    case "begin":
+                        ajaxloader.style.display = 'block';
+                        break;
+                    case "complete":
+                        ajaxloader.style.display = 'none';
+                        break;
+                    case "success":
+                        break;
+                }
+            };
+            function ajaxload2(data) {
+                var ajaxstatus = data.status;
+                var ajaxloader = document.getElementById("ajaxloader2");
+
+                switch (ajaxstatus) {
+                    case "begin":
+                        ajaxloader.style.display = 'block';
+                        break;
+                    case "complete":
+                        ajaxloader.style.display = 'none';
+                        break;
+                    case "success":
+                        break;
+                }
+            };
+        </script>
     </h:body>
 </html>
