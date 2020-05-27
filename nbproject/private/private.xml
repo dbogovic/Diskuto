@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/models/Comment.java</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/profile.xhtml</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/beans/Post.java</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/post.xhtml</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/src/java/org/diskuto/models/Post.java</file>
+            <file>file:/C:/Users/dario/Documents/diplomski/Aplikacija/Diskuto/web/resources/css/profile.css</file>
+        </group>
     </open-files>
 </project-private>

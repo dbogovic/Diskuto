@@ -12,7 +12,7 @@
     </h:head>
     <h:body>
         <ui:include src="/header.xhtml" />
-        <h:form id='search' prependId="false">
+        <h:form class="element" prependId="false">
             <h:outputText id='title' value="Rezultati pretraživanja za '#{search.term}':" />
             <c:forEach items="#{search.diskutoResults}" var="value" >
                 <div class="searchResults">

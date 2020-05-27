@@ -59,6 +59,10 @@
     border-width: thin;
 }
 
+.diskutos:hover {
+    background: palegoldenrod;
+}
+
 #nmbMessages {
     background: red;
     color: white;

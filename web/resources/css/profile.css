@@ -1,0 +1,24 @@
+#profileInfo {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profileBtn > input {
+    font-size: 10px;
+    padding: 5px;
+    height: auto;
+    margin-right: 15px;
+}
+
+#profileName {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 1%;
+}
+
+#profileDescription {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2.5%;
+}

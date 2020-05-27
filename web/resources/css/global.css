@@ -6,6 +6,12 @@ body {
     margin: 1%;
 }
 
+.element {
+    margin: 2.5% 0% 5% 2.5%;
+    float: left;
+    width: 65%;
+}
+
 .search {
     border: 1px solid;
     height: 45px;
