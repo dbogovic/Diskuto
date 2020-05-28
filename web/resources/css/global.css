@@ -6,6 +6,10 @@ body {
     margin: 1%;
 }
 
+div {
+    margin-top: 1%;
+}
+
 .element {
     margin: 2.5% 0% 5% 2.5%;
     float: left;
@@ -52,4 +56,33 @@ body {
     width: 5%;
     margin: auto;
     display: none;
+}
+
+.searchLabel {
+    display: block;
+    margin-top: 2.5%;
+    border-bottom: ridge;
+    font-variant: all-petite-caps;
+    color: grey;
+}
+
+.diskutoTitle {
+    color: darkcyan;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.postDescription {
+    display: block;
+    font-size: 12px;
+    color: darkslategray;
+}
+
+.postDescription > a {
+    text-decoration: none;
+    color: darkslategray;
+}
+
+.commentText {
+    font-size: 13px;
 }

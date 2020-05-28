@@ -15,8 +15,8 @@
         <h:form class="element" prependId="false">
             <h:outputText id='title' value="Rezultati pretraživanja za '#{search.term}':" />
             <c:forEach items="#{search.diskutoResults}" var="value" >
-                <div class="searchResults">
-                    <h:link class="searchTitle" value="#{value.name}" outcome="forum" >
+                <div>
+                    <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
                         <f:param name="name" value="#{value.name}" />
                     </h:link>
                     <h:commandButton class="button" value="#{search.subscribed(value) ? 'Ukloni pretplatu' : 'Pretplati se'}" 
@@ -29,8 +29,8 @@
             </c:forEach>
             <h:outputText rendered="#{search.diskutoResults == null || search.diskutoResults.size() == 0}" class="no-results" value="Nema pronađenih Diskuta" />
             <c:forEach items="#{search.userResults}" var="value" >
-                <div class="searchResults">
-                    <h:link class="searchTitle" value="#{value.username}" outcome="profile" >
+                <div>
+                    <h:link class="diskutoTitle" value="#{value.username}" outcome="profile" >
                         <f:param name="name" value="#{value.username}" />
                     </h:link>
                     <h:commandButton class="button" value="Poruka" action="message" >
@@ -39,10 +39,10 @@
                 </div>
             </c:forEach>
             <h:outputText rendered="#{search.userResults == null || search.userResults.size() == 0}" class="no-results" value="Nema pronađenih profila" />
-            <h:outputText id="postTitle" rendered="#{search.postResults.size() > 0}" value="Objave" />
+            <h:outputText class="searchLabel" rendered="#{search.postResults.size() > 0}" value="Objave" />
             <c:forEach items="#{search.postResults}" var="value" >
-                <div class="searchResults">
-                    <h:link class="searchTitle" value="#{value.headline}" outcome="post" >
+                <div>
+                    <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
                         <f:param name="id" value="#{value.id}" />
                     </h:link>
                     <h:panelGroup class="postDescription" >

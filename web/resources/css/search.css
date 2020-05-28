@@ -5,14 +5,10 @@
     margin-bottom: 2.5%;
 }
 
-.searchResults {
-    margin-top: 1%;
-}
-
-.searchTitle {
-    color: darkcyan;
-    text-decoration: none;
-    font-size: 17px;
+div > input {
+    font-size: 10px!important;
+    padding: 2px!important;
+    margin: 0% 0.5% 0% 1%!important;
 }
 
 .diskutoDescription {
@@ -23,29 +19,4 @@
 
 .diskutoSubscribers {
     font-size: 11px;
-}
-
-.searchResults > input {
-    font-size: 10px;
-    padding: 2px;
-    margin: 0% 0.5% 0% 1%;
-}
-
-.postDescription {
-    display: block;
-    font-size: 12px;
-    color: darkslategray;
-}
-
-.postDescription > a {
-    text-decoration: none;
-    color: darkslategray;
-}
-
-#postTitle {
-    display: block;
-    margin-top: 2.5%;
-    border-bottom: ridge;
-    font-variant: all-petite-caps;
-    color: grey;
 }

@@ -32,7 +32,7 @@
                 <h:outputText value="Karma: " />
                 <h:outputText class="profileData" value="#{profile.upvotes - profile.downvotes > 0 ? '+' : ''}#{profile.upvotes - profile.downvotes} (#{profile.upvotes}/#{profile.downvotes})" />
             </div>
-            <h:outputText class="postTitle" value="Objave" />
+            <h:outputText class="searchLabel" value="Objave" />
             <ui:include src="thing.xhtml">
                 <ui:param name="items" value="#{profile.posts}" />
             </ui:include>
@@ -41,7 +41,7 @@
             </h:commandButton>
             <img id="ajaxloader1" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
             <h:outputText rendered="#{profile.posts.size() == 0}" class="no-results" value="Nema pronađenih objava" />
-            <h:outputText class="postTitle" value="Komentari" />
+            <h:outputText class="searchLabel" value="Komentari" />
             <ui:include src="comments.xhtml">
                 <ui:param name="items" value="#{profile.comments}" />
             </ui:include>

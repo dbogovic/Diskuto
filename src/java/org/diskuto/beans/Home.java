@@ -87,8 +87,8 @@ public class Home {
         }
     }
     
-    public String logOut() {
+    public void logOut() throws Exception {
         Listener.deleteFromSession("user");
-        return "";
+        FacesContext.getCurrentInstance().getExternalContext().redirect("home");
     }
 }
