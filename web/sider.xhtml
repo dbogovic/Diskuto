@@ -5,7 +5,6 @@
     xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <h:outputStylesheet library="css" name="global.css"/>
     <h:outputStylesheet library="css" name="sider.css"/>
     <h:form id="sider" prependId="false">
         <h:panelGroup rendered="#{!home.login}">
@@ -50,13 +49,13 @@
             </div>
             <div class="diskutos-parent">
                 <c:forEach items="#{myDiskuto.owner}" var="value">
-                    <h:link class="diskutos" value="#{value}" outcome="forum" >
-                        <f:param name="name" value="#{value}" />
+                    <h:link class="diskutos" value="#{value.name}" outcome="forum" >
+                        <f:param name="name" value="#{value.name}" />
                     </h:link>
                 </c:forEach>
                 <c:forEach items="#{myDiskuto.moderator}" var="value">
-                    <h:link class="diskutos" value="#{value}" outcome="forum" >
-                        <f:param name="name" value="#{value}" />
+                    <h:link class="diskutos" value="#{value.name}" outcome="forum" >
+                        <f:param name="name" value="#{value.name}" />
                     </h:link>
                 </c:forEach>
             </div>

@@ -7,17 +7,18 @@
     <h:head>
         <title>Diskuto | #{profile.chosen.username}</title>
         <link rel="icon" href="resources/pages/favicon.ico" />
+        <h:outputStylesheet library="css" name="global.css"/>
         <h:outputStylesheet library="css" name="profile.css"/>
     </h:head>
     <h:body>
         <ui:include src="/header.xhtml" />
         <h:form class="element" prependId="false">
-            <div id="profileInfo">
-                <h:outputText id="profileName" value="#{profile.chosen.username}"/>
-                <h:panelGroup class="profileBtn" rendered="#{profile.me}">
+            <div class="element-title">
+                <h:outputText value="#{profile.chosen.username}"/>
+                <h:panelGroup rendered="#{profile.me}">
                     <h:commandButton class="button" value="Postavke" action="settings" />
                 </h:panelGroup>
-                <h:panelGroup class="profileBtn" rendered="#{!profile.me}">
+                <h:panelGroup rendered="#{!profile.me}">
                     <h:commandButton class="button" value="Poruka" action="message" >
                         <f:param name="with" value="#{profile.chosen.username}" />
                     </h:commandButton>
@@ -68,7 +69,8 @@
                     case "success":
                         break;
                 }
-            };
+            }
+            ;
             function ajaxload2(data) {
                 var ajaxstatus = data.status;
                 var ajaxloader = document.getElementById("ajaxloader2");
@@ -83,7 +85,8 @@
                     case "success":
                         break;
                 }
-            };
+            }
+            ;
         </script>
     </h:body>
 </html>

@@ -16,6 +16,21 @@ div {
     width: 65%;
 }
 
+.element-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 1%;
+}
+
+.element-title input {
+    font-size: 10px;
+    padding: 5px;
+    height: auto;
+    margin-right: 15px;
+}
+
 .search {
     border: 1px solid;
     height: 45px;
@@ -70,6 +85,16 @@ div {
     color: darkcyan;
     text-decoration: none;
     font-size: 17px;
+}
+
+.diskutoDescription {
+    display: block;
+    font-size: 13px;
+    width: 50%;
+}
+
+.diskutoSubscribers {
+    font-size: 11px;
 }
 
 .postDescription {

@@ -25,8 +25,8 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class MyDiskuto implements Serializable {
 
-    private List<String> owner = new ArrayList();
-    private List<String> moderator = new ArrayList();
+    private List<org.diskuto.models.Forum> owner = new ArrayList();
+    private List<org.diskuto.models.Forum> moderator = new ArrayList();
     
     /**
      * Creates a new instance of myDiskuto
@@ -41,22 +41,22 @@ public class MyDiskuto implements Serializable {
         fillIn(moderatoring, moderator);
     }
 
-    public List<String> getOwner() {
+    public List<org.diskuto.models.Forum> getOwner() {
         return owner;
     }
 
-    public List<String> getModerator() {
+    public List<org.diskuto.models.Forum> getModerator() {
         return moderator;
     }
     
-    public void fillIn(ResourceSet resourceSet, List<String> list) throws Exception {
+    public void fillIn(ResourceSet resourceSet, List<org.diskuto.models.Forum> list) throws Exception {
         ResourceIterator iterator = resourceSet.getIterator();
         while(iterator.hasMoreResources()){
             Resource r = iterator.nextResource();
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("");
-            list.add(helper.makeValue("name", objekt));
+            list.add(new org.diskuto.models.Forum().getForum(helper.makeValue("name", objekt)));
         }
     }
 }

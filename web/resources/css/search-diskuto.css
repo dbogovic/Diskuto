@@ -10,13 +10,3 @@ div > input {
     padding: 2px!important;
     margin: 0% 0.5% 0% 1%!important;
 }
-
-.diskutoDescription {
-    display: block;
-    font-size: 13px;
-    width: 50%;
-}
-
-.diskutoSubscribers {
-    font-size: 11px;
-}
