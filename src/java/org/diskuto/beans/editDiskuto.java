@@ -127,7 +127,7 @@ public class EditDiskuto implements Serializable {
         } else if (categories.contains(nameCategory)) {
             errorText.add("Već ste unijeli tu kategoriju");
         } else {
-            Matcher matcher = Pattern.compile("^[\\w\\d\\s]+$", Pattern.CASE_INSENSITIVE).matcher(name);
+            Matcher matcher = Pattern.compile("^[\\w\\d\\s]+$", Pattern.CASE_INSENSITIVE).matcher(nameCategory);
             if (!matcher.find()) {
                 errorText.add("Naziv kategorije smije imati samo brojeve i slova");
             } else {

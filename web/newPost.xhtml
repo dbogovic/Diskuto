@@ -30,7 +30,7 @@
             <c:forEach items="#{newPost.errorText}" var="value">
                 <h:outputText value="#{value}" />
             </c:forEach>
-            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <img id="ajaxloader" src="./resources/pages/loading.gif"/>
             <script>
                 jsf.ajax.addOnEvent(function (data) {
                     var ajaxstatus = data.status;

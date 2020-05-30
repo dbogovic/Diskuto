@@ -21,7 +21,7 @@
             <h:commandButton class="button" id="amBtn" value="Potvrdi" action="#{confirmRegistration.validate}">
                 <f:ajax event="action" execute="insertedCode" render="@form"/>
             </h:commandButton>
-            <img id="ajaxloader" src="./resources/pages/loading.gif" style="display: none;" />
+            <img id="ajaxloader" src="./resources/pages/loading.gif"/>
             <c:forEach items="#{confirmRegistration.errorText}" var="value">
                 <h:outputText class="errorText" value="#{value}" />
             </c:forEach>

@@ -24,9 +24,9 @@
                     <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
                         <f:param name="name" value="#{value.name}" />
                     </h:link>
-                    <h:commandButton class="button" value="Uredi diskuto" action="editDiskuto" >
-                        <f:param name="name" value="#{value}" />
-                    </h:commandButton>
+                    <h:button class="button" value="Uredi diskuto" outcome="editDiskuto" >
+                        <f:param name="name" value="#{value.name}" />
+                    </h:button>
                     <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pratitelja" />
                     <h:outputText class="diskutoDescription" value="#{value.description}" />
                 </div>
