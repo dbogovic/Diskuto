@@ -16,6 +16,11 @@ div {
     width: 65%;
 }
 
+.element > #ajaxloader {
+    width: 2.5%;
+    margin-left: 2.5%;
+}
+
 .element-title {
     display: flex;
     justify-content: space-between;
