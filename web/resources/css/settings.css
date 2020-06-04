@@ -1,0 +1,44 @@
+.element .button {
+    font-size: 10px;
+    padding: 5px;
+}
+
+#delete {
+    color: red;
+    text-decoration: none;
+    font-variant-caps: all-petite-caps;
+    font-weight: bold;
+    display: block;
+    margin-top: 2.5%;
+}
+
+.settingsLabel {
+    display: block;
+    margin-top: 1%;
+}
+
+.settingsInput {
+    margin: 1% 0%;
+    padding: 0.5%;
+}
+
+.settingsList {
+    display: block;
+    margin-top: 1%;
+}
+
+.settingsList > .button {
+    padding: 5px;
+}
+
+.settingsList > a {
+    margin-left: 1%;
+    font-variant: all-petite-caps;
+    text-decoration: none;
+    font-weight: bold;
+    color: darkcyan;
+}
+
+.settingsList > a:hover {
+    color: cornflowerblue;
+}

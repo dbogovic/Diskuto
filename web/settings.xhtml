@@ -3,68 +3,79 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Diskuto | Postavke</title>
+        <link rel="icon" href="resources/pages/favicon.ico" />
+        <h:outputStylesheet library="css" name="global.css"/>
+        <h:outputStylesheet library="css" name="settings.css"/>
     </h:head>
     <h:body>
-        <h:form>
-            <h:outputText value="Korisničko ime:"/>
-            <h:inputText disabled="true" value="#{settings.username}" />
-            <br/>
+        <ui:include src="/header.xhtml" />
+        <h:form class="element" prependId="false">
+            <h:outputText class="element-title" value="Postavke"/>
 
-            <h:outputText value="E-Mail:"/>
-            <h:inputText id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
-            <h:commandButton value="#{!settings.wantEmail ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changeEmail()}">
+            <h:outputText class="settingsLabel" value="Korisničko ime:"/>
+            <h:inputText class="settingsInput" disabled="true" value="#{settings.username}" />
+
+            <h:outputText class="settingsLabel" value="E-Mail:"/>
+            <h:inputText class="settingsInput" id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
+            <h:commandButton class="button" value="#{!settings.wantEmail ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changeEmail()}">
                 <f:ajax event="action" execute="email" render="@form"/>
             </h:commandButton>
-            <h:outputText rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
-            <br/>
+            <h:outputText class="errorText" rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
 
-            <h:outputText value="Lozinka:"/>
-            <h:inputSecret id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
+            <h:outputText class="settingsLabel" value="Lozinka:"/>
+            <h:inputSecret class="settingsInput" id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
                 <f:passThroughAttribute name="placeholder" value="promijeni lozinku"/>
             </h:inputSecret>
-            <h:commandButton value="#{!settings.wantPassword ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changePassword()}">
+            <h:commandButton class="button" value="#{!settings.wantPassword ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changePassword()}">
                 <f:ajax event="action" execute="password" render="@form"/>
             </h:commandButton>
-            <h:outputText rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
-            <br/>
+            <h:outputText class="errorText" rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
 
-            <h:outputText value="Pretplaćena diskuta:" />
+            <h:outputText class="settingsLabel" value="#{settings.listDiskuto.size() == 0 ? 'Nema pretplata' : 'Pretplaćena diskuta:'}" />
             <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
-                <h:link value="#{value.name}" outcome="forum" >
-                    <f:param name="name" value="#{value.name}" />
-                </h:link>
-                <h:commandButton value="Ukloni pretplatu" action="#{settings.unsubscribe(value)}">
-                    <f:ajax event="action" execute="subscribed" render="@form"/>
-                </h:commandButton>
+                <h:panelGroup class="settingsList">
+                    <h:commandButton class="button" value="X" action="#{settings.unsubscribe(value)}">
+                        <f:ajax event="action" execute="subscribed" render="@form"/>
+                    </h:commandButton>
+                    <h:link value="#{value.name}" outcome="forum" >
+                        <f:param name="name" value="#{value.name}" />
+                    </h:link>
+                </h:panelGroup>
             </c:forEach>
-            <br/>
 
-            <h:outputText value="Blokirani korisnici: " />
+            <h:outputText class="settingsLabel" value="#{settings.ignoredUsers.size() == 0 ? 'Nema blokiranih korisnika' : 'Blokirani korisnici:'}" />
             <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
-                <h:link value="#{value.username}" outcome="profile" >
-                    <f:param name="name" value="#{value.username}" />
-                </h:link>
-                <h:commandButton value="Deblokiraj" action="#{settings.unignore(value)}">
-                    <f:ajax event="action" execute="ignored" render="@form"/>
-                </h:commandButton>
+                <h:panelGroup class="settingsList">
+                    <h:commandButton class="button" value="X" action="#{settings.unignore(value)}">
+                        <f:ajax event="action" execute="ignored" render="@form"/>
+                    </h:commandButton>
+                    <h:link value="#{value.username}" outcome="profile" >
+                        <f:param name="name" value="#{value.username}" />
+                    </h:link>
+                </h:panelGroup>
             </c:forEach>
-            <br/>
 
-            <h:outputText value="Privatnost" /><br/>
-            <h:outputText value="Jezik" /><br/>
-            
-            <h:commandLink value="Obriši račun" action="#{settings.disableAccount}" /><br/>
+            <!--
+            <h:outputText value="Privatnost" />
+            <h:outputText value="Jezik" />
+            !-->
+
+            <h:commandLink id="delete" value="Obriši račun" action="#{settings.disableAccount}" >
+                <f:ajax event="action" render="@form"/>
+            </h:commandLink>
             <h:panelGroup rendered="#{settings.wantDisable}" >
                 <h:outputText value="Unesite lozinku za potvrdu: " />
-                <h:inputSecret id="disable_password" value="#{settings.password}" />
-                <h:commandButton value="Potvrdi" action="#{settings.disableAccount()}">
+                <h:inputSecret class="settingsInput" id="disable_password" value="#{settings.password}" />
+                <h:commandButton class="button" value="Potvrdi" action="#{settings.disableAccount()}">
                     <f:ajax event="action" execute="disable_password" render="@form"/>
                 </h:commandButton>
-                <h:outputText rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
+                <h:outputText class="errorText" rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
             </h:panelGroup>
         </h:form>
+        <ui:include src="/footer.xhtml" />
     </h:body>
 </html>

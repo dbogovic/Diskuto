@@ -15,13 +15,13 @@
         <h:form class="element" prependId="false">
             <div class="element-title">
                 <h:outputText value="#{profile.chosen.username}"/>
-                <h:panelGroup rendered="#{profile.me}">
-                    <h:commandButton class="button" value="Postavke" action="settings" />
+                <h:panelGroup id="myProfilebtn" rendered="#{profile.me}">
+                    <h:button class="button" value="Postavke" outcome="settings" />
                 </h:panelGroup>
-                <h:panelGroup rendered="#{!profile.me}">
-                    <h:commandButton class="button" value="Poruka" action="message" >
+                <h:panelGroup id="otherProfilebtn" rendered="#{!profile.me}">
+                    <h:button class="button" value="Poruka" outcome="message" >
                         <f:param name="with" value="#{profile.chosen.username}" />
-                    </h:commandButton>
+                    </h:button>
                     <h:commandButton class="button" value="#{profile.ignored ? 'Deblokiraj' : 'Blokiraj'}" action="#{profile.ignore()}" >
                         <f:ajax event="action" render="@form" />
                     </h:commandButton>
