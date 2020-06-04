@@ -10,16 +10,65 @@
     margin-bottom: 2.5%;
 }
 
+#forumDescription > img {
+    width: 20px;
+}
+
 .categories {
-    display: block;
-    font-variant-caps: all-petite-caps;
+    display: flex;
+    justify-content: space-between;
     text-decoration: none;
     color: black;
     font-weight: bold;
-    border: solid 1px;
+    border: solid 1px grey;
     margin-right: 15px;
-    margin-top: 1%;
-    padding: 1%;
+    padding: 0% 1% 1% 1%;
+    margin-top: 0%;
+    border-bottom: 0px;
+}
+
+.categories:last-of-type {
+    border: solid 1px grey;
+}
+
+.categories:hover {
+    background: wheat;
+}
+
+.categoryName {
+    margin-top: 0.5%;
+    font-size: large;
+    font-variant: all-petite-caps;
+    text-decoration: none;
+    color: darkcyan;
+    display: block;
+    width: 25%;
+}
+
+.categoryName:hover {
+    color: cornflowerblue;
+}
+
+.categoryValue {
+    display: block;
+    width: 75%;
+    font-size: 9px;
+    color: grey;
+}
+
+.categoryValue a {
+    text-decoration: none;
+    color: grey;
+}
+
+.categoryValueTitle {
+    display: block;
+    color: black!important;
+    text-decoration: none;
+    font-size: 12px;
+}
+.categoryValueTitle:hover {
+    text-decoration: underline;
 }
 
 .forumDescriptionLabel {
@@ -28,22 +77,35 @@
     font-variant: all-small-caps;
     font-weight: bold;
     font-size: large;
+    color: darkcyan;
 }
 
 .forumDescriptionLabel:first-of-type {
     margin-top: 0%;
 }
 
+.forumDescriptionLabel:last-of-type {
+    margin-bottom: 5%;
+}
+
 .forumDescriptionValue {
     display: block;
     font-size: 11px;
     text-align: justify;
+    color: black;
 }
 
 .forumOwner {
-    display: block;    
+    margin-left: 2.5%;
+    text-decoration: none;
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
 }
 
 .forumModerators {
-    display: block;
+    margin-left: 2.5%;
+    text-decoration: none;
+    font-size: 11px;
+    color: black;
 }

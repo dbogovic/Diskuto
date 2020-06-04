@@ -30,10 +30,23 @@
                 </h:panelGroup>
             </div>
             <c:forEach items="#{forum.chosen.categories}" var="value">
-                <h:link class="categories" rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
-                    <f:param name="name" value="#{forum.chosen.name}" />
-                    <f:param name="cat" value="#{value}" />
-                </h:link>
+                <div class="categories">
+                    <h:link class="categoryName" rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
+                        <f:param name="name" value="#{forum.chosen.name}" />
+                        <f:param name="cat" value="#{value}" />
+                    </h:link>
+                    <c:forEach items="#{forum.freshPost(value)}" var="item">
+                        <div class="categoryValue">
+                            <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
+                                <f:param name="id" value="#{item.id}" />
+                            </h:link>
+                            <h:link value="#{item.owner.username} • " outcome="profile" >
+                                <f:param name="name" value="#{item.owner.username}" />
+                            </h:link>
+                            <h:outputText value="#{message.formatted(item.created)}" />
+                        </div>
+                    </c:forEach>
+                </div>
             </c:forEach>
         </h:form>
         <ui:include src="/sider.xhtml" />
@@ -45,10 +58,13 @@
             <h:outputText class="forumDescriptionLabel" value="Pravila" />
             <h:outputText class="forumDescriptionValue" value="#{forum.chosen.rules}" />
             <h:outputText class="forumDescriptionLabel" value="Šefovi" />
+            <h:graphicImage value="resources/pages/manager.png"/>
             <h:link class="forumOwner" value="#{forum.chosen.owner}" outcome="profile" >
                 <f:param name="name" value="#{forum.chosen.owner}" />
             </h:link>
             <c:forEach items="#{forum.chosen.moderators}" var="value">
+                <br/>
+                <h:graphicImage value="resources/pages/mod-avatar.png"/>
                 <h:link class="forumModerators" value="#{value}" outcome="profile" >
                     <f:param name="name" value="#{value}" />
                 </h:link>

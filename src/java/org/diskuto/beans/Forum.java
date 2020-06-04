@@ -6,11 +6,17 @@
 package org.diskuto.beans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
+import org.diskuto.models.User;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 
 /**
@@ -91,5 +97,29 @@ public class Forum implements Serializable {
                 + "\" return update value $x/subscribers with \"" + this.chosen.getSubscribers() + "\"");
 
         db.close();
+    }
+
+    public List<org.diskuto.models.Post> freshPost(String category) throws Exception {
+        List<org.diskuto.models.Post> post = new ArrayList();
+
+        Database db = new Database();
+
+        ResourceSet query = db.xquery("(for $x in /posts/post where $x/category=\"" + category
+                + "\" order by $x/created descending return $x)[position() le 1]");
+        ResourceIterator iterator = query.getIterator();
+        if (iterator.hasMoreResources()) {
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            Object object = helper.makeObject("post");
+            org.diskuto.models.Post retrieved = new org.diskuto.models.Post(Integer.parseInt(helper.makeValue("id", object)));
+            retrieved.setHeadline(helper.makeValue("headline", object));
+            retrieved.setOwner(new User(helper.makeValue("owner", object)));
+            retrieved.setCreated(Long.parseLong(helper.makeValue("created", object)));
+            post.add(retrieved);
+        }
+        db.close();
+
+        return post;
     }
 }

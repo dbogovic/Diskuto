@@ -41,24 +41,9 @@
             </c:forEach>
             <h:outputText rendered="#{search.userResults == null || search.userResults.size() == 0}" class="no-results" value="Nema pronađenih profila" />
             <h:outputText class="searchLabel" rendered="#{search.postResults.size() > 0}" value="Objave" />
-            <c:forEach items="#{search.postResults}" var="value" >
-                <div>
-                    <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
-                        <f:param name="id" value="#{value.id}" />
-                    </h:link>
-                    <h:panelGroup class="postDescription" >
-                        <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
-                        <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
-                        <h:link value="#{value.diskuto.name} • " outcome="forum" >
-                            <f:param name="name" value="#{value.diskuto.name}" />
-                        </h:link>
-                        <h:link value="#{value.owner.username} • " outcome="profile" >
-                            <f:param name="name" value="#{value.owner.username}" />
-                        </h:link>
-                        <h:outputText value="#{message.formatted(value.created)}" />
-                    </h:panelGroup>
-                </div>
-            </c:forEach>
+            <ui:include src="thing.xhtml">
+                <ui:param name="items" value="#{search.postResults}" />
+            </ui:include>
             <h:outputText rendered="#{search.postResults == null || search.postResults.size() == 0}" class="no-results" value="Nema pronađenih objava" />
         </h:form>
         <ui:include src="/sider.xhtml" />
