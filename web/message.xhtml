@@ -3,31 +3,51 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Diskuto | Poruke</title>
+        <link rel="icon" href="resources/pages/favicon.ico" />
+        <h:outputStylesheet library="css" name="global.css"/>
+        <h:outputStylesheet library="css" name="message.css"/>
     </h:head>
     <h:body>
-        <h:form>
-            <h:link rendered="#{message.chosen != null}" value="#{message.chosen.username}" outcome="profile" >
+        <ui:include src="/header.xhtml" />
+        <h:form class="message" prependId="false">
+            <h:link class="messageTitle" rendered="#{message.chosen != null}" value="#{message.chosen.username}" outcome="profile" >
                 <f:param name="name" value="#{message.chosen.username}" />
             </h:link>
-            <c:forEach items="#{message.chatting}" var="value">
-                <h:link value="#{value}" outcome="message" >
-                    <f:param name="with" value="#{value}" />
-                </h:link>
-            </c:forEach>
-            <br/>
-            <c:forEach rendered="#{!message.me}" items="#{message.messages}" var="value">
-                <h:outputText value="#{value.text}" />
-                <h:outputText value="#{message.formatted(value.time)}" />
-                <br/>
-            </c:forEach>
-            <h:inputTextarea disabled="#{message.me}" id="reply" value="#{message.reply}" 
-                             onkeypress="if (event.keyCode === 13) { onchange(); return false; }" >
-                <f:ajax event="keydown" listener="#{message.enableButton}" execute="reply" render="send" />
-            </h:inputTextarea>
-            <h:commandButton id="send" value="Send" action="#{message.send()}" disabled="#{!message.enabledButton}" />
+            <h:panelGroup class="messageElement">
+                <h:panelGroup class="chatUsers">
+                    <c:forEach items="#{message.chatting}" var="value">
+                        <h:link value="#{value}" outcome="message" style="background:${value.equals(message.chosen.username) ? 'whitesmoke' : 'white' }" >
+                            <f:param name="with" value="#{value}" />
+                        </h:link>
+                    </c:forEach>
+                </h:panelGroup>
+                <h:panelGroup class="chatElement">
+                    <h:panelGroup class="messageList">
+                        <c:forEach rendered="#{!message.me}" items="#{message.messages}" var="value">
+                            <h:panelGroup class="messageThing" style="align-items: #{value.sender != message.chosen ? 'flex-end' : 'flex-start'}">
+                                <h:outputText class="messageText" style="background: #{value.sender != message.chosen? '#61AFE0' : '#f1f0f0'}; color: #{value.sender != message.chosen ? '#2B4758' : 'black'}" value="#{value.text}" />
+                                <h:outputText class="messageTimestamp" value="#{message.formatted(value.time)}" />
+                            </h:panelGroup>
+                        </c:forEach>
+                    </h:panelGroup>
+                    <h:panelGroup class="messageInput">
+                        <h:inputTextarea disabled="#{message.me}" id="reply" value="#{message.reply}" 
+                                         a:placeholder="Pošaljite poruku" onkeypress="if (event.keyCode === 13) {
+                                                     onchange();
+                                                     return false;
+                                                 }" >
+                            <f:ajax event="keydown" listener="#{message.enableButton}" execute="reply" render="send" />
+                        </h:inputTextarea>
+                        <h:commandButton class="button" id="send" value="Send" action="#{message.send()}" disabled="#{!message.enabledButton}" />
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
         </h:form>
+        <ui:include src="/footer.xhtml" />
     </h:body>
 </html>
