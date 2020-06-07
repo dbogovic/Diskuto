@@ -31,6 +31,12 @@ public class Forum {
     public Forum() {
     }
 
+    public Forum(String name, String description, int subscribers) {
+        this.name = name;
+        this.description = description;
+        this.subscribers = subscribers;
+    }
+
     public Forum(String name, String description, List<String> categories, List<String> moderators, String rules) throws Exception {
         this.name = name;
         this.description = description;

@@ -12,8 +12,12 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Forum;
 import org.diskuto.models.User;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -23,25 +27,35 @@ import org.diskuto.models.User;
 @ViewScoped
 public class Discover implements Serializable {
 
-    private final List<org.diskuto.models.Forum> popular;
-    private final List<org.diskuto.models.Forum> newest;
+    private final List<org.diskuto.models.Forum> diskutos;
     private final User me;
     
     /**
      * Creates a new instance of Discover
      */
-    public Discover() {
+    public Discover() throws Exception {
         me = AppHelper.getActiveUser();
-        popular = new ArrayList<>();
-        newest = new ArrayList<>();
+        diskutos = new ArrayList<>();
+        
+        Database db = new Database();
+        ResourceSet info = db.xquery("/forums/forum");
+        db.close();
+
+        ResourceIterator iterator = info.getIterator();
+
+        while (iterator.hasMoreResources()) {
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            Object objekt = helper.makeObject("forum");
+
+            diskutos.add(new org.diskuto.models.Forum(helper.makeValue("name", objekt),
+                    helper.makeValue("description", objekt), Integer.parseInt(helper.makeValue("subscribers", objekt))));
+        }
     }
 
-    public List<Forum> getPopular() {
-        return popular;
-    }
-
-    public List<Forum> getNewest() {
-        return newest;
+    public List<Forum> getDiskutos() {
+        return diskutos;
     }
     
     public void subscribe(org.diskuto.models.Forum forum) throws Exception {

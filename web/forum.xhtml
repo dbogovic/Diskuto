@@ -40,10 +40,10 @@
                             <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
                                 <f:param name="id" value="#{item.id}" />
                             </h:link>
-                            <h:link value="#{item.owner.username} • " outcome="profile" >
+                            <h:link value="#{item.owner.username}" outcome="profile" >
                                 <f:param name="name" value="#{item.owner.username}" />
                             </h:link>
-                            <h:outputText value="#{message.formatted(item.created)}" />
+                            <h:outputText value=" • #{message.formatted(item.created)}" />
                         </div>
                     </c:forEach>
                 </div>

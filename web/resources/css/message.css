@@ -1,6 +1,6 @@
 .message {
     margin: 1%;
-    height: 60vh;
+    height: 63vh;
 }
 
 .messageTitle {
@@ -64,9 +64,9 @@
     padding: 10px;
     border-radius: 30px;
     margin-bottom: 2px;
-    max-width: 50%;
+    max-width: 33%;
     width: fit-content;
-    font-size: smaller;
+    font-size: 12px;
     overflow-wrap: anywhere;
 }
 
