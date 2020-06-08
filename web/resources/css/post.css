@@ -1,0 +1,65 @@
+.reaction {
+    display: flex;
+    flex-direction: column;
+    width: 25px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.reaction > .button {
+    align-self: auto;
+    padding: initial;
+}
+
+#category {
+    color: grey;
+    text-decoration: none;
+    margin-right: 5px;
+    font-size: 10px;
+}
+
+#category:hover {
+    color: cornflowerblue;
+}
+
+.postValue {
+    display: block;
+    margin-top: 2%;
+    margin-bottom: 1%;
+    padding: 1%;
+    background-color: #fafafa;
+    border: 1px solid #CCC;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+#comment {
+    width: 100%;
+    margin: 1% 0%;
+}
+
+#send {
+    margin-bottom: 2.5%;
+}
+
+.profileComment {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+.profileComment:hover {
+    color: cornflowerblue;
+}
+
+.textComment {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    padding: 1%;
+    margin-bottom: 2.5%;
+    border: 1px solid #CCC;
+    border-radius: 7px;
+}

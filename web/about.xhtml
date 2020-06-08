@@ -1,0 +1,28 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:outputStylesheet library="css" name="about.css"/>
+    <div id="forumDescription">
+        <h:outputText class="forumDescriptionLabel" value="#{diskuto.subscribers} pretplaćenih" />
+        <h:outputText class="forumDescriptionLabel" value="Opis" />
+        <h:outputText class="forumDescriptionValue" value="#{diskuto.description}" />
+        <h:outputText class="forumDescriptionLabel" value="Kreirano #{message.formatted(diskuto.created)}" />
+        <h:outputText class="forumDescriptionLabel" value="Pravila" />
+        <h:outputText class="forumDescriptionValue" value="#{diskuto.rules}" />
+        <h:outputText class="forumDescriptionLabel" value="Šefovi" />
+        <h:graphicImage value="resources/pages/manager.png"/>
+        <h:link class="forumOwner" value="#{diskuto.owner}" outcome="profile" >
+            <f:param name="name" value="#{diskuto.owner}" />
+        </h:link>
+        <c:forEach items="#{diskuto.moderators}" var="value">
+            <br/>
+            <h:graphicImage value="resources/pages/mod-avatar.png"/>
+            <h:link class="forumModerators" value="#{value}" outcome="profile" >
+                <f:param name="name" value="#{value}" />
+            </h:link>
+        </c:forEach>
+    </div>
+</ui:composition>

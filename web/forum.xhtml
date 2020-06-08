@@ -50,26 +50,9 @@
             </c:forEach>
         </h:form>
         <ui:include src="/sider.xhtml" />
-        <div id="forumDescription">
-            <h:outputText class="forumDescriptionLabel" value="#{forum.chosen.subscribers} pretplaćenih" />
-            <h:outputText class="forumDescriptionLabel" value="Opis" />
-            <h:outputText class="forumDescriptionValue" value="#{forum.chosen.description}" />
-            <h:outputText class="forumDescriptionLabel" value="Kreirano #{forum.f_created}" />
-            <h:outputText class="forumDescriptionLabel" value="Pravila" />
-            <h:outputText class="forumDescriptionValue" value="#{forum.chosen.rules}" />
-            <h:outputText class="forumDescriptionLabel" value="Šefovi" />
-            <h:graphicImage value="resources/pages/manager.png"/>
-            <h:link class="forumOwner" value="#{forum.chosen.owner}" outcome="profile" >
-                <f:param name="name" value="#{forum.chosen.owner}" />
-            </h:link>
-            <c:forEach items="#{forum.chosen.moderators}" var="value">
-                <br/>
-                <h:graphicImage value="resources/pages/mod-avatar.png"/>
-                <h:link class="forumModerators" value="#{value}" outcome="profile" >
-                    <f:param name="name" value="#{value}" />
-                </h:link>
-            </c:forEach>
-        </div>
+        <ui:include src="about.xhtml">
+            <ui:param name="diskuto" value="#{forum.chosen}" />
+        </ui:include>
         <ui:include src="/footer.xhtml" />
     </h:body>
 </html>
