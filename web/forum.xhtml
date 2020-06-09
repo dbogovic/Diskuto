@@ -48,6 +48,12 @@
                     </c:forEach>
                 </div>
             </c:forEach>
+            <h:panelGroup class="posts">
+                <h:outputText class="element-title" value="Najnoviji postovi" />
+                <ui:include src="thing.xhtml">
+                    <ui:param name="items" value="#{forum.items}" />
+                </ui:include>
+            </h:panelGroup>
         </h:form>
         <ui:include src="/sider.xhtml" />
         <ui:include src="about.xhtml">

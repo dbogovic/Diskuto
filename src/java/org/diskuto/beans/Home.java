@@ -10,8 +10,14 @@ import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import org.diskuto.helpers.Database;
+import org.diskuto.helpers.XmlHelper;
 import org.diskuto.listeners.Listener;
+import org.diskuto.models.Post;
 import org.diskuto.models.User;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -26,11 +32,27 @@ public class Home {
     private List<String> errorText = new ArrayList();
     private User user;
     private boolean login;
+    private List<org.diskuto.models.Post> items = new ArrayList();
     
     /**
      * Creates a new instance of Index
      */
-    public Home() {
+    public Home() throws Exception {
+        Database db = new Database();
+        ResourceSet query = db.xquery("/posts/post/id");
+        ResourceIterator iterator = query.getIterator();
+        while (iterator.hasMoreResources()) {
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            List<String> results = helper.makeRawValue("/id");
+            for (String s : results) {
+                org.diskuto.models.Post post = new org.diskuto.models.Post(Integer.parseInt(s));
+                post.retrieveData();
+                items.add(post);
+            }
+        }
+        db.close();
     }
 
     public String getUsername() {
@@ -67,6 +89,10 @@ public class Home {
 
     public User getUser() {
         return (User) Listener.getFromSession("user");
+    }
+
+    public List<Post> getItems(){
+        return items;
     }
     
     public void doLogin() throws Exception {

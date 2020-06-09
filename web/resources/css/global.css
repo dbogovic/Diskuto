@@ -117,3 +117,14 @@ div {
 .commentText {
     font-size: 13px;
 }
+
+.thing {
+    margin-bottom: 1%;
+    padding: 1%;
+    border: 1px solid #CCC;
+    border-radius: 7px;
+}
+
+.thing:nth-of-type(odd) {
+    background: #fafafa;
+}

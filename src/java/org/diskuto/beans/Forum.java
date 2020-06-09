@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
+import org.diskuto.models.Post;
 import org.diskuto.models.User;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
@@ -32,6 +33,7 @@ public class Forum implements Serializable {
     private String cat;
     private boolean boss;
     private boolean subscribed;
+    private List<org.diskuto.models.Post> items = new ArrayList();
 
     /**
      * Creates a new instance of Forum
@@ -43,8 +45,28 @@ public class Forum implements Serializable {
         if (this.chosen == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
+        
+        Database db = new Database();
+        ResourceSet query = db.xquery("/posts/post[diskuto=\"" + this.chosen.getName() + "\"]/id");
+        ResourceIterator iterator = query.getIterator();
+        while (iterator.hasMoreResources()) {
+            Resource r = iterator.nextResource();
+            String value = (String) r.getContent();
+            XmlHelper helper = new XmlHelper(value);
+            List<String> results = helper.makeRawValue("/id");
+            for (String s : results) {
+                org.diskuto.models.Post post = new org.diskuto.models.Post(Integer.parseInt(s));
+                post.retrieveData();
+                items.add(post);
+            }
+        }
+        db.close();
     }
 
+    public List<Post> getItems() {   
+        return items;
+    }
+    
     public org.diskuto.models.Forum getChosen() {
         return chosen;
     }

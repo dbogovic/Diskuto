@@ -10,6 +10,12 @@
     </h:head>
     <h:body>
         <ui:include src="/header.xhtml" />
+        <h:panelGroup class="element">
+            <h:outputText class="element-title" value="Dobrodošli na Diskuto" />
+            <ui:include src="thing.xhtml">
+                <ui:param name="items" value="#{home.items}" />
+            </ui:include>
+        </h:panelGroup>
         <ui:include src="/sider.xhtml" />
         <ui:include src="/footer.xhtml" />
     </h:body>
