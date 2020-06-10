@@ -5,49 +5,51 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | Moja diskuta</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="search-diskuto.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <div class="element-title">
-                <h:outputText value="Moja diskuta"/>
-                <h:button class="button" value="Novi diskuto" outcome="editDiskuto" />
-            </div>
-            <h:outputText class="searchLabel" value="Vlasnik" />
-            <c:forEach items="#{myDiskuto.owner}" var="value">
-                <div>
-                    <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
-                        <f:param name="name" value="#{value.name}" />
-                    </h:link>
-                    <h:button class="button" value="Uredi diskuto" outcome="editDiskuto" >
-                        <f:param name="name" value="#{value.name}" />
-                    </h:button>
-                    <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pratitelja" />
-                    <h:outputText class="diskutoDescription" value="#{value.description}" />
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{output['myDiskuto.title']}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="search-diskuto.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <div class="element-title">
+                    <h:outputText value="#{output['myDiskuto.title']}"/>
+                    <h:button class="button" value="Novi diskuto" outcome="editDiskuto" />
                 </div>
-            </c:forEach>
-            <h:outputText rendered="#{myDiskuto.owner.size() == 0}" class="no-results" value="Niste vlasnik niti jednog Diskuta" />
-            <h:outputText class="searchLabel" value="Moderator" />
-            <c:forEach items="#{myDiskuto.moderator}" var="value">
-                <div>
-                    <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
-                        <f:param name="name" value="#{value.name}" />
-                    </h:link>
-                    <h:commandButton class="button" value="Uredi diskuto" action="editDiskuto" >
-                        <f:param name="name" value="#{value}" />
-                    </h:commandButton>
-                    <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pratitelja" />
-                    <h:outputText class="diskutoDescription" value="#{value.description}" />
-                </div>
-            </c:forEach>
-            <h:outputText rendered="#{myDiskuto.moderator.size() == 0}" class="no-results" value="Niste moderator niti jednog Diskuta" />
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+                <h:outputText class="searchLabel" value="#{output['myDiskuto.owner']}" />
+                <c:forEach items="#{myDiskuto.owner}" var="value">
+                    <div>
+                        <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
+                            <f:param name="name" value="#{value.name}" />
+                        </h:link>
+                        <h:button class="button" value="#{output['myDiskuto.editDiskuto']}" outcome="editDiskuto" >
+                            <f:param name="name" value="#{value.name}" />
+                        </h:button>
+                        <h:outputText class="diskutoSubscribers" value="#{value.subscribers} #{output['myDiskuto.followers']}" />
+                        <h:outputText class="diskutoDescription" value="#{value.description}" />
+                    </div>
+                </c:forEach>
+                <h:outputText rendered="#{myDiskuto.owner.size() == 0}" class="no-results" value="#{output['myDiskuto.noOwner']}" />
+                <h:outputText class="searchLabel" value="#{output['myDiskuto.moderator']}" />
+                <c:forEach items="#{myDiskuto.moderator}" var="value">
+                    <div>
+                        <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
+                            <f:param name="name" value="#{value.name}" />
+                        </h:link>
+                        <h:commandButton class="button" value="#{output['myDiskuto.editDiskuto']}" action="editDiskuto" >
+                            <f:param name="name" value="#{value}" />
+                        </h:commandButton>
+                        <h:outputText class="diskutoSubscribers" value="#{value.subscribers} #{output['myDiskuto.followers']}" />
+                        <h:outputText class="diskutoDescription" value="#{value.description}" />
+                    </div>
+                </c:forEach>
+                <h:outputText rendered="#{myDiskuto.moderator.size() == 0}" class="no-results" value="#{output['myDiskuto.noModerator']}" />
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

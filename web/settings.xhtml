@@ -5,77 +5,87 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | Postavke</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="settings.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <h:outputText class="element-title" value="Postavke"/>
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{output['settings.title']}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="settings.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <h:outputText class="element-title" value="#{output['settings.title']}"/>
 
-            <h:outputText class="settingsLabel" value="Korisničko ime:"/>
-            <h:inputText class="settingsInput" disabled="true" value="#{settings.username}" />
-
-            <h:outputText class="settingsLabel" value="E-Mail:"/>
-            <h:inputText class="settingsInput" id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
-            <h:commandButton class="button" value="#{!settings.wantEmail ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changeEmail()}">
-                <f:ajax event="action" execute="email" render="@form"/>
-            </h:commandButton>
-            <h:outputText class="errorText" rendered="#{settings.errorEmail}" value="Niste pravilno unijeli e-mail" />
-
-            <h:outputText class="settingsLabel" value="Lozinka:"/>
-            <h:inputSecret class="settingsInput" id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
-                <f:passThroughAttribute name="placeholder" value="promijeni lozinku"/>
-            </h:inputSecret>
-            <h:commandButton class="button" value="#{!settings.wantPassword ? 'Promijeni' : 'Potvrdi'}" action="#{settings.changePassword()}">
-                <f:ajax event="action" execute="password" render="@form"/>
-            </h:commandButton>
-            <h:outputText class="errorText" rendered="#{settings.errorPassword}" value="Lozinka je preslaba" />
-
-            <h:outputText class="settingsLabel" value="#{settings.listDiskuto.size() == 0 ? 'Nema pretplata' : 'Pretplaćena diskuta:'}" />
-            <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
-                <h:panelGroup class="settingsList">
-                    <h:commandButton class="button" value="X" action="#{settings.unsubscribe(value)}">
-                        <f:ajax event="action" execute="subscribed" render="@form"/>
-                    </h:commandButton>
-                    <h:link value="#{value.name}" outcome="forum" >
-                        <f:param name="name" value="#{value.name}" />
-                    </h:link>
-                </h:panelGroup>
-            </c:forEach>
-
-            <h:outputText class="settingsLabel" value="#{settings.ignoredUsers.size() == 0 ? 'Nema blokiranih korisnika' : 'Blokirani korisnici:'}" />
-            <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
-                <h:panelGroup class="settingsList">
-                    <h:commandButton class="button" value="X" action="#{settings.unignore(value)}">
-                        <f:ajax event="action" execute="ignored" render="@form"/>
-                    </h:commandButton>
-                    <h:link value="#{value.username}" outcome="profile" >
-                        <f:param name="name" value="#{value.username}" />
-                    </h:link>
-                </h:panelGroup>
-            </c:forEach>
-
-            <!--
-            <h:outputText value="Privatnost" />
-            <h:outputText value="Jezik" />
-            !-->
-
-            <h:commandLink id="delete" value="Obriši račun" action="#{settings.disableAccount}" >
-                <f:ajax event="action" render="@form"/>
-            </h:commandLink>
-            <h:panelGroup rendered="#{settings.wantDisable}" >
-                <h:outputText value="Unesite lozinku za potvrdu: " />
-                <h:inputSecret class="settingsInput" id="disable_password" value="#{settings.password}" />
-                <h:commandButton class="button" value="Potvrdi" action="#{settings.disableAccount()}">
-                    <f:ajax event="action" execute="disable_password" render="@form"/>
+                <h:outputText class="settingsLabel" value="#{output['settings.chooseLanguage']}"/>
+                <h:selectOneRadio class="settingsLanguage" value="#{language.lang}" >
+                    <f:selectItem itemValue="hr" itemLabel="Hrvatski"/> 
+                    <f:selectItem itemValue="en" itemLabel="English"/> 
+                </h:selectOneRadio>
+                <h:commandButton class="button" value="#{output['settings.button2']}"
+                                 action="#{language.chooseLanguage}">
                 </h:commandButton>
-                <h:outputText class="errorText" rendered="#{settings.errorDisable}" value="Lozinka je pogrešna" />
-            </h:panelGroup>
-        </h:form>
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+
+                <h:outputText class="settingsLabel" value="#{output['settings.username']}"/>
+                <h:inputText class="settingsInput" disabled="true" value="#{settings.username}" />
+
+                <h:outputText class="settingsLabel" value="#{output['settings.email']}"/>
+                <h:inputText class="settingsInput" id="email" disabled="#{!settings.wantEmail}" value="#{settings.email}" />
+                <h:commandButton class="button" value="#{!settings.wantEmail ? output['settings.button1'] : output['settings.button2']}" action="#{settings.changeEmail()}">
+                    <f:ajax event="action" execute="email" render="@form"/>
+                </h:commandButton>
+                <h:outputText class="errorText" rendered="#{settings.errorEmail}" value="#{output['settings.errorMail']}" />
+
+                <h:outputText class="settingsLabel" value="#{output['settings.password']}"/>
+                <h:inputSecret class="settingsInput" id="password" disabled="#{!settings.wantPassword}" value="#{settings.password}" >
+                    <f:passThroughAttribute name="placeholder" value="#{output['settings.placeholder']}"/>
+                </h:inputSecret>
+                <h:commandButton class="button" value="#{!settings.wantPassword ? output['settings.button1'] : output['settings.button2']}" action="#{settings.changePassword()}">
+                    <f:ajax event="action" execute="password" render="@form"/>
+                </h:commandButton>
+                <h:outputText class="errorText" rendered="#{settings.errorPassword}" value="#{output['settings.errorPassword']}" />
+
+                <h:outputText class="settingsLabel" value="#{settings.listDiskuto.size() == 0 ? output['settings.noDiskutos'] : output['settings.yesDiskutos']}" />
+                <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
+                    <h:panelGroup class="settingsList">
+                        <h:commandButton class="button" value="X" action="#{settings.unsubscribe(value)}">
+                            <f:ajax event="action" execute="subscribed" render="@form"/>
+                        </h:commandButton>
+                        <h:link value="#{value.name}" outcome="forum" >
+                            <f:param name="name" value="#{value.name}" />
+                        </h:link>
+                    </h:panelGroup>
+                </c:forEach>
+
+                <h:outputText class="settingsLabel" value="#{settings.ignoredUsers.size() == 0 ? output['settings.noIgnored'] : output['settings.yesIgnored']}" />
+                <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
+                    <h:panelGroup class="settingsList">
+                        <h:commandButton class="button" value="X" action="#{settings.unignore(value)}">
+                            <f:ajax event="action" execute="ignored" render="@form"/>
+                        </h:commandButton>
+                        <h:link value="#{value.username}" outcome="profile" >
+                            <f:param name="name" value="#{value.username}" />
+                        </h:link>
+                    </h:panelGroup>
+                </c:forEach>
+
+                <!--
+                <h:outputText value="Privatnost" />
+                !-->
+
+                <h:commandLink id="delete" value="#{output['settings.delete']}" action="#{settings.disableAccount}" >
+                    <f:ajax event="action" render="@form"/>
+                </h:commandLink>
+                <h:panelGroup rendered="#{settings.wantDisable}" >
+                    <h:outputText value="#{output['settings.deleteConfirm']} " />
+                    <h:inputSecret class="settingsInput" id="disable_password" value="#{settings.password}" />
+                    <h:commandButton class="button" value="#{output['settings.button2']}" action="#{settings.disableAccount()}">
+                        <f:ajax event="action" execute="disable_password" render="@form"/>
+                    </h:commandButton>
+                    <h:outputText class="errorText" rendered="#{settings.errorDisable}" value="#{output['settings.deleteError']}" />
+                </h:panelGroup>
+            </h:form>
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

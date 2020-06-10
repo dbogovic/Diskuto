@@ -5,60 +5,62 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | #{forum.chosen.name}</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="forum.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <div class="element-title">
-                <h:outputText value="#{forum.chosen.name}" />
-                <h:outputText rendered="#{forum.cat != null}" value=" - #{forum.cat}" />
-                <h:panelGroup class="element-buttons">
-                    <h:button class="button" value="Nova objava" outcome="newPost" >
-                        <f:param name="on" value="#{forum.chosen.name}" />
-                    </h:button>
-                    <h:commandButton class="button" rendered="#{!forum.boss}" value="#{forum.subscribed ? 'Ukloni pretplatu' : 'Pretplati se'}" action="#{forum.subscribe}" >
-                        <f:ajax event="action" render="@form" />
-                    </h:commandButton>
-                    <h:button class="button" rendered="#{forum.boss}" value="Postavke" outcome="editDiskuto" >
-                        <f:param name="name" value="#{forum.chosen.name}"/>
-                    </h:button>
-                </h:panelGroup>
-            </div>
-            <c:forEach items="#{forum.chosen.categories}" var="value">
-                <div class="categories">
-                    <h:link class="categoryName" rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
-                        <f:param name="name" value="#{forum.chosen.name}" />
-                        <f:param name="cat" value="#{value}" />
-                    </h:link>
-                    <c:forEach items="#{forum.freshPost(value)}" var="item">
-                        <div class="categoryValue">
-                            <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
-                                <f:param name="id" value="#{item.id}" />
-                            </h:link>
-                            <h:link value="#{item.owner.username}" outcome="profile" >
-                                <f:param name="name" value="#{item.owner.username}" />
-                            </h:link>
-                            <h:outputText value=" • #{message.formatted(item.created)}" />
-                        </div>
-                    </c:forEach>
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{forum.chosen.name}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="forum.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <div class="element-title">
+                    <h:outputText value="#{forum.chosen.name}" />
+                    <h:outputText rendered="#{forum.cat != null}" value=" - #{forum.cat}" />
+                    <h:panelGroup class="element-buttons">
+                        <h:button class="button" value="#{output['forum.button1']}" outcome="newPost" >
+                            <f:param name="on" value="#{forum.chosen.name}" />
+                        </h:button>
+                        <h:commandButton class="button" rendered="#{!forum.boss}" value="#{forum.subscribed ? output['forum.button2'] : output['forum.button3']}'" action="#{forum.subscribe}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                        <h:button class="button" rendered="#{forum.boss}" value="#{output['forum.button4']}" outcome="editDiskuto" >
+                            <f:param name="name" value="#{forum.chosen.name}"/>
+                        </h:button>
+                    </h:panelGroup>
                 </div>
-            </c:forEach>
-            <h:panelGroup class="posts">
-                <h:outputText class="element-title" value="Najnoviji postovi" />
-                <ui:include src="thing.xhtml">
-                    <ui:param name="items" value="#{forum.items}" />
-                </ui:include>
-            </h:panelGroup>
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="about.xhtml">
-            <ui:param name="diskuto" value="#{forum.chosen}" />
-        </ui:include>
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+                <c:forEach items="#{forum.chosen.categories}" var="value">
+                    <div class="categories">
+                        <h:link class="categoryName" rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
+                            <f:param name="name" value="#{forum.chosen.name}" />
+                            <f:param name="cat" value="#{value}" />
+                        </h:link>
+                        <c:forEach items="#{forum.freshPost(value)}" var="item">
+                            <div class="categoryValue">
+                                <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
+                                    <f:param name="id" value="#{item.id}" />
+                                </h:link>
+                                <h:link value="#{item.owner.username}" outcome="profile" >
+                                    <f:param name="name" value="#{item.owner.username}" />
+                                </h:link>
+                                <h:outputText value=" • #{message.formatted(item.created)}" />
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:forEach>
+                <h:panelGroup class="posts">
+                    <h:outputText class="element-title" value="#{output['forum.title']}" />
+                    <ui:include src="thing.xhtml">
+                        <ui:param name="items" value="#{forum.items}" />
+                    </ui:include>
+                </h:panelGroup>
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="about.xhtml">
+                <ui:param name="diskuto" value="#{forum.chosen}" />
+            </ui:include>
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

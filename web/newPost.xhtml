@@ -5,58 +5,60 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | Novi post</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="form.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <h:outputText class="element-title" value="Nova objava"/>
-            
-            <div class="form">
-                <h:outputText class="label" value="Diskuto:" />
-                <h:inputText class="formInput" disabled="true" id="diskuto" value="#{newPost.chosen.name}" />
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{output['newPost.title']}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="form.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <h:outputText class="element-title" value="#{output['newPost.subtitle']}"/>
 
-                <h:outputText class="label" value="Naslov:" />
-                <h:inputText class="formInput" id="headline" value="#{newPost.headline}"/>
+                <div class="form">
+                    <h:outputText class="label" value="#{output['newPost.diskuto']}" />
+                    <h:inputText class="formInput" disabled="true" id="diskuto" value="#{newPost.chosen.name}" />
 
-                <h:outputText class="label" value="Opis:" />
-                <h:inputTextarea rows="5" class="formInput" id="description" value="#{newPost.description}" />
+                    <h:outputText class="label" value="#{output['newPost.headline']}" />
+                    <h:inputText class="formInput" id="headline" value="#{newPost.headline}"/>
 
-                <h:outputText class="label" value="Kategorija:" />
-                <h:selectOneMenu id="category" class="formInput" value="#{newPost.selectedCategory}">
-                    <f:selectItems value="#{newPost.chosen.categories}" var="var" itemValue="#{var}" itemLabel="#{var}" />
-                </h:selectOneMenu>
-            </div>
-            <h:commandButton class="button" value="Spremi" action="#{newPost.post}">
-                <f:ajax event="action" execute="diskuto headline description category" render="@form"/>
-            </h:commandButton>
-            <c:forEach items="#{newPost.errorText}" var="value">
-                <h:outputText class="errorText" value="#{value}" />
-            </c:forEach>
-            <img id="ajaxloader" src="./resources/pages/loading.gif"/>
-            <script>
-                jsf.ajax.addOnEvent(function (data) {
-                    var ajaxstatus = data.status;
-                    var ajaxloader = document.getElementById("ajaxloader");
+                    <h:outputText class="label" value="#{output['newPost.description']}" />
+                    <h:inputTextarea rows="5" class="formInput" id="description" value="#{newPost.description}" />
 
-                    switch (ajaxstatus) {
-                        case "begin":
-                            ajaxloader.style.display = 'inline';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                            break;
-                        case "success":
-                            break;
-                    }
-                });
-            </script>
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+                    <h:outputText class="label" value="#{output['newPost.category']}" />
+                    <h:selectOneMenu id="category" class="formInput" value="#{newPost.selectedCategory}">
+                        <f:selectItems value="#{newPost.chosen.categories}" var="var" itemValue="#{var}" itemLabel="#{var}" />
+                    </h:selectOneMenu>
+                </div>
+                <h:commandButton class="button" value="#{output['newPost.save']}" action="#{newPost.post}">
+                    <f:ajax event="action" execute="diskuto headline description category" render="@form"/>
+                </h:commandButton>
+                <c:forEach items="#{newPost.errorText}" var="value">
+                    <h:outputText class="errorText" value="#{value}" />
+                </c:forEach>
+                <img id="ajaxloader" src="./resources/pages/loading.gif"/>
+                <script>
+                    jsf.ajax.addOnEvent(function (data) {
+                        var ajaxstatus = data.status;
+                        var ajaxloader = document.getElementById("ajaxloader");
+
+                        switch (ajaxstatus) {
+                            case "begin":
+                                ajaxloader.style.display = 'inline';
+                                break;
+                            case "complete":
+                                ajaxloader.style.display = 'none';
+                                break;
+                            case "success":
+                                break;
+                        }
+                    });
+                </script>
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

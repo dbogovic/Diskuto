@@ -42,3 +42,8 @@
 .settingsList > a:hover {
     color: cornflowerblue;
 }
+
+.settingsLanguage {
+    float: left;
+    margin-right: 1%;
+}

@@ -2,22 +2,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:panelGroup class="element">
-            <h:outputText class="element-title" value="Dobrodošli na Diskuto" />
-            <ui:include src="thing.xhtml">
-                <ui:param name="items" value="#{home.items}" />
-            </ui:include>
-        </h:panelGroup>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:panelGroup class="element">
+                <h:outputText class="element-title" value="#{output['home.welcome']}" />
+                <ui:include src="thing.xhtml">
+                    <ui:param name="items" value="#{home.items}" />
+                </ui:include>
+            </h:panelGroup>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>
 

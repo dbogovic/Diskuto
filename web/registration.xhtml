@@ -4,53 +4,55 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <h:head>
-        <title>Diskuto | Registracija</title>
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="account-manage.css"/>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-    </h:head>
-    <h:body>
-        <h:form id="account-manage" prependId="false">
-            <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
-            <h:panelGrid columns="2">
-                <h:outputText value="Korisničko ime:"/>
-                <h:inputText id="username" value="#{registration.username}"/>
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{output['registration.title']}}</title>
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="account-manage.css"/>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+        </h:head>
+        <h:body>
+            <h:form id="account-manage" prependId="false">
+                <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{output['registration.username']}"/>
+                    <h:inputText id="username" value="#{registration.username}"/>
 
-                <h:outputText value="E-Mail:"/>
-                <h:inputText id="email" value="#{registration.email}" />
+                    <h:outputText value="#{output['registration.email']}"/>
+                    <h:inputText id="email" value="#{registration.email}" />
 
-                <h:outputText value="Lozinka:"/>
-                <h:inputSecret id="password" value="#{registration.password}" />
+                    <h:outputText value="#{output['registration.password']}"/>
+                    <h:inputSecret id="password" value="#{registration.password}" />
 
-                <h:outputText value="Ponovite lozinku:"/>
-                <h:inputSecret id="rpassword" value="#{registration.rpassword}" />
-            </h:panelGrid>
-            <h:commandButton id="amBtn" class="button" value="Registriraj se" action="#{registration.doRegistration}">
-                <f:ajax event="action" execute="username email password rpassword" render="@form"/>
-            </h:commandButton>
-            <img id="ajaxloader" src="./resources/pages/loading.gif" />
-            <c:forEach items="#{registration.errorText}" var="value">
-                <h:outputText class="errorText" value="#{value}" />
-            </c:forEach>
-            <script>
-                jsf.ajax.addOnEvent(function (data) {
-                    var ajaxstatus = data.status;
-                    var ajaxloader = document.getElementById("ajaxloader");
+                    <h:outputText value="#{output['registration.rpassword']}"/>
+                    <h:inputSecret id="rpassword" value="#{registration.rpassword}" />
+                </h:panelGrid>
+                <h:commandButton id="amBtn" class="button" value="#{output['registration.button']}" action="#{registration.doRegistration}">
+                    <f:ajax event="action" execute="username email password rpassword" render="@form"/>
+                </h:commandButton>
+                <img id="ajaxloader" src="./resources/pages/loading.gif" />
+                <c:forEach items="#{registration.errorText}" var="value">
+                    <h:outputText class="errorText" value="#{value}" />
+                </c:forEach>
+                <script>
+                    jsf.ajax.addOnEvent(function (data) {
+                        var ajaxstatus = data.status;
+                        var ajaxloader = document.getElementById("ajaxloader");
 
-                    switch (ajaxstatus) {
-                        case "begin":
-                            ajaxloader.style.display = 'initial';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                            break;
-                        case "success":
-                            break;
-                    }
-                });
-            </script>
-        </h:form>
-    </h:body>
+                        switch (ajaxstatus) {
+                            case "begin":
+                                ajaxloader.style.display = 'initial';
+                                break;
+                            case "complete":
+                                ajaxloader.style.display = 'none';
+                                break;
+                            case "success":
+                                break;
+                        }
+                    });
+                </script>
+            </h:form>
+        </h:body>
+    </f:view>
 </html>
 

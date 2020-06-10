@@ -4,46 +4,48 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <h:head>
-        <title>Diskuto | Potvrda registracije</title>
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="account-manage.css"/>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-    </h:head>
-    <h:body>
-        <h:form id="account-manage" prependId="false">
-            <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
-            <h:outputText id="mailMessage" value="Aktivacijski kod je poslan na #{confirmRegistration.registeredUser.email}"/>
-            <h:panelGrid columns="2">
-                <h:outputText value="Unesite kod: " />
-                <h:inputText id="insertedCode" value="#{confirmRegistration.insertedCode}"/>
-            </h:panelGrid>
-            <h:commandButton class="button" id="amBtn" value="Potvrdi" action="#{confirmRegistration.validate}">
-                <f:ajax event="action" execute="insertedCode" render="@form"/>
-            </h:commandButton>
-            <img id="ajaxloader" src="./resources/pages/loading.gif"/>
-            <c:forEach items="#{confirmRegistration.errorText}" var="value">
-                <h:outputText class="errorText" value="#{value}" />
-            </c:forEach>
-            <h:commandLink value="Niste dobili mail? Zatražite ponovno slanje." action="#{confirmRegistration.sendNewMail}" />
-            <script>
-                jsf.ajax.addOnEvent(function (data) {
-                    var ajaxstatus = data.status;
-                    var ajaxloader = document.getElementById("ajaxloader");
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | Potvrda registracije</title>
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="account-manage.css"/>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+        </h:head>
+        <h:body>
+            <h:form id="account-manage" prependId="false">
+                <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
+                <h:outputText id="mailMessage" value="#{output['confirmRegistration.sended']} #{confirmRegistration.registeredUser.email}"/>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{output['confirmRegistration.code']} " />
+                    <h:inputText id="insertedCode" value="#{confirmRegistration.insertedCode}"/>
+                </h:panelGrid>
+                <h:commandButton class="button" id="amBtn" value="#{output['confirmRegistration.confirm']}" action="#{confirmRegistration.validate}">
+                    <f:ajax event="action" execute="insertedCode" render="@form"/>
+                </h:commandButton>
+                <img id="ajaxloader" src="./resources/pages/loading.gif"/>
+                <c:forEach items="#{confirmRegistration.errorText}" var="value">
+                    <h:outputText class="errorText" value="#{value}" />
+                </c:forEach>
+                <h:commandLink value="#{output['confirmRegistration.newMail']}" action="#{confirmRegistration.sendNewMail}" />
+                <script>
+                    jsf.ajax.addOnEvent(function (data) {
+                        var ajaxstatus = data.status;
+                        var ajaxloader = document.getElementById("ajaxloader");
 
-                    switch (ajaxstatus) {
-                        case "begin":
-                            ajaxloader.style.display = 'initial';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                            break;
-                        case "success":
-                            break;
-                    }
-                });
-            </script>
-        </h:form>
-    </h:body>
+                        switch (ajaxstatus) {
+                            case "begin":
+                                ajaxloader.style.display = 'initial';
+                                break;
+                            case "complete":
+                                ajaxloader.style.display = 'none';
+                                break;
+                            case "success":
+                                break;
+                        }
+                    });
+                </script>
+            </h:form>
+        </h:body>
+    </f:view>
 </html>
 

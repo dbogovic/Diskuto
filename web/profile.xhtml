@@ -4,89 +4,91 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | #{profile.chosen.username}</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="profile.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <div class="element-title">
-                <h:outputText value="#{profile.chosen.username}"/>
-                <h:panelGroup id="myProfilebtn" rendered="#{profile.me}">
-                    <h:button class="button" value="Postavke" outcome="settings" />
-                </h:panelGroup>
-                <h:panelGroup id="otherProfilebtn" rendered="#{!profile.me}">
-                    <h:button class="button" value="Poruka" outcome="message" >
-                        <f:param name="with" value="#{profile.chosen.username}" />
-                    </h:button>
-                    <h:commandButton class="button" value="#{profile.ignored ? 'Deblokiraj' : 'Blokiraj'}" action="#{profile.ignore()}" >
-                        <f:ajax event="action" render="@form" />
-                    </h:commandButton>
-                </h:panelGroup>
-            </div>
-            <div class="profileDescription">
-                <h:outputText value="Član od: " />
-                <h:outputText class="profileData" value="#{profile.p_created}" />
-                <h:outputText value="Karma: " />
-                <h:outputText class="profileData" value="#{profile.upvotes - profile.downvotes > 0 ? '+' : ''}#{profile.upvotes - profile.downvotes} (#{profile.upvotes}/#{profile.downvotes})" />
-            </div>
-            <h:outputText class="searchLabel" value="Objave" />
-            <ui:include src="thing.xhtml">
-                <ui:param name="items" value="#{profile.posts}" />
-            </ui:include>
-            <h:commandButton rendered="#{profile.totalPosts > profile.postsIteratorId}" class="button" value="Učitaj još" action="#{profile.loadPosts()}" >
-                <f:ajax event="action" render="@form" onevent="ajaxload1" />
-            </h:commandButton>
-            <img id="ajaxloader1" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
-            <h:outputText rendered="#{profile.posts.size() == 0}" class="no-results" value="Nema pronađenih objava" />
-            <h:outputText class="searchLabel" value="Komentari" />
-            <ui:include src="comments.xhtml">
-                <ui:param name="items" value="#{profile.comments}" />
-            </ui:include>
-            <h:commandButton rendered="#{profile.totalComments > profile.commentsIteratorId}" class="button" value="Učitaj još" action="#{profile.loadComments()}" >
-                <f:ajax event="action" render="@form" onevent="ajaxload2" />
-            </h:commandButton>
-            <img id="ajaxloader2" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
-            <h:outputText rendered="#{profile.comments.size() == 0}" class="no-results" value="Nema pronađenih komentara" />
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-        <script>
-            function ajaxload1(data) {
-                var ajaxstatus = data.status;
-                var ajaxloader = document.getElementById("ajaxloader1");
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{profile.chosen.username}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="profile.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <div class="element-title">
+                    <h:outputText value="#{profile.chosen.username}"/>
+                    <h:panelGroup id="myProfilebtn" rendered="#{profile.me}">
+                        <h:button class="button" value="#{output['profile.settings']}" outcome="settings" />
+                    </h:panelGroup>
+                    <h:panelGroup id="otherProfilebtn" rendered="#{!profile.me}">
+                        <h:button class="button" value="#{output['profile.message']}" outcome="message" >
+                            <f:param name="with" value="#{profile.chosen.username}" />
+                        </h:button>
+                        <h:commandButton class="button" value="#{profile.ignored ? output['profile.unignore'] : output['profile.ignore']}" action="#{profile.ignore()}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                    </h:panelGroup>
+                </div>
+                <div class="profileDescription">
+                    <h:outputText value="#{output['profile.member']} " />
+                    <h:outputText class="profileData" value="#{profile.p_created}" />
+                    <h:outputText value="#{output['profile.karma']} " />
+                    <h:outputText class="profileData" value="#{profile.upvotes - profile.downvotes > 0 ? '+' : ''}#{profile.upvotes - profile.downvotes} (#{profile.upvotes}/#{profile.downvotes})" />
+                </div>
+                <h:outputText class="searchLabel" value="#{output['profile.posts']}" />
+                <ui:include src="thing.xhtml">
+                    <ui:param name="items" value="#{profile.posts}" />
+                </ui:include>
+                <h:commandButton rendered="#{profile.totalPosts > profile.postsIteratorId}" class="button" value="#{output['profile.load']}" action="#{profile.loadPosts()}" >
+                    <f:ajax event="action" render="@form" onevent="ajaxload1" />
+                </h:commandButton>
+                <img id="ajaxloader1" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                <h:outputText rendered="#{profile.posts.size() == 0}" class="no-results" value="#{output['profile.noPosts']}" />
+                <h:outputText class="searchLabel" value="#{output['profile.comments']}" />
+                <ui:include src="comments.xhtml">
+                    <ui:param name="items" value="#{profile.comments}" />
+                </ui:include>
+                <h:commandButton rendered="#{profile.totalComments > profile.commentsIteratorId}" class="button" value="#{output['profile.load']}" action="#{profile.loadComments()}" >
+                    <f:ajax event="action" render="@form" onevent="ajaxload2" />
+                </h:commandButton>
+                <img id="ajaxloader2" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                <h:outputText rendered="#{profile.comments.size() == 0}" class="no-results" value="#{output['profile.noComments']}" />
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+            <script>
+                function ajaxload1(data) {
+                    var ajaxstatus = data.status;
+                    var ajaxloader = document.getElementById("ajaxloader1");
 
-                switch (ajaxstatus) {
-                    case "begin":
-                        ajaxloader.style.display = 'block';
-                        break;
-                    case "complete":
-                        ajaxloader.style.display = 'none';
-                        break;
-                    case "success":
-                        break;
+                    switch (ajaxstatus) {
+                        case "begin":
+                            ajaxloader.style.display = 'block';
+                            break;
+                        case "complete":
+                            ajaxloader.style.display = 'none';
+                            break;
+                        case "success":
+                            break;
+                    }
                 }
-            }
-            ;
-            function ajaxload2(data) {
-                var ajaxstatus = data.status;
-                var ajaxloader = document.getElementById("ajaxloader2");
+                ;
+                function ajaxload2(data) {
+                    var ajaxstatus = data.status;
+                    var ajaxloader = document.getElementById("ajaxloader2");
 
-                switch (ajaxstatus) {
-                    case "begin":
-                        ajaxloader.style.display = 'block';
-                        break;
-                    case "complete":
-                        ajaxloader.style.display = 'none';
-                        break;
-                    case "success":
-                        break;
+                    switch (ajaxstatus) {
+                        case "begin":
+                            ajaxloader.style.display = 'block';
+                            break;
+                        case "complete":
+                            ajaxloader.style.display = 'none';
+                            break;
+                        case "success":
+                            break;
+                    }
                 }
-            }
-            ;
-        </script>
-    </h:body>
+                ;
+            </script>
+        </h:body>
+    </f:view>
 </html>

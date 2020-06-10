@@ -6,13 +6,13 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:outputStylesheet library="css" name="about.css"/>
     <div id="forumDescription">
-        <h:outputText class="forumDescriptionLabel" value="#{diskuto.subscribers} pretplaćenih" />
-        <h:outputText class="forumDescriptionLabel" value="Opis" />
+        <h:outputText class="forumDescriptionLabel" value="#{diskuto.subscribers} #{output['about.subscribed']}" />
+        <h:outputText class="forumDescriptionLabel" value="#{output['about.description']}" />
         <h:outputText class="forumDescriptionValue" value="#{diskuto.description}" />
-        <h:outputText class="forumDescriptionLabel" value="Kreirano #{message.formatted(diskuto.created)}" />
-        <h:outputText class="forumDescriptionLabel" value="Pravila" />
+        <h:outputText class="forumDescriptionLabel" value="#{output['about.made']} #{message.formatted(diskuto.created)}" />
+        <h:outputText class="forumDescriptionLabel" value="#{output['about.rules']}" />
         <h:outputText class="forumDescriptionValue" value="#{diskuto.rules}" />
-        <h:outputText class="forumDescriptionLabel" value="Šefovi" />
+        <h:outputText class="forumDescriptionLabel" value="#{output['about.bosses']}" />
         <h:graphicImage value="resources/pages/manager.png"/>
         <h:link class="forumOwner" value="#{diskuto.owner}" outcome="profile" >
             <f:param name="name" value="#{diskuto.owner}" />

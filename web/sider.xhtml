@@ -9,21 +9,21 @@
     <h:form id="sider" prependId="false">
         <h:panelGroup rendered="#{!home.login}">
             <h:panelGrid id="loginTable" columns="2">
-                <h:outputText value="Korisničko ime:"/>
+                <h:outputText value="#{output['login.username']}"/>
                 <h:inputText id="username" value="#{home.username}"/>
 
-                <h:outputText value="Lozinka:"/>
+                <h:outputText value="#{output['login.password']}"/>
                 <h:inputSecret id="password" value="#{home.password}" />
             </h:panelGrid>
-            <h:commandButton id="loginButton" class="button" value="Prijavi se" action="#{home.doLogin}">
+            <h:commandButton id="loginButton" class="button" value="#{output['login.logIn']}" action="#{home.doLogin}">
                 <f:ajax event="action" execute="username password" render="@form"/>
             </h:commandButton>
             <img id="ajaxloader" src="./resources/pages/loading.gif" />
             <c:forEach items="#{home.errorText}" var="value">
                 <h:outputText class="errorText" value="#{value}" />
             </c:forEach>
-            <h:link value="Zaboravili ste lozinku?" outcome="newPassword" />
-            <h:link value="Nemate korisnički račun?" outcome="registration" />
+            <h:link value="#{output['login.forgottenPassword']}" outcome="newPassword" />
+            <h:link value="#{output['login.noAccount']}" outcome="registration" />
             <script>
                 jsf.ajax.addOnEvent(function (data) {
                     var ajaxstatus = data.status;
@@ -45,7 +45,7 @@
         <h:panelGroup rendered="#{home.login}">
             <div class="menu">
                 <h:graphicImage value="resources/pages/favicon.ico" />
-                <h:link class="menu-option" value="Moja diskuta" outcome="myDiskuto" />
+                <h:link class="menu-option" value="#{output['myDiskuto.title']}" outcome="myDiskuto" />
             </div>
             <div class="diskutos-parent">
                 <c:forEach items="#{myDiskuto.owner}" var="value">
@@ -61,7 +61,7 @@
             </div>
             <div class="menu">
                 <h:graphicImage value="resources/pages/plus.png" />
-                <h:link class="menu-option" value="Pretplaćena diskuta" outcome="discover" />
+                <h:link class="menu-option" value="#{output['sider.subscribed']}" outcome="discover" />
             </div>
             <div class="diskutos-parent">
                 <c:forEach items="#{home.user.subscriptions}" var="value">
@@ -72,12 +72,12 @@
             </div>
             <div class="menu">
                 <h:graphicImage value="resources/pages/message.png" />
-                <h:link class="menu-option" value="Moje poruke" outcome="message" />
+                <h:link class="menu-option" value="#{output['sider.messages']}" outcome="message" />
                 <h:outputText rendered="#{home.user.unread > 0}" id="nmbMessages" value="#{home.user.unread}" />
             </div>
             <div class="menu">
                 <h:graphicImage value="resources/pages/settings.png" />
-                <h:link class="menu-option" value="Postavke" outcome="settings" />
+                <h:link class="menu-option" value="#{output['settings.title']}" outcome="settings" />
             </div>
         </h:panelGroup>
     </h:form>

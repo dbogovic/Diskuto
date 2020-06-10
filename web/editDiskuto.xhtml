@@ -5,93 +5,95 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | Novi diskuto</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="form.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <h:outputText class="element-title" value="Novi diskuto"/>
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | Novi diskuto</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="form.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <h:outputText class="element-title" value="#{output['editDiskuto.title']}"/>
 
-            <div class="form">
-                <h:outputText class="label" value="Naziv:*" />
-                <h:inputText class="formInput" id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.existing != null ? 'true' : 'false'}" />
+                <div class="form">
+                    <h:outputText class="label" value="#{output['editDiskuto.name']}" />
+                    <h:inputText class="formInput" id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.existing != null ? 'true' : 'false'}" />
 
-                <h:outputText class="label" value="Opis:*" />
-                <h:inputTextarea rows="5" class="formInput" id="description" value="#{editDiskuto.description}" />
+                    <h:outputText class="label" value="#{output['editDiskuto.description']}" />
+                    <h:inputTextarea rows="5" class="formInput" id="description" value="#{editDiskuto.description}" />
 
-                <h:outputText class="label" value="Pravila:*" />
-                <h:inputTextarea rows="5" class="formInput" id="rules" value="#{editDiskuto.rules}" />
+                    <h:outputText class="label" value="#{output['editDiskuto.rules']}" />
+                    <h:inputTextarea rows="5" class="formInput" id="rules" value="#{editDiskuto.rules}" />
 
-                <h:outputText class="label" value="Kategorija:*" />
-                <h:inputText class="formInput" id="nameCategory" value="#{editDiskuto.nameCategory}" />
-                <h:commandButton class="button" id="addCategory" value="+" action="#{editDiskuto.addCategory}" >
-                    <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>
+                    <h:outputText class="label" value="#{output['editDiskuto.categories']}" />
+                    <h:inputText class="formInput" id="nameCategory" value="#{editDiskuto.nameCategory}" />
+                    <h:commandButton class="button" id="addCategory" value="+" action="#{editDiskuto.addCategory}" >
+                        <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>
+                    </h:commandButton>
+
+                    <h:outputText class="label" value="#{output['editDiskuto.moderators']}" />
+                    <h:inputText class="formInput" id="nameModerator" value="#{editDiskuto.nameModerator}" />
+                    <h:commandButton class="button" id="addModerator" value="+" action="#{editDiskuto.addModerator}" >
+                        <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>                    
+                    </h:commandButton>
+                </div>
+
+                <div class="inserted">
+                    <h:panelGrid columns="2">
+                        <h:outputText class="searchLabel" value="#{editDiskuto.categories.size() == 0 ? output['editDiskuto.noCategories'] : output['editDiskuto.yesCategories']}" />
+                        <h:outputText value="" />
+                        <c:forEach items="#{editDiskuto.categories}" var="value">
+                            <h:outputText value="#{value}" />
+                            <h:commandButton class="button" id="dropCategory" value="-" action="#{editDiskuto.dropCategory(value)}" >
+                                <f:ajax event="action" render ="@form" />
+                            </h:commandButton>
+                        </c:forEach>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <h:outputText class="searchLabel" value="#{editDiskuto.moderators.size() == 0 ? output['editDiskuto.noModerators'] : output['editDiskuto.yesModerators']}" />
+                        <h:outputText value="" />
+                        <c:forEach items="#{editDiskuto.moderators}" var="value">
+                            <h:outputText value="#{value}" />
+                            <h:commandButton class="button" id="dropModerator" value="-" action="#{editDiskuto.dropModerator(value)}" >
+                                <f:ajax event="action" render ="@form" />
+                            </h:commandButton>
+                        </c:forEach>
+                    </h:panelGrid>
+                </div>
+
+                <!--
+                <h:outputText value="Blokirani korisnici:" />
+                <h:outputText value="Tema: "/> 
+                !-->
+                <h:commandButton class="button" value="Spremi" action="#{editDiskuto.save}">
+                    <f:ajax event="action" execute="name description rules" render="@form"/>
                 </h:commandButton>
+                <c:forEach items="#{editDiskuto.errorText}" var="value">
+                    <h:outputText class="errorText" value="#{value}" />
+                </c:forEach>
+                <img id="ajaxloader" src="./resources/pages/loading.gif" />
+                <script>
+                    jsf.ajax.addOnEvent(function (data) {
+                        var ajaxstatus = data.status;
+                        var ajaxloader = document.getElementById("ajaxloader");
 
-                <h:outputText class="label" value="Moderatori:" />
-                <h:inputText class="formInput" id="nameModerator" value="#{editDiskuto.nameModerator}" />
-                <h:commandButton class="button" id="addModerator" value="+" action="#{editDiskuto.addModerator}" >
-                    <f:ajax event="action" execute="nameCategory name description rules nameModerator" render="@form"/>                    
-                </h:commandButton>
-            </div>
-
-            <div class="inserted">
-                <h:panelGrid columns="2">
-                    <h:outputText class="searchLabel" value="#{editDiskuto.categories.size() == 0 ? 'Nema kategorija' : 'Lista kategorija'}" />
-                    <h:outputText value="" />
-                    <c:forEach items="#{editDiskuto.categories}" var="value">
-                        <h:outputText value="#{value}" />
-                        <h:commandButton class="button" id="dropCategory" value="-" action="#{editDiskuto.dropCategory(value)}" >
-                            <f:ajax event="action" render ="@form" />
-                        </h:commandButton>
-                    </c:forEach>
-                </h:panelGrid>
-                <h:panelGrid columns="2">
-                    <h:outputText class="searchLabel" value="#{editDiskuto.moderators.size() == 0 ? 'Nema moderatora' : 'Lista moderatora'}" />
-                    <h:outputText value="" />
-                    <c:forEach items="#{editDiskuto.moderators}" var="value">
-                        <h:outputText value="#{value}" />
-                        <h:commandButton class="button" id="dropModerator" value="-" action="#{editDiskuto.dropModerator(value)}" >
-                            <f:ajax event="action" render ="@form" />
-                        </h:commandButton>
-                    </c:forEach>
-                </h:panelGrid>
-            </div>
-
-            <!--
-            <h:outputText value="Blokirani korisnici:" />
-            <h:outputText value="Tema: "/> 
-            !-->
-            <h:commandButton class="button" value="Spremi" action="#{editDiskuto.save}">
-                <f:ajax event="action" execute="name description rules" render="@form"/>
-            </h:commandButton>
-            <c:forEach items="#{editDiskuto.errorText}" var="value">
-                <h:outputText class="errorText" value="#{value}" />
-            </c:forEach>
-            <img id="ajaxloader" src="./resources/pages/loading.gif" />
-            <script>
-                jsf.ajax.addOnEvent(function (data) {
-                    var ajaxstatus = data.status;
-                    var ajaxloader = document.getElementById("ajaxloader");
-
-                    switch (ajaxstatus) {
-                        case "begin":
-                            ajaxloader.style.display = 'inline';
-                            break;
-                        case "complete":
-                            ajaxloader.style.display = 'none';
-                            break;
-                        case "success":
-                            break;
-                    }
-                });
-            </script>
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+                        switch (ajaxstatus) {
+                            case "begin":
+                                ajaxloader.style.display = 'inline';
+                                break;
+                            case "complete":
+                                ajaxloader.style.display = 'none';
+                                break;
+                            case "success":
+                                break;
+                        }
+                    });
+                </script>
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

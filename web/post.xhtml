@@ -6,71 +6,73 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-    <h:head>
-        <title>Diskuto | #{post.chosen.headline}</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="post.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <h:panelGroup class="reaction">
-                <h:commandButton class="button" value="+" action="#{post.upvotePost}" >
-                    <f:ajax event="action" render="karma"/>
-                </h:commandButton>
-                <h:commandButton class="button" value="-" action="#{post.downvotePost}" >
-                    <f:ajax event="action" render="karma"/>
-                </h:commandButton>
-            </h:panelGroup>
-            <h:link id="category" value="(#{post.chosen.category})" outcome="forum" >
-                <f:param name="name" value="#{post.chosen.diskuto.name}" />
-                <f:param name="cat" value="#{post.chosen.category}" />
-            </h:link>
-            <h:outputText class="diskutoTitle" value="#{post.chosen.headline}" />
-            <h:panelGroup class="postDescription" >
-                <h:outputText id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size() > 0 ? '+' : ''}#{post.chosen.upvote.size() - post.chosen.downvote.size()} • " />
-                <h:link value="#{post.chosen.diskuto.name} • " outcome="forum" >
-                    <f:param name="name" value="#{post.chosen.diskuto.name}" />
-                </h:link>
-                <h:link value="#{post.chosen.owner.username} • " outcome="profile" >
-                    <f:param name="name" value="#{post.chosen.owner.username}" />
-                </h:link>
-                <h:outputText value="#{post.p_created}" />
-            </h:panelGroup>
-            <h:outputText class="postValue" value="#{post.chosen.description}" />
-            <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="Pošaljite komentar"
-                             onkeypress="if (event.keyCode === 13) {
-                                         onchange();
-                                         return false;
-                                     }" >
-                <f:ajax event="keydown" listener="#{post.enableButton}" execute="comment" render="send" />
-            </h:inputTextarea>
-            <h:commandButton class="button" id="send" value="Pošalji" action="#{post.sendComment}" disabled="#{!post.enabledButton}" />
-            <h:outputText class="element-title" value="Komentari (#{post.comments.size()})" />
-            <c:forEach items="#{post.comments}" var="value">
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{post.chosen.headline}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="post.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
                 <h:panelGroup class="reaction">
-                    <h:commandButton class="button" value="+" action="#{post.upvoteComment(value)}" >
-                        <f:ajax event="action" render="c_karma#{value.id}"/>
+                    <h:commandButton class="button" value="+" action="#{post.upvotePost}" >
+                        <f:ajax event="action" render="karma"/>
                     </h:commandButton>
-                    <h:commandButton class="button" value="-" action="#{post.downvoteComment(value)}" >
-                        <f:ajax event="action" render="c_karma#{value.id}"/>
+                    <h:commandButton class="button" value="-" action="#{post.downvotePost}" >
+                        <f:ajax event="action" render="karma"/>
                     </h:commandButton>
                 </h:panelGroup>
-                <h:link class="profileComment" value="#{value.owner}" outcome="profile" >
-                    <f:param name="name" value="#{value.owner}" />
+                <h:link id="category" value="(#{post.chosen.category})" outcome="forum" >
+                    <f:param name="name" value="#{post.chosen.diskuto.name}" />
+                    <f:param name="cat" value="#{post.chosen.category}" />
                 </h:link>
-                <h:panelGroup class="postDescription">
-                    <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
-                    <h:outputText value="#{message.formatted(value.created)}" />
+                <h:outputText class="diskutoTitle" value="#{post.chosen.headline}" />
+                <h:panelGroup class="postDescription" >
+                    <h:outputText id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size() > 0 ? '+' : ''}#{post.chosen.upvote.size() - post.chosen.downvote.size()} • " />
+                    <h:link value="#{post.chosen.diskuto.name} • " outcome="forum" >
+                        <f:param name="name" value="#{post.chosen.diskuto.name}" />
+                    </h:link>
+                    <h:link value="#{post.chosen.owner.username} • " outcome="profile" >
+                        <f:param name="name" value="#{post.chosen.owner.username}" />
+                    </h:link>
+                    <h:outputText value="#{post.p_created}" />
                 </h:panelGroup>
-                <h:outputText class="textComment" value="#{value.text}" />
-            </c:forEach>
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="about.xhtml">
-            <ui:param name="diskuto" value="#{post.chosen.diskuto}" />
-        </ui:include>
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+                <h:outputText class="postValue" value="#{post.chosen.description}" />
+                <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}"
+                                 onkeypress="if (event.keyCode === 13) {
+                                             onchange();
+                                             return false;
+                                         }" >
+                    <f:ajax event="keydown" listener="#{post.enableButton}" execute="comment" render="send" />
+                </h:inputTextarea>
+                <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}" disabled="#{!post.enabledButton}" />
+                <h:outputText class="element-title" value="#{output['post.comments']} (#{post.comments.size()})" />
+                <c:forEach items="#{post.comments}" var="value">
+                    <h:panelGroup class="reaction">
+                        <h:commandButton class="button" value="+" action="#{post.upvoteComment(value)}" >
+                            <f:ajax event="action" render="c_karma#{value.id}"/>
+                        </h:commandButton>
+                        <h:commandButton class="button" value="-" action="#{post.downvoteComment(value)}" >
+                            <f:ajax event="action" render="c_karma#{value.id}"/>
+                        </h:commandButton>
+                    </h:panelGroup>
+                    <h:link class="profileComment" value="#{value.owner}" outcome="profile" >
+                        <f:param name="name" value="#{value.owner}" />
+                    </h:link>
+                    <h:panelGroup class="postDescription">
+                        <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
+                        <h:outputText value="#{message.formatted(value.created)}" />
+                    </h:panelGroup>
+                    <h:outputText class="textComment" value="#{value.text}" />
+                </c:forEach>
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="about.xhtml">
+                <ui:param name="diskuto" value="#{post.chosen.diskuto}" />
+            </ui:include>
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>

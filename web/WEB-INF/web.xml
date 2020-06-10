@@ -43,7 +43,7 @@
     </welcome-file-list>
     <error-page>
         <error-code>404</error-code>
-        <location>/notFound.xhtml</location>
+        <location>/notFound</location>
     </error-page>
 
 </web-app>

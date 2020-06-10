@@ -5,31 +5,33 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Diskuto | Otkrij Diskuta</title>
-        <link rel="icon" href="resources/pages/favicon.ico" />
-        <h:outputStylesheet library="css" name="global.css"/>
-        <h:outputStylesheet library="css" name="discover.css"/>
-    </h:head>
-    <h:body>
-        <ui:include src="/header.xhtml" />
-        <h:form class="element" prependId="false">
-            <h:outputText class="element-title" value="Otkrij Diskuta"/>
-            <c:forEach items="#{discover.diskutos}" var="value" >
-                <div class="discoverDiskutos">
-                    <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
-                        <f:param name="name" value="#{value.name}" />
-                    </h:link>
-                    <h:commandButton class="button" value="#{discover.subscribed(value) ? 'Ukloni pretplatu' : 'Pretplati se'}" 
-                                     action="#{discover.subscribe(value)}" >
-                        <f:ajax event="action" render="@form"/>
-                    </h:commandButton>
-                    <h:outputText class="postDescription" value="#{value.description}" />
-                    <h:outputText class="diskutoSubscribers" value="#{value.subscribers} pretplatnika" />
-                </div>
-            </c:forEach>
-        </h:form>
-        <ui:include src="/sider.xhtml" />
-        <ui:include src="/footer.xhtml" />
-    </h:body>
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | Otkrij Diskuta</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+            <h:outputStylesheet library="css" name="discover.css"/>
+        </h:head>
+        <h:body>
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <h:outputText class="element-title" value="#{output['discover.title']}"/>
+                <c:forEach items="#{discover.diskutos}" var="value" >
+                    <div class="discoverDiskutos">
+                        <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
+                            <f:param name="name" value="#{value.name}" />
+                        </h:link>
+                        <h:commandButton class="button" value="#{discover.subscribed(value) ? output['discover.button1'] : output['discover.button2']}" 
+                                         action="#{discover.subscribe(value)}" >
+                            <f:ajax event="action" render="@form"/>
+                        </h:commandButton>
+                        <h:outputText class="postDescription" value="#{value.description}" />
+                        <h:outputText class="diskutoSubscribers" value="#{value.subscribers} #{output['discover.subscribers']}" />
+                    </div>
+                </c:forEach>
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
 </html>
