@@ -51,7 +51,8 @@ public class Profile implements Serializable {
             this.chosen = AppHelper.getActiveUser();
         } else {
             me = false;
-            this.chosen = new User(_user);
+            this.chosen = new User();
+            this.chosen.setUsername(_user);
             if (!this.chosen.retrieveData()) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
             }
@@ -153,7 +154,8 @@ public class Profile implements Serializable {
             XmlHelper helper = new XmlHelper(value);
             List<String> results = helper.makeRawValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post(Integer.parseInt(s));
+                org.diskuto.models.Post post = new org.diskuto.models.Post();
+                post.setId(Integer.parseInt(s));
                 post.retrieveData();
                 posts.add(post);
             }
@@ -173,13 +175,15 @@ public class Profile implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
 
-            Comment comment = new Comment(helper);
-            org.diskuto.models.Post p = new org.diskuto.models.Post(Integer.parseInt(
+            Comment comment = new Comment();
+            comment.commentFromXML(helper);
+            org.diskuto.models.Post p = new org.diskuto.models.Post();
+            p.setId(Integer.parseInt(
                     db.xquery("for $x in /posts/post where $x/comments/comment/id=\""
                             + comment.getId() + "\" return data($x/id)").getIterator()
                             .nextResource().getContent().toString()));
             p.retrieveData();
-            comment.setPost(p);
+            comment.setPost(p.getId());
             this.comments.add(comment);
         }
         commentsIteratorId += 10;

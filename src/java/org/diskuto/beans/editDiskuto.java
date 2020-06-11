@@ -40,9 +40,10 @@ public class EditDiskuto implements Serializable {
      * Creates a new instance of editDiskuto
      */
     public EditDiskuto() throws Exception {
-        existing = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
+        existing = new org.diskuto.models.Forum();
+        existing.setName(AppHelper.param("name"));
 
-        if (existing != null) {
+        if (existing.retrieveData()) {
             this.name = existing.getName();
             this.description = existing.getDescription();
             this.rules = existing.getRules();
@@ -134,7 +135,7 @@ public class EditDiskuto implements Serializable {
                 categories.add(nameCategory);
             }
         }
-        
+
         nameCategory = "";
     }
 
@@ -149,7 +150,7 @@ public class EditDiskuto implements Serializable {
         Database db = new Database();
         ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + nameModerator + "\" return $x");
         db.close();
-
+        
         if (AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
             errorText.add("Vi ste već vlasnik Diskuta");
         } else if (result.getSize() == 0) {
@@ -159,13 +160,15 @@ public class EditDiskuto implements Serializable {
         } else {
             moderators.add(nameModerator);
         }
-        
+
         nameModerator = "";
     }
 
     public void dropModerator(Object moderator) {
         errorText.clear();
-        moderators.remove(moderator);
+        org.diskuto.models.User dropModerator = new org.diskuto.models.User();
+        dropModerator.setUsername(moderator.toString());
+        moderators.remove(dropModerator);
     }
 
     public void save() throws Exception {
@@ -180,7 +183,12 @@ public class EditDiskuto implements Serializable {
                 if (resultDiskuto.getSize() > 0) {
                     errorText.add("Diskuto pod tim nazivom već postoji");
                 } else {
-                    Forum forum = new Forum(name, description, categories, moderators, rules);
+                    Forum forum = new Forum();
+                    forum.setName(name);
+                    forum.setDescription(description);
+                    forum.setCategories(categories);
+                    forum.setModerators(moderators);
+                    forum.setRules(rules);
                     forum.register();
                 }
             } else {
@@ -188,7 +196,7 @@ public class EditDiskuto implements Serializable {
                 existing.setRules(rules);
                 existing.setCategories(categories);
                 existing.setModerators(moderators);
-                
+
                 existing.update();
             }
 

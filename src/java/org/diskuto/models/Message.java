@@ -5,9 +5,6 @@
  */
 package org.diskuto.models;
 
-import java.util.Date;
-import java.util.List;
-import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 
 /**
@@ -16,42 +13,37 @@ import org.diskuto.helpers.Database;
  */
 public class Message {
 
-    private long time;
-    private User sender;
-    private User recipient;
+    private String sender;
+    private String recipient;
     private String text;
     private boolean seen;
+    private long time;
 
-    public Message(long time, User recipient, User sender, String text, boolean seen) {
-        this.time = time;
-        this.recipient = recipient;
-        this.sender = sender;
-        this.text = text;
-        this.seen = seen;
+    public Message() {
     }
 
-    public long getTime() {
-        return time;
+    public void send() throws Exception {
+        Database db = new Database();
+        db.xquery("update insert <message><sender>" + this.sender + "</sender><recipient>"
+                + this.recipient + "</recipient><time>" + this.time + "</time>"
+                + "<text>" + this.text + "</text><seen>0</seen></message> into /messages");
+        db.close();
     }
 
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public User getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(User recipient) {
-        this.recipient = recipient;
-    }
-
-    public User getSender() {
+    public String getSender() {
         return sender;
     }
 
-    public void setSender(User sender) {
+    public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {
@@ -70,11 +62,11 @@ public class Message {
         this.seen = seen;
     }
 
-    public void send() throws Exception {
-        Database db = new Database();
-        db.xquery("update insert <message><sender>" + this.sender.getUsername() + "</sender><recipient>" 
-                + this.recipient.getUsername() + "</recipient><time>" + this.time + "</time>"
-                + "<text>" + this.text + "</text><seen>0</seen></message> into /messages");
-        db.close();
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

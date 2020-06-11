@@ -59,7 +59,9 @@ public class Settings implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("");
-            listDiskuto.add(new org.diskuto.models.Forum().getForum(helper.makeValue("forum", objekt)));
+            org.diskuto.models.Forum diskuto = new org.diskuto.models.Forum();
+            diskuto.setName(helper.makeValue("forum", objekt));
+            listDiskuto.add(diskuto);
         }
         resource = db.xquery("/users/user[name=\"" + me.getUsername() + "\"]/ignore/user");
         iterator = resource.getIterator();
@@ -68,7 +70,8 @@ public class Settings implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("");
-            User user = new User(helper.makeValue("user", objekt));
+            User user = new User();
+            user.setUsername(helper.makeValue("user", objekt));
             user.retrieveData();
             ignoredUsers.add(user);
         }

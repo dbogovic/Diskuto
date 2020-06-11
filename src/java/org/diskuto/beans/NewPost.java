@@ -32,10 +32,11 @@ public class NewPost implements Serializable {
     /**
      * Creates a new instance of newPost
      */
-    public NewPost() throws Exception {
-        this.chosen = new org.diskuto.models.Forum().getForum(AppHelper.param("on"));
-
-        if (this.chosen == null) {
+    public NewPost() throws Exception { 
+        this.chosen = new org.diskuto.models.Forum();
+        chosen.setName(AppHelper.param("on"));
+        
+        if (!this.chosen.retrieveData()) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
     }
@@ -86,7 +87,12 @@ public class NewPost implements Serializable {
             errorText.add("Opis je obavezan");
         }
         else {
-            Post post = new Post(headline, description, AppHelper.getActiveUser(), chosen, selectedCategory);
+            Post post = new Post();
+            post.setHeadline(headline);
+            post.setDescription(description);
+            post.setOwner(AppHelper.getActiveUser().getUsername());
+            post.setDiskuto(chosen.getName());
+            post.setCategory(selectedCategory);
             post.save();
             FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
         }

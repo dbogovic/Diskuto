@@ -16,8 +16,8 @@ import org.xmldb.api.base.ResourceSet;
  * @author dario
  */
 public class Comment {
-    
-    private Post post;
+
+    private int post;
     private int id;
     private String text;
     private long created;
@@ -26,19 +26,10 @@ public class Comment {
     private List<String> upvote;
     private List<String> downvote;
 
-    public Comment(Post post, String text, String owner) throws Exception {
-        this.post = post;
-        this.id = generateId();
-        this.text = text;
-        this.created = System.currentTimeMillis() / 1000L;
-        this.owner = owner;
-        this.deleted = false;
-        upvote = new ArrayList();
-        downvote = new ArrayList();
-        upvote.add(owner);
+    public Comment() {
     }
 
-    public Comment(XmlHelper helper) throws Exception {
+    public void commentFromXML(XmlHelper helper) throws Exception {
         Object object = helper.makeObject("comment");
         this.id = Integer.parseInt(helper.makeValue("id", object));
         this.text = helper.makeValue("text", object);
@@ -49,11 +40,75 @@ public class Comment {
         this.downvote = helper.makeRawValue("/comment/downvote/user");
     }
 
-    public Post getPost() {
+    public void save() throws Exception {
+        Database db = new Database();
+        this.id = generateId();
+        this.created = System.currentTimeMillis() / 1000L;
+        this.deleted = false;
+        upvote = new ArrayList();
+        downvote = new ArrayList();
+        upvote.add(owner);
+        db.xquery("update insert <comment><id>" + this.id + "</id><text>" + this.text
+                + "</text><created>" + this.created + "</created><owner>" + this.owner
+                + "</owner><deleted>0</deleted><upvote><user>" + this.owner
+                + "</user></upvote><downvote/></comment> into /posts/post[id=\"" + this.post + "\"]/comments");
+        db.close();
+    }
+
+    public void addUpvote(String newUpvote) throws Exception {
+        this.upvote.add(newUpvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+                + "\" return update insert <user>" + newUpvote
+                + "</user> into $x/comments/comment[id=\"" + this.id + "\"]/upvote");
+        db.close();
+    }
+
+    public void dropUpvote(String upvote) throws Exception {
+        this.upvote.remove(upvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+                + "\" return update delete $x/comments/comment[id=\"" + this.id
+                + "\"]/upvote/user[.=\"" + upvote + "\"]");
+        db.close();
+    }
+
+    public void addDownvote(String newDownvote) throws Exception {
+        this.downvote.add(newDownvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+                + "\" return update insert <user>" + newDownvote
+                + "</user> into $x/comments/comment[id=\"" + this.id + "\"]/downvote");
+        db.close();
+    }
+
+    public void dropDownvote(String downvote) throws Exception {
+        this.downvote.remove(downvote);
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+                + "\" return update delete $x/comments/comment[id=\"" + this.id
+                + "\"]/downvote/user[.=\"" + upvote + "\"]");
+        db.close();
+    }
+
+    private int generateId() throws Exception {
+        Database db = new Database();
+        ResourceSet rs = db.xquery("max(/posts/post[id=\"" + this.post
+                + "\"]/comments/comment/id)");
+        db.close();
+
+        if (rs.getSize() > 0) {
+            return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    public int getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(int post) {
         this.post = post;
     }
 
@@ -101,63 +156,16 @@ public class Comment {
         return upvote;
     }
 
-    public void addUpvote(String newUpvote) throws Exception {
-        this.upvote.add(newUpvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.post.getId()
-                + "\" return update insert <user>" + newUpvote
-                + "</user> into $x/comments/comment[id=\"" + this.id + "\"]/upvote");
-        db.close();
-    }
-    
-    public void dropUpvote(String upvote) throws Exception {
-        this.upvote.remove(upvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\""+ this.post.getId() +
-                "\" return update delete $x/comments/comment[id=\"" + this.id +
-                "\"]/upvote/user[.=\"" + upvote + "\"]");
-        db.close();
+    public void setUpvote(List<String> upvote) {
+        this.upvote = upvote;
     }
 
     public List<String> getDownvote() {
         return downvote;
     }
 
-    public void addDownvote(String newDownvote) throws Exception {
-        this.downvote.add(newDownvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.post.getId()
-                + "\" return update insert <user>" + newDownvote
-                + "</user> into $x/comments/comment[id=\"" + this.id + "\"]/downvote");
-        db.close();
-    }
-    
-    public void dropDownvote(String downvote) throws Exception {
-        this.downvote.remove(downvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\""+ this.post.getId() +
-                "\" return update delete $x/comments/comment[id=\"" + this.id +
-                "\"]/downvote/user[.=\"" + upvote + "\"]");
-        db.close();
+    public void setDownvote(List<String> downvote) {
+        this.downvote = downvote;
     }
 
-    private int generateId() throws Exception {
-        Database db = new Database();
-        ResourceSet rs = db.xquery("max(/posts/post[id=\"" + this.post.getId()
-                + "\"]/comments/comment/id)");
-        db.close();
-
-        if(rs.getSize() > 0) return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
-        else return 1;
-    }
-    
-    public void save() throws Exception {
-        Database db = new Database();
-        db.xquery("update insert <comment><id>" + this.id + "</id><text>" + this.text
-                +"</text><created>" + this.created + "</created><owner>" + this.owner
-                +"</owner><deleted>0</deleted><upvote><user>" + this.owner
-                +"</user></upvote><downvote/></comment> into /posts/post[id=\"" + this.post.getId() + "\"]/comments");
-        db.close();
-    }
-    
 }

@@ -59,7 +59,9 @@ public class Search implements Serializable {
                 XmlHelper helper = new XmlHelper(value);
                 List<String> results = helper.makeRawValue("/name");
                 for (String s : results) {
-                    diskutoResults.add(new Forum().getForum(s));
+                    Forum diskuto = new Forum();
+                    diskuto.setName(s);
+                    diskutoResults.add(diskuto);
                 }
             }
 
@@ -72,7 +74,8 @@ public class Search implements Serializable {
                 XmlHelper helper = new XmlHelper(value);
                 List<String> results = helper.makeRawValue("/name");
                 for (String s : results) {
-                    User user = new User(s);
+                    User user = new User();
+                    user.setUsername(s);
                     user.retrieveData();
                     userResults.add(user);
                 }
@@ -87,7 +90,8 @@ public class Search implements Serializable {
                 XmlHelper helper = new XmlHelper(value);
                 List<String> results = helper.makeRawValue("/id");
                 for (String s : results) {
-                    Post post = new Post(Integer.parseInt(s));
+                    Post post = new Post();
+                    post.setId(Integer.parseInt(s));
                     post.retrieveData();
                     postResults.add(post);
                 }

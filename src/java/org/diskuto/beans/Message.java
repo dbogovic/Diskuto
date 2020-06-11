@@ -42,7 +42,8 @@ public class Message implements Serializable {
         if (_user == null || _user.equals(AppHelper.getActiveUser().getUsername())) {
             me = true;
         } else {
-            this.chosen = new User(_user);
+            this.chosen = new User();
+            this.chosen.setUsername(_user);
             if (!this.chosen.retrieveData()) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("message");
             }
@@ -63,11 +64,11 @@ public class Message implements Serializable {
         messages = new ArrayList();
 
         if (!me) {
-            
+
             ResourceSet result;
             ResourceIterator iterator;
             Database db = new Database();
-            
+
             result = db.xquery("for $x in /messages/message where ($x/recipient=\""
                     + AppHelper.getActiveUser().getUsername() + "\" and $x/sender=\"" + this.chosen.getUsername()
                     + "\") return $x");
@@ -79,11 +80,15 @@ public class Message implements Serializable {
                 XmlHelper helper = new XmlHelper(value);
                 Object object = helper.makeObject("message");
 
-                org.diskuto.models.Message m = new org.diskuto.models.Message(Long.parseLong(helper.makeValue("time", object)),
-                        AppHelper.getActiveUser(), this.chosen, helper.makeValue("text", object), (Integer.parseInt(helper.makeValue("seen", object)) == 1));
+                org.diskuto.models.Message m = new org.diskuto.models.Message();
+                m.setSender(AppHelper.getActiveUser().getUsername());
+                m.setRecipient(this.chosen.getUsername());
+                m.setText(helper.makeValue("text", object));
+                m.setTime(Long.parseLong(helper.makeValue("time", object)));
+                m.setSeen((Integer.parseInt(helper.makeValue("seen", object)) == 1));
                 messages.add(m);
             }
-            
+
             result = db.xquery("for $x in /messages/message where ($x/sender=\""
                     + AppHelper.getActiveUser().getUsername() + "\" and $x/recipient=\"" + this.chosen.getUsername()
                     + "\") return $x");
@@ -95,11 +100,15 @@ public class Message implements Serializable {
                 XmlHelper helper = new XmlHelper(value);
                 Object object = helper.makeObject("message");
 
-                org.diskuto.models.Message m = new org.diskuto.models.Message(Long.parseLong(helper.makeValue("time", object)),
-                        this.chosen, AppHelper.getActiveUser(), helper.makeValue("text", object), (Integer.parseInt(helper.makeValue("seen", object)) == 1));
+                org.diskuto.models.Message m = new org.diskuto.models.Message();
+                m.setRecipient(AppHelper.getActiveUser().getUsername());
+                m.setSender(this.chosen.getUsername());
+                m.setText(helper.makeValue("text", object));
+                m.setTime(Long.parseLong(helper.makeValue("time", object)));
+                m.setSeen((Integer.parseInt(helper.makeValue("seen", object)) == 1));
                 messages.add(m);
             }
-            
+
             db.close();
         }
 
@@ -145,10 +154,14 @@ public class Message implements Serializable {
     }
 
     public void send() throws Exception {
-        org.diskuto.models.Message message = new org.diskuto.models.Message(System.currentTimeMillis() / 1000L, 
-                this.chosen, AppHelper.getActiveUser(), this.reply, false);
-        message.send();
-        FacesContext.getCurrentInstance().getExternalContext().redirect("message?with="+this.chosen.getUsername());
+        org.diskuto.models.Message m = new org.diskuto.models.Message();
+        m.setRecipient(AppHelper.getActiveUser().getUsername());
+        m.setSender(this.chosen.getUsername());
+        m.setText(this.reply);
+        m.setTime(System.currentTimeMillis() / 1000L);
+        m.setSeen(false);
+        m.send();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("message?with=" + this.chosen.getUsername());
     }
 
     public void enableButton() {

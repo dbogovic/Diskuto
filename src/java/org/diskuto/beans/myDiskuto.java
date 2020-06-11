@@ -56,7 +56,9 @@ public class MyDiskuto implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("");
-            list.add(new org.diskuto.models.Forum().getForum(helper.makeValue("name", objekt)));
+            org.diskuto.models.Forum forum = new org.diskuto.models.Forum();
+            forum.setName(helper.makeValue("name", objekt));
+            list.add(forum);
         }
     }
 }

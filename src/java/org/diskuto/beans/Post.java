@@ -42,8 +42,9 @@ public class Post implements Serializable {
      */
     public Post() throws Exception {
         this.user = AppHelper.getActiveUser();
-        this.chosen = new org.diskuto.models.Post(Integer.parseInt(AppHelper.param("id")));
-
+        this.chosen = new org.diskuto.models.Post();
+        this.chosen.setId(Integer.parseInt(AppHelper.param("id")));
+        
         if (!this.chosen.retrieveData()) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
@@ -133,7 +134,10 @@ public class Post implements Serializable {
 
     public String sendComment() throws Exception {
         if (!this.myComment.equals("")) {
-            Comment comment = new Comment(chosen, myComment, user.getUsername());
+            Comment comment = new Comment();
+            comment.setPost(this.chosen.getId());
+            comment.setText(this.myComment);
+            comment.setOwner(this.user.getUsername());
             comment.save();
             this.comments.add(comment);
             this.myComment = "";
@@ -156,8 +160,9 @@ public class Post implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
 
-            Comment comment = new Comment(helper);
-            comment.setPost(chosen);
+            Comment comment = new Comment();
+            comment.commentFromXML(helper);
+            comment.setPost(this.chosen.getId());
             this.comments.add(comment);
         }
     }

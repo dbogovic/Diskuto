@@ -39,10 +39,11 @@ public class Forum implements Serializable {
      * Creates a new instance of Forum
      */
     public Forum() throws Exception {
-        this.chosen = new org.diskuto.models.Forum().getForum(AppHelper.param("name"));
+        this.chosen = new org.diskuto.models.Forum();
+        chosen.setName(AppHelper.param("name"));
         this.cat = AppHelper.param("cat");
 
-        if (this.chosen == null) {
+        if (!this.chosen.retrieveData()) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
         
@@ -55,7 +56,8 @@ public class Forum implements Serializable {
             XmlHelper helper = new XmlHelper(value);
             List<String> results = helper.makeRawValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post(Integer.parseInt(s));
+                org.diskuto.models.Post post = new org.diskuto.models.Post();
+                post.setId(Integer.parseInt(s));
                 post.retrieveData();
                 items.add(post);
             }
@@ -83,7 +85,7 @@ public class Forum implements Serializable {
         if (AppHelper.getActiveUser() == null) {
             return false;
         } else if (this.chosen.getOwner().equals(AppHelper.getActiveUser().getUsername())
-                || this.chosen.getModerators().contains(AppHelper.getActiveUser().getUsername())) {
+                || this.chosen.getModerators().contains(AppHelper.getActiveUser())) {
             return true;
         }
         return false;
@@ -91,11 +93,11 @@ public class Forum implements Serializable {
 
     public boolean isSubscribed() throws Exception {
         Database db = new Database();
-        ResourceSet subscribed = db.xquery("/users/user[name=\"" + AppHelper.getActiveUser().getUsername()
+        ResourceSet subs = db.xquery("/users/user[name=\"" + AppHelper.getActiveUser().getUsername()
                 + "\"]/subscriptions[forum=\"" + this.chosen.getName() + "\"]");
         db.close();
 
-        this.subscribed = subscribed.getSize() > 0;
+        this.subscribed = subs.getSize() > 0;
         return this.subscribed;
     }
 
@@ -134,9 +136,10 @@ public class Forum implements Serializable {
             String value = (String) r.getContent();
             XmlHelper helper = new XmlHelper(value);
             Object object = helper.makeObject("post");
-            org.diskuto.models.Post retrieved = new org.diskuto.models.Post(Integer.parseInt(helper.makeValue("id", object)));
+            org.diskuto.models.Post retrieved = new org.diskuto.models.Post();
+            retrieved.setId(Integer.parseInt(helper.makeValue("id", object)));
             retrieved.setHeadline(helper.makeValue("headline", object));
-            retrieved.setOwner(new User(helper.makeValue("owner", object)));
+            retrieved.setOwner(helper.makeValue("owner", object));
             retrieved.setCreated(Long.parseLong(helper.makeValue("created", object)));
             post.add(retrieved);
         }

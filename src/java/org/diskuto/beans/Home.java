@@ -47,7 +47,8 @@ public class Home {
             XmlHelper helper = new XmlHelper(value);
             List<String> results = helper.makeRawValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post(Integer.parseInt(s));
+                org.diskuto.models.Post post = new org.diskuto.models.Post();
+                post.setId(Integer.parseInt(s));
                 post.retrieveData();
                 items.add(post);
             }
@@ -97,7 +98,9 @@ public class Home {
     
     public void doLogin() throws Exception {
         this.errorText.clear();
-        User user = new User(username, password);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
         if(user.login()) {
             user.retrieveData();
             Listener.addToSession("user", user);

@@ -49,8 +49,12 @@ public class Discover implements Serializable {
             XmlHelper helper = new XmlHelper(value);
             Object objekt = helper.makeObject("forum");
 
-            diskutos.add(new org.diskuto.models.Forum(helper.makeValue("name", objekt),
-                    helper.makeValue("description", objekt), Integer.parseInt(helper.makeValue("subscribers", objekt))));
+            org.diskuto.models.Forum diskuto = new org.diskuto.models.Forum();
+            diskuto.setName(helper.makeValue("name", objekt));
+            diskuto.setDescription(helper.makeValue("description", objekt));
+            diskuto.setSubscribers(Integer.parseInt(helper.makeValue("subscribers", objekt)));
+            
+            diskutos.add(diskuto);
         }
     }
 
