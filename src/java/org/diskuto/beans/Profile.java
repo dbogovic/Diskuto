@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Comment;
 import org.diskuto.models.User;
@@ -51,9 +52,9 @@ public class Profile implements Serializable {
             this.chosen = AppHelper.getActiveUser();
         } else {
             me = false;
-            this.chosen = new User();
-            this.chosen.setUsername(_user);
-            if (!this.chosen.retrieveData()) {
+            Retriever retriever = new Retriever(_user);
+            this.chosen = retriever.user();
+            if (this.chosen == null) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
             }
         }
@@ -150,13 +151,11 @@ public class Profile implements Serializable {
         ResourceIterator iterator = query.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            List<String> results = helper.makeRawValue("/id");
+            XmlHelper helper = new XmlHelper(r);
+            List<String> results = helper.makeListValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post();
-                post.setId(Integer.parseInt(s));
-                post.retrieveData();
+                Retriever retriever = new Retriever(s);
+                org.diskuto.models.Post post = retriever.post();
                 posts.add(post);
             }
         }
@@ -172,18 +171,12 @@ public class Profile implements Serializable {
         ResourceIterator iterator = query.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
 
             Comment comment = new Comment();
-            comment.commentFromXML(helper);
-            org.diskuto.models.Post p = new org.diskuto.models.Post();
-            p.setId(Integer.parseInt(
-                    db.xquery("for $x in /posts/post where $x/comments/comment/id=\""
-                            + comment.getId() + "\" return data($x/id)").getIterator()
-                            .nextResource().getContent().toString()));
-            p.retrieveData();
-            comment.setPost(p.getId());
+            comment.retrieve(helper);
+            comment.setPost(Integer.valueOf(new XmlHelper(db.xquery("for $x in /posts/post where $x/comments/comment/id=\""
+                    + comment.getId() + "\" return data($x/id)").getResource(0)).rawValue()));
             this.comments.add(comment);
         }
         commentsIteratorId += 10;

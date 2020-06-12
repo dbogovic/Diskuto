@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xmldb.api.base.Resource;
 
 /**
  *
@@ -24,8 +25,8 @@ public class XmlHelper {
     XPath xp;
     String xml;
 
-    public XmlHelper(String xml) {
-        this.xml = xml;
+    public XmlHelper(Resource resource) throws Exception {
+        this.xml = (String) resource.getContent();
         this.xp = XPathFactory.newInstance().newXPath();
     }
 
@@ -37,7 +38,7 @@ public class XmlHelper {
         return xp.evaluate(attribute, object);
     }
 
-    public List<String> makeRawValue(String expression) throws XPathExpressionException {
+    public List<String> makeListValue(String expression) throws XPathExpressionException {
         List<String> list = new ArrayList();
         NodeList nodes = (NodeList) xp.evaluate(expression, new InputSource(new StringReader(xml)), XPathConstants.NODESET);
 
@@ -46,5 +47,9 @@ public class XmlHelper {
         }
         
         return list;
+    }
+    
+    public String rawValue() {
+        return xml;
     }
 }

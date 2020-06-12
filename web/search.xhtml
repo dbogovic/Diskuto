@@ -21,7 +21,7 @@
                         <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
                             <f:param name="name" value="#{value.name}" />
                         </h:link>
-                        <h:commandButton class="button" value="#{search.subscribed(value) ? output['search.button1'] : output['search.button2']}'" 
+                        <h:commandButton class="button" value="#{search.subscribed(value) ? output['search.button1'] : output['search.button2']}" 
                                          action="#{search.subscribe(value)}" >
                             <f:ajax event="action" render="@form"/>
                         </h:commandButton>

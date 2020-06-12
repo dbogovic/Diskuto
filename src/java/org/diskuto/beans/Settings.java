@@ -15,6 +15,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.listeners.Listener;
 import org.diskuto.models.User;
@@ -56,8 +57,7 @@ public class Settings implements Serializable {
         iterator = resource.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
             Object objekt = helper.makeObject("");
             org.diskuto.models.Forum diskuto = new org.diskuto.models.Forum();
             diskuto.setName(helper.makeValue("forum", objekt));
@@ -67,12 +67,11 @@ public class Settings implements Serializable {
         iterator = resource.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
             Object objekt = helper.makeObject("");
-            User user = new User();
-            user.setUsername(helper.makeValue("user", objekt));
-            user.retrieveData();
+
+            Retriever retriever = new Retriever(helper.makeValue("user", objekt));
+            User user = retriever.user();
             ignoredUsers.add(user);
         }
         db.close();
@@ -224,12 +223,12 @@ public class Settings implements Serializable {
     public void unignore(User u) throws Exception {
         Database db = new Database();
         db.xquery("for $x in /users/user[name=\"" + me.getUsername()
-                    + "\"]/ignore[user=\"" + u.getUsername() + "\"] return update delete $x/user");
+                + "\"]/ignore[user=\"" + u.getUsername() + "\"] return update delete $x/user");
         db.close();
         this.ignoredUsers.remove(u);
     }
-    
-    public void disableAccount() throws Exception{
+
+    public void disableAccount() throws Exception {
         errorDisable = false;
 
         if (!wantDisable) {

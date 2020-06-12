@@ -81,10 +81,7 @@ public class Registration {
         this.errorText.clear();
         if (check()) {
             User user = new User();
-            user.setEmail(email);
-            user.setUsername(username);
-            user.setPassword(password);
-            user.register();
+            user.register(email, username, password);
             Listener.addToSession("user", user);
             FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration");
         }

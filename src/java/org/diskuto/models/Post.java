@@ -7,11 +7,9 @@ package org.diskuto.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -32,40 +30,32 @@ public class Post {
     public Post() {
     }
 
-    public boolean retrieveData() throws Exception {
-        Database db = new Database();
-        ResourceSet result = db.xquery("/posts/post[id=\"" + this.id + "\"]");
-        db.close();
-
-        if (result.getSize() != 0) {
-            ResourceIterator iterator = result.getIterator();
-            Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            Object object = helper.makeObject("post");
-
-            this.created = Long.parseLong(helper.makeValue("created", object));
-            this.headline = helper.makeValue("headline", object);
-            this.description = helper.makeValue("description", object);
-            this.owner = helper.makeValue("owner", object);
-            this.diskuto = helper.makeValue("diskuto", object);
-            this.category = helper.makeValue("category", object);
-            this.upvote = helper.makeRawValue("/post/upvote/user");
-            this.downvote = helper.makeRawValue("/post/downvote/user");
-
-            return true;
-        } else {
-            return false;
-        }
+    public void retrieve(XmlHelper helper) throws Exception {
+        Object object = helper.makeObject("post");
+        this.id = Integer.parseInt(helper.makeValue("id", object));
+        this.created = Long.parseLong(helper.makeValue("created", object));
+        this.headline = helper.makeValue("headline", object);
+        this.description = helper.makeValue("description", object);
+        this.owner = helper.makeValue("owner", object);
+        this.diskuto = helper.makeValue("diskuto", object);
+        this.category = helper.makeValue("category", object);
+        this.upvote = helper.makeListValue("/post/upvote/user");
+        this.downvote = helper.makeListValue("/post/downvote/user");
     }
 
-    public void save() throws Exception {
-        Database db = new Database();
-        this.id = generateId();
+    public void save(String headline, String description, String owner, String diskuto, String category) throws Exception {
+        this.id = AppHelper.generateId("max(/posts/post/id)");
+        this.headline = headline;
+        this.description = description;
         this.created = System.currentTimeMillis() / 1000L;
+        this.owner = owner;
+        this.diskuto = diskuto;
+        this.category = category;
         upvote = new ArrayList();
         downvote = new ArrayList();
         upvote.add(this.owner);
+
+        Database db = new Database();
         db.xquery("update insert <post><id>" + this.id + "</id><headline>" + this.headline
                 + "</headline><description>" + this.description + "</description><created>" + created
                 + "</created><owner>" + this.owner + "</owner><diskuto>" + this.diskuto
@@ -74,48 +64,30 @@ public class Post {
         db.close();
     }
 
-    public void addUpvote(String newUpvote) throws Exception {
-        this.upvote.add(newUpvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
-                + "\" return update insert <user>" + newUpvote + "</user> into $x/upvote");
-        db.close();
-    }
-
-    public void dropUpvote(String upvote) throws Exception {
-        this.upvote.remove(upvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
-                + "\" return update delete $x/upvote/user[.=\"" + upvote + "\"]");
-        db.close();
-    }
-
-    public void addDownvote(String newDownvote) throws Exception {
-        this.downvote.add(newDownvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
-                + "\" return update insert <user>" + newDownvote + "</user> into $x/downvote");
-        db.close();
-    }
-
-    public void dropDownvote(String downvote) throws Exception {
-        this.downvote.remove(downvote);
-        Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
-                + "\" return update delete $x/downvote/user[.=\"" + downvote + "\"]");
-        db.close();
-    }
-
-    private int generateId() throws Exception {
-        Database db = new Database();
-        ResourceSet rs = db.xquery("max(/posts/post/id)");
-        db.close();
-
-        if (rs.getSize() > 0) {
-            return Integer.parseInt(rs.getResource(0).getContent().toString()) + 1;
-        } else {
-            return 1;
+    public void addVote(String type, String vote) throws Exception {
+        if (type.equals("upvote")) {
+            this.upvote.add(vote);
+        } else if (type.equals("downvote")) {
+            this.downvote.add(vote);
         }
+
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
+                + "\" return update insert <user>" + vote + "</user> into $x/" + type);
+        db.close();
+    }
+
+    public void dropVote(String type, String vote) throws Exception {
+        if (type.equals("upvote")) {
+            this.upvote.remove(vote);
+        } else if (type.equals("downvote")) {
+            this.downvote.remove(vote);
+        }
+
+        Database db = new Database();
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.id
+                + "\" return update delete $x/" + type + "/user[.=\"" + vote + "\"]");
+        db.close();
     }
 
     public int getId() {

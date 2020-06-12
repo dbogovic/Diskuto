@@ -5,14 +5,9 @@
  */
 package org.diskuto.models;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -25,94 +20,82 @@ public class Forum {
     private List<String> categories;
     private List<String> moderators;
     private String rules;
-    private User owner;
+    private String owner;
     private long created;
     private int subscribers;
 
     public Forum() {
     }
 
-    public boolean retrieveData() throws Exception {
-
-        Database db = new Database();
-        ResourceSet info = db.xquery("for $x in/forums/forum where $x/name=\"" + this.name + "\" return $x");
-        db.close();
-
-        ResourceIterator iterator = info.getIterator();
-
-        if (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            Object objekt = helper.makeObject("forum");
-
-            this.description = helper.makeValue("description", objekt);
-            this.categories = helper.makeRawValue("/forum/categories/category");
-            this.moderators = new ArrayList();
-            for (String s : helper.makeRawValue("/forum/moderators/moderator")) {
-                moderators.add(s);
-            }
-            this.rules = helper.makeValue("rules", objekt);
-            this.owner = new User();
-            this.owner.setUsername(helper.makeValue("owner", objekt));
-            this.created = Long.parseLong(helper.makeValue("created", objekt));
-            this.subscribers = Integer.parseInt(helper.makeValue("subscribers", objekt));
-
-            return true;
-        }
-
-        return false;
+    public void retrieve(XmlHelper helper) throws Exception {
+        Object objekt = helper.makeObject("forum");
+        this.description = helper.makeValue("description", objekt);
+        this.categories = helper.makeListValue("/forum/categories/category");
+        this.moderators = helper.makeListValue("/forum/moderators/moderator");
+        this.rules = helper.makeValue("rules", objekt);
+        this.owner = helper.makeValue("owner", objekt);
+        this.created = Long.parseLong(helper.makeValue("created", objekt));
+        this.subscribers = Integer.parseInt(helper.makeValue("subscribers", objekt));
     }
 
-    public void register() throws Exception {
+    public void save(String name, String description, List<String> categories, List<String> moderators, String rules, String owner) throws Exception {
+        this.name = name;
+        this.description = description;
+        this.categories = categories;
+        this.moderators = moderators;
+        this.rules = rules;
+        this.owner = owner;
         this.created = System.currentTimeMillis() / 1000L;
-        owner = AppHelper.getActiveUser();
+        this.subscribers = 0;
 
         Database db = new Database();
-
         StringBuilder query = new StringBuilder("update insert <forum>");
         query.append("<name>").append(name).append("</name>");
         query.append("<description>").append(description).append("</description>");
         query.append("<categories>");
-        for (String category : categories) {
+        categories.forEach((category) -> {
             query.append("<category>").append(category).append("</category>");
-        }
+        });
         query.append("</categories>");
         query.append("<owner>").append(owner).append("</owner>");
         query.append("<moderators>");
-        for (String moderator : moderators) {
+        moderators.forEach((moderator) -> {
             query.append("<moderator>").append(moderator).append("</moderator>");
-        }
+        });
         query.append("</moderators>");
         query.append("<rules>").append(rules).append("</rules>");
         query.append("<created>").append(created).append("</created>");
         query.append("<subscribers>0</subscribers>");
         query.append("</forum> into /forums");
-
         db.xquery(query.toString());
         db.close();
     }
 
-    public void update() throws Exception {
-
+    public void update(String _description, String _rules, List<String> _categories, List<String> _moderators) throws Exception {
         Database db = new Database();
-        db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/description with \"" + description + "\"");
-        db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/rules with \"" + rules + "\"");
 
-        StringBuilder query = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/categories with <categories>");
-        for (String category : categories) {
-            query.append("<category>").append(category).append("</category>");
+        if (!_description.equals(description)) {
+            db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/description with \"" + _description + "\"");
         }
-        query.append("</categories>");
-        db.xquery(query.toString());
-
-        StringBuilder query2 = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/moderators with <moderators>");
-        for (String moderator : moderators) {
-            query2.append("<moderator>").append(moderator).append("</moderator>");
+        if (!_rules.equals(rules)) {
+            db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return update value $x/rules with \"" + _rules + "\"");
         }
-        query2.append("</moderators>");
-        db.xquery(query2.toString());
-
+        if (!_categories.equals(categories)) {
+            StringBuilder query = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/categories with <categories>");
+            _categories.forEach((category) -> {
+                query.append("<category>").append(category).append("</category>");
+            });
+            query.append("</categories>");
+            db.xquery(query.toString());
+        }
+        if (!_moderators.equals(moderators)) {
+            StringBuilder query2 = new StringBuilder("for $x in /forums/forum where $x/name=\"" + name + "\" return update replace $x/moderators with <moderators>");
+            _moderators.forEach((moderator) -> {
+                query2.append("<moderator>").append(moderator).append("</moderator>");
+            });
+            query2.append("</moderators>");
+            db.xquery(query2.toString());
+        }
         db.close();
     }
 
@@ -156,11 +139,11 @@ public class Forum {
         this.rules = rules;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 

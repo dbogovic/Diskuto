@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Comment;
 import org.diskuto.models.User;
@@ -28,7 +29,7 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class Post implements Serializable {
 
-    private final org.diskuto.models.Post chosen;
+    private org.diskuto.models.Post chosen;
     private String p_created;
     private String myComment;
     private User user;
@@ -42,10 +43,10 @@ public class Post implements Serializable {
      */
     public Post() throws Exception {
         this.user = AppHelper.getActiveUser();
-        this.chosen = new org.diskuto.models.Post();
-        this.chosen.setId(Integer.parseInt(AppHelper.param("id")));
+        Retriever retriever = new Retriever(AppHelper.param("id"));
+        this.chosen = retriever.post();
         
-        if (!this.chosen.retrieveData()) {
+        if (this.chosen == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
 
@@ -86,59 +87,56 @@ public class Post implements Serializable {
 
     public void upvotePost() throws Exception {
         if (!this.chosen.getUpvote().contains(this.user.getUsername())) {
-            this.chosen.addUpvote(user.getUsername());
+            this.chosen.addVote("upvote", user.getUsername());
 
             if (this.chosen.getDownvote().contains(this.user.getUsername())) {
-                this.chosen.dropDownvote(user.getUsername());
+                this.chosen.dropVote("downvote", user.getUsername());
             }
         } else {
-            this.chosen.dropUpvote(user.getUsername());
+            this.chosen.dropVote("upvote", user.getUsername());
         }
     }
 
     public void downvotePost() throws Exception {
         if (!this.chosen.getDownvote().contains(this.user.getUsername())) {
-            this.chosen.addDownvote(user.getUsername());
+            this.chosen.addVote("downvote", user.getUsername());
 
             if (this.chosen.getUpvote().contains(this.user.getUsername())) {
-                this.chosen.dropUpvote(user.getUsername());
+                this.chosen.dropVote("upvote", user.getUsername());
             }
         } else {
-            this.chosen.dropDownvote(user.getUsername());
+            this.chosen.dropVote("downvote", user.getUsername());
         }
     }
 
     public void upvoteComment(Comment comment) throws Exception {
         if (!comment.getUpvote().contains(this.user.getUsername())) {
-            comment.addUpvote(user.getUsername());
+            comment.addVote("upvote", user.getUsername());
 
             if (comment.getDownvote().contains(this.user.getUsername())) {
-                comment.dropDownvote(user.getUsername());
+                comment.dropVote("downvote", user.getUsername());
             }
         } else {
-            comment.dropUpvote(user.getUsername());
+            comment.dropVote("upvote", user.getUsername());
         }
     }
 
     public void downvoteComment(Comment comment) throws Exception {
         if (!comment.getDownvote().contains(this.user.getUsername())) {
-            comment.addDownvote(user.getUsername());
+            comment.addVote("downvote", user.getUsername());
 
             if (comment.getUpvote().contains(this.user.getUsername())) {
-                comment.dropUpvote(user.getUsername());
+                comment.dropVote("upvote", user.getUsername());
             }
         } else {
-            comment.dropDownvote(user.getUsername());
+            comment.dropVote("downvote", user.getUsername());
         }
     }
 
     public String sendComment() throws Exception {
         if (!this.myComment.equals("")) {
             Comment comment = new Comment();
-            comment.setPost(this.chosen.getId());
-            comment.setText(this.myComment);
-            comment.setOwner(this.user.getUsername());
-            comment.save();
+            comment.save(this.chosen.getId(), this.myComment, this.user.getUsername());
             this.comments.add(comment);
             this.myComment = "";
         }
@@ -157,11 +155,10 @@ public class Post implements Serializable {
         ResourceIterator iterator = result.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
 
             Comment comment = new Comment();
-            comment.commentFromXML(helper);
+            comment.retrieve(helper);
             comment.setPost(this.chosen.getId());
             this.comments.add(comment);
         }

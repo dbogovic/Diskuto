@@ -45,8 +45,7 @@ public class Discover implements Serializable {
 
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
             Object objekt = helper.makeObject("forum");
 
             org.diskuto.models.Forum diskuto = new org.diskuto.models.Forum();

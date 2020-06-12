@@ -53,8 +53,7 @@ public class MyDiskuto implements Serializable {
         ResourceIterator iterator = resourceSet.getIterator();
         while(iterator.hasMoreResources()){
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
             Object objekt = helper.makeObject("");
             org.diskuto.models.Forum forum = new org.diskuto.models.Forum();
             forum.setName(helper.makeValue("name", objekt));

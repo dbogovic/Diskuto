@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.models.Forum;
 import org.diskuto.models.Post;
 
@@ -32,11 +33,11 @@ public class NewPost implements Serializable {
     /**
      * Creates a new instance of newPost
      */
-    public NewPost() throws Exception { 
-        this.chosen = new org.diskuto.models.Forum();
-        chosen.setName(AppHelper.param("on"));
-        
-        if (!this.chosen.retrieveData()) {
+    public NewPost() throws Exception {
+        Retriever retriever = new Retriever(AppHelper.param("on"));
+        this.chosen = retriever.forum();
+
+        if (this.chosen == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
     }
@@ -68,7 +69,7 @@ public class NewPost implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public String getSelectedCategory() {
         return selectedCategory;
     }
@@ -76,27 +77,20 @@ public class NewPost implements Serializable {
     public void setSelectedCategory(String selectedCategory) {
         this.selectedCategory = selectedCategory;
     }
-    
+
     public void post() throws Exception {
         errorText.clear();
-        
-        if(headline == null || headline.length() == 0) {
+
+        if (headline == null || headline.length() == 0) {
             errorText.add("Naslov je obavezan");
-        }
-        else if(description == null || description.length() == 0) {
+        } else if (description == null || description.length() == 0) {
             errorText.add("Opis je obavezan");
-        }
-        else {
+        } else {
             Post post = new Post();
-            post.setHeadline(headline);
-            post.setDescription(description);
-            post.setOwner(AppHelper.getActiveUser().getUsername());
-            post.setDiskuto(chosen.getName());
-            post.setCategory(selectedCategory);
-            post.save();
+            post.save(headline, description, AppHelper.getActiveUser().getUsername(), chosen.getName(), selectedCategory);
             FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
         }
-        
+
     }
 
 }

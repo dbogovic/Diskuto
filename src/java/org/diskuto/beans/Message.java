@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.User;
 import org.xmldb.api.base.Resource;
@@ -42,9 +43,10 @@ public class Message implements Serializable {
         if (_user == null || _user.equals(AppHelper.getActiveUser().getUsername())) {
             me = true;
         } else {
-            this.chosen = new User();
-            this.chosen.setUsername(_user);
-            if (!this.chosen.retrieveData()) {
+            
+            Retriever retriever = new Retriever(_user);
+            this.chosen = retriever.user();
+            if (this.chosen == null) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("message");
             }
             //postavi pročitane poruke na 0
@@ -76,8 +78,7 @@ public class Message implements Serializable {
             iterator = result.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
-                String value = (String) r.getContent();
-                XmlHelper helper = new XmlHelper(value);
+                XmlHelper helper = new XmlHelper(r);
                 Object object = helper.makeObject("message");
 
                 org.diskuto.models.Message m = new org.diskuto.models.Message();
@@ -96,8 +97,7 @@ public class Message implements Serializable {
             iterator = result.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
-                String value = (String) r.getContent();
-                XmlHelper helper = new XmlHelper(value);
+                XmlHelper helper = new XmlHelper(r);
                 Object object = helper.makeObject("message");
 
                 org.diskuto.models.Message m = new org.diskuto.models.Message();
@@ -131,9 +131,8 @@ public class Message implements Serializable {
         ResourceIterator iterator = result.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            List<String> results = helper.makeRawValue("/" + key);
+            XmlHelper helper = new XmlHelper(r);
+            List<String> results = helper.makeListValue("/" + key);
 
             for (String s : results) {
                 chatting.add(s);

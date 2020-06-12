@@ -13,9 +13,9 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Post;
-import org.diskuto.models.User;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
@@ -39,36 +39,34 @@ public class Forum implements Serializable {
      * Creates a new instance of Forum
      */
     public Forum() throws Exception {
-        this.chosen = new org.diskuto.models.Forum();
-        chosen.setName(AppHelper.param("name"));
         this.cat = AppHelper.param("cat");
-
-        if (!this.chosen.retrieveData()) {
+        Retriever retrieveForum = new Retriever(AppHelper.param("name"));
+        this.chosen = retrieveForum.forum();
+        
+        if (this.chosen == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
-        
+
         Database db = new Database();
         ResourceSet query = db.xquery("/posts/post[diskuto=\"" + this.chosen.getName() + "\"]/id");
         ResourceIterator iterator = query.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            List<String> results = helper.makeRawValue("/id");
+            XmlHelper helper = new XmlHelper(r);
+            List<String> results = helper.makeListValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post();
-                post.setId(Integer.parseInt(s));
-                post.retrieveData();
+                Retriever retrievePost = new Retriever(s);
+                Post post = retrievePost.post();
                 items.add(post);
             }
         }
         db.close();
     }
 
-    public List<Post> getItems() {   
+    public List<Post> getItems() {
         return items;
     }
-    
+
     public org.diskuto.models.Forum getChosen() {
         return chosen;
     }
@@ -133,8 +131,7 @@ public class Forum implements Serializable {
         ResourceIterator iterator = query.getIterator();
         if (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
+            XmlHelper helper = new XmlHelper(r);
             Object object = helper.makeObject("post");
             org.diskuto.models.Post retrieved = new org.diskuto.models.Post();
             retrieved.setId(Integer.parseInt(helper.makeValue("id", object)));

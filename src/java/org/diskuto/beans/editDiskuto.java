@@ -15,6 +15,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.models.Forum;
 import org.xmldb.api.base.ResourceSet;
 
@@ -40,10 +41,10 @@ public class EditDiskuto implements Serializable {
      * Creates a new instance of editDiskuto
      */
     public EditDiskuto() throws Exception {
-        existing = new org.diskuto.models.Forum();
-        existing.setName(AppHelper.param("name"));
+        Retriever retriever = new Retriever(AppHelper.param("name"));
+        this.existing = retriever.forum();
 
-        if (existing.retrieveData()) {
+        if (existing != null) {
             this.name = existing.getName();
             this.description = existing.getDescription();
             this.rules = existing.getRules();
@@ -184,20 +185,10 @@ public class EditDiskuto implements Serializable {
                     errorText.add("Diskuto pod tim nazivom već postoji");
                 } else {
                     Forum forum = new Forum();
-                    forum.setName(name);
-                    forum.setDescription(description);
-                    forum.setCategories(categories);
-                    forum.setModerators(moderators);
-                    forum.setRules(rules);
-                    forum.register();
+                    forum.save(name, description, categories, moderators, rules, AppHelper.getActiveUser().getUsername());
                 }
             } else {
-                existing.setDescription(description);
-                existing.setRules(rules);
-                existing.setCategories(categories);
-                existing.setModerators(moderators);
-
-                existing.update();
+                existing.update(description, rules, categories, moderators);
             }
 
             FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");

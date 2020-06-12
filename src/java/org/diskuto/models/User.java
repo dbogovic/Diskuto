@@ -11,8 +11,6 @@ import java.util.Random;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
 import org.diskuto.helpers.XmlHelper;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 
 /**
@@ -34,67 +32,31 @@ public class User {
     public User() {
     }
 
-    public boolean retrieveData() throws Exception {
+    public void retrieve(XmlHelper helper) throws Exception {
+        Object object = helper.makeObject("user");
+        this.email = helper.makeValue("email", object);
+        this.username = helper.makeValue("name", object);
+        this.confirmCode = Integer.parseInt(helper.makeValue("code", object));
+        this.created = Long.parseLong(helper.makeValue("created", object));
+        this.disabled = Integer.parseInt(helper.makeValue("code", object)) == 0;
+        this.subscriptions = helper.makeListValue("user/subscriptions/forum");
+        this.ignored = helper.makeListValue("user/ignore/user");
+        
         Database db = new Database();
-        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" return $x");
+        this.unread = Integer.parseInt(new XmlHelper(db.xquery("count(/messages/message[recipient=\"" + this.username + "\" and seen=\"0\"])").getResource(0)).rawValue());
         db.close();
-
-        if (result.getSize() != 0) {
-            ResourceIterator iterator = result.getIterator();
-            Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            Object object = helper.makeObject("user");
-
-            this.username = helper.makeValue("name", object);
-            this.created = Long.parseLong(helper.makeValue("created", object));
-            this.subscriptions = new ArrayList();
-
-            ResourceSet result2 = db.xquery("/users/user[name=\"" + this.username + "\"]/subscriptions/forum");
-            ResourceIterator iterator2 = result2.getIterator();
-
-            while (iterator2.hasMoreResources()) {
-                Resource r2 = iterator2.nextResource();
-                String value2 = (String) r2.getContent();
-                XmlHelper helper2 = new XmlHelper(value2);
-                for (String s : helper2.makeRawValue("/forum")) {
-                    subscriptions.add(s);
-                }
-            }
-
-            ResourceSet result3 = db.xquery("count(/messages/message[recipient=\"" + this.username + "\" and seen=\"0\"])");
-            this.unread = Integer.parseInt(result3.getIterator().nextResource().getContent().toString());
-
-            return true;
-        } else {
-            return false;
-        }
     }
 
-    public boolean login() throws Exception {
-        Database db = new Database();
-        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" and $x/password=\"" + password + "\" return $x");
-        db.close();
-
-        if (result.getSize() != 0) {
-            ResourceIterator iterator = result.getIterator();
-            Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            Object object = helper.makeObject("user");
-
-            setEmail(helper.makeValue("email", object));
-            setConfirmCode(Integer.parseInt(helper.makeValue("code", object)));
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void register() throws Exception {
+    public void register(String email, String username, String password) throws Exception {
+        this.email = email;
+        this.username = username;
+        this.password = password;
         this.confirmCode = new Random().nextInt(899999) + 100000;
         this.created = System.currentTimeMillis() / 1000L;
+        this.disabled = false;
+        this.ignored = new ArrayList();
+        this.subscriptions = new ArrayList();
+        this.unread = 0;
 
         sendConfirmMail();
         Database db = new Database();

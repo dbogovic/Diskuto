@@ -10,7 +10,9 @@ import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.listeners.Listener;
 import org.diskuto.models.Post;
@@ -33,7 +35,7 @@ public class Home {
     private User user;
     private boolean login;
     private List<org.diskuto.models.Post> items = new ArrayList();
-    
+
     /**
      * Creates a new instance of Index
      */
@@ -43,13 +45,11 @@ public class Home {
         ResourceIterator iterator = query.getIterator();
         while (iterator.hasMoreResources()) {
             Resource r = iterator.nextResource();
-            String value = (String) r.getContent();
-            XmlHelper helper = new XmlHelper(value);
-            List<String> results = helper.makeRawValue("/id");
+            XmlHelper helper = new XmlHelper(r);
+            List<String> results = helper.makeListValue("/id");
             for (String s : results) {
-                org.diskuto.models.Post post = new org.diskuto.models.Post();
-                post.setId(Integer.parseInt(s));
-                post.retrieveData();
+                Retriever retriever = new Retriever(s);
+                Post post = retriever.post();
                 items.add(post);
             }
         }
@@ -92,30 +92,26 @@ public class Home {
         return (User) Listener.getFromSession("user");
     }
 
-    public List<Post> getItems(){
+    public List<Post> getItems() {
         return items;
     }
-    
+
     public void doLogin() throws Exception {
         this.errorText.clear();
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        if(user.login()) {
-            user.retrieveData();
+        if (AppHelper.login(username, password)) {
+            Retriever retriever = new Retriever(username);
+            this.user = retriever.user();
             Listener.addToSession("user", user);
-            if(user.getConfirmCode() != -1) {
+            if (user.getConfirmCode() != -1) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("confirmRegistration");
-            }
-            else {
+            } else {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             }
-        }
-        else {
+        } else {
             this.errorText.add("Neuspjela prijava");
         }
     }
-    
+
     public void logOut() throws Exception {
         Listener.deleteFromSession("user");
         FacesContext.getCurrentInstance().getExternalContext().redirect("home");

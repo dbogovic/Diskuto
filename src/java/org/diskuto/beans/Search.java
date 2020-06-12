@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Forum;
 import org.diskuto.models.Post;
@@ -55,9 +56,8 @@ public class Search implements Serializable {
             iterator = query.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
-                String value = (String) r.getContent();
-                XmlHelper helper = new XmlHelper(value);
-                List<String> results = helper.makeRawValue("/name");
+                XmlHelper helper = new XmlHelper(r);
+                List<String> results = helper.makeListValue("/name");
                 for (String s : results) {
                     Forum diskuto = new Forum();
                     diskuto.setName(s);
@@ -70,13 +70,11 @@ public class Search implements Serializable {
             iterator = query.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
-                String value = (String) r.getContent();
-                XmlHelper helper = new XmlHelper(value);
-                List<String> results = helper.makeRawValue("/name");
+                XmlHelper helper = new XmlHelper(r);
+                List<String> results = helper.makeListValue("/name");
                 for (String s : results) {
-                    User user = new User();
-                    user.setUsername(s);
-                    user.retrieveData();
+                    Retriever retriever = new Retriever(s);
+                    User user = retriever.user();
                     userResults.add(user);
                 }
             }
@@ -86,14 +84,14 @@ public class Search implements Serializable {
             iterator = query.getIterator();
             while (iterator.hasMoreResources()) {
                 Resource r = iterator.nextResource();
-                String value = (String) r.getContent();
-                XmlHelper helper = new XmlHelper(value);
-                List<String> results = helper.makeRawValue("/id");
+                XmlHelper helper = new XmlHelper(r);
+                List<String> results = helper.makeListValue("/id");
                 for (String s : results) {
-                    Post post = new Post();
-                    post.setId(Integer.parseInt(s));
-                    post.retrieveData();
-                    postResults.add(post);
+                    Retriever retriever = new Retriever(s);
+                    Post post = retriever.post();
+                    if (post != null) {
+                        postResults.add(post);
+                    }
                 }
             }
 
