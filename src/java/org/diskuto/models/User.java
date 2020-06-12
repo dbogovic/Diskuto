@@ -8,10 +8,10 @@ package org.diskuto.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
 import org.diskuto.helpers.XmlHelper;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -28,6 +28,7 @@ public class User {
     private List<String> ignored;
     private List<String> subscriptions;
     private int unread;
+    private String language;
 
     public User() {
     }
@@ -39,6 +40,7 @@ public class User {
         this.confirmCode = Integer.parseInt(helper.makeValue("code", object));
         this.created = Long.parseLong(helper.makeValue("created", object));
         this.disabled = Integer.parseInt(helper.makeValue("code", object)) == 0;
+        this.language = helper.makeValue("language", object);
         this.subscriptions = helper.makeListValue("user/subscriptions/forum");
         this.ignored = helper.makeListValue("user/ignore/user");
         
@@ -57,13 +59,14 @@ public class User {
         this.ignored = new ArrayList();
         this.subscriptions = new ArrayList();
         this.unread = 0;
+        this.language = "en";
 
         sendConfirmMail();
         Database db = new Database();
-        db.xquery("update insert <user><email>" + email + "</email><name>" + username
-                + "</name><password>" + password + "</password><code>" + confirmCode
-                + "</code><created>" + created + "</created><subscriptions/><ignore/>"
-                + "<disabled>0</disabled></user> into /users");
+        db.xquery("update insert <user><email>" + this.email + "</email><name>" + this.username
+                + "</name><password>" + this.password + "</password><code>" + this.confirmCode
+                + "</code><created>" + this.created + "</created><subscriptions/><ignore/>"
+                + "<disabled>0</disabled><language>" + this.language + "</language></user> into /users");
         db.close();
     }
 
@@ -77,6 +80,14 @@ public class User {
         setConfirmCode(-1);
         Database db = new Database();
         db.xquery("for $x in /users/user where $x/email=\"" + this.email + "\" return update value $x/code with \"-1\"");
+        db.close();
+    }
+    
+    public void changeLanguage(String lang) throws Exception {
+        this.language = lang;
+        
+        Database db = new Database();
+        db.xquery("update value /users/user[name=\"" + this.username +"\"]/language with \"" + this.language + "\"");
         db.close();
     }
 
@@ -150,6 +161,14 @@ public class User {
 
     public void setUnread(int unread) {
         this.unread = unread;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
 }

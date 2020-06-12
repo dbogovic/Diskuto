@@ -8,6 +8,7 @@ package org.diskuto.beans;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import org.diskuto.helpers.AppHelper;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.io.Serializable;
 public class Language implements Serializable {
 
     public static String lang;
-    
+
     /**
      * Creates a new instance of Language
      */
@@ -27,15 +28,20 @@ public class Language implements Serializable {
     }
 
     public String getLang() {
-        return lang;
+        if (AppHelper.getActiveUser() == null) {
+            return "en";
+        } else {
+            return AppHelper.getActiveUser().getLanguage();
+        }
     }
 
-    public void setLang(String lang) {
+    public void setLang(String lang) throws Exception {
+        AppHelper.getActiveUser().changeLanguage(lang);
         this.lang = lang;
     }
 
     public Object chooseLanguage() {
         return "";
     }
-    
+
 }
