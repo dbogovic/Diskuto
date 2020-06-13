@@ -6,9 +6,10 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | #{output['registration.title']}}</title>
+            <title>Diskuto | #{output['registration.title']}</title>
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="account-manage.css"/>
+            <h:outputScript library="js" name="script.js" />
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
         <h:body>
@@ -31,26 +32,7 @@
                     <f:ajax event="action" execute="username email password rpassword" render="@form"/>
                 </h:commandButton>
                 <img id="ajaxloader" src="./resources/pages/loading.gif" />
-                <c:forEach items="#{registration.errorText}" var="value">
-                    <h:outputText class="errorText" value="#{value}" />
-                </c:forEach>
-                <script>
-                    jsf.ajax.addOnEvent(function (data) {
-                        var ajaxstatus = data.status;
-                        var ajaxloader = document.getElementById("ajaxloader");
-
-                        switch (ajaxstatus) {
-                            case "begin":
-                                ajaxloader.style.display = 'initial';
-                                break;
-                            case "complete":
-                                ajaxloader.style.display = 'none';
-                                break;
-                            case "success":
-                                break;
-                        }
-                    });
-                </script>
+                <h:outputText class="errorText" value="#{registration.errorText}" />
             </h:form>
         </h:body>
     </f:view>

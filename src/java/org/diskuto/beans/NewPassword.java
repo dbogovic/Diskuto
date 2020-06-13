@@ -6,8 +6,6 @@
 package org.diskuto.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
@@ -15,7 +13,6 @@ import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -25,10 +22,10 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class NewPassword implements Serializable {
 
-    private int abolishedPassword;
+    private int state;
     private String email;
-    private List<String> errorText = new ArrayList();
-    private String apCode;
+    private String errorText;
+    private String code;
     private String password;
     private String rpassword;
 
@@ -38,19 +35,77 @@ public class NewPassword implements Serializable {
     public NewPassword() {
         String code = AppHelper.param("code");
         if (code != null) {
-            apCode = code;
-            abolishedPassword = 2;
+            this.code = code;
+            state = 2;
         } else {
-            abolishedPassword = 1;
+            state = 1;
         }
     }
 
-    public int getAbolishedPassword() {
-        return abolishedPassword;
+    public void abolishPassword() throws Exception {
+        this.errorText = "";
+
+        if (AppHelper.userExists(email)) {
+            String abolishPasswordCode = UUID.randomUUID().toString();
+
+            Database db = new Database();
+            db.xquery("for $x in /users/user where $x/email=\"" + email
+                    + "\" return update insert <abolishPasswordCode>"
+                    + abolishPasswordCode + "</abolishPasswordCode> into $x");
+            db.xquery("for $x in /users/user where $x/email=\"" + email
+                    + "\" return update delete $x/password");
+            db.close();
+
+            this.errorText = "Upute za kreiranje nove lozinke su poslane na vaš e-mail";
+            MailHelper mh = new MailHelper(email, "Nova lozinka",
+                    "Slijedite ovu poveznicu kako bi ste unesli novu lozinku: "
+                    + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
+                    + abolishPasswordCode);
+            mh.sendMail();
+            this.state = 3;
+        } else {
+            this.errorText = "Unijeli ste nepostojeći e-mail";
+        }
     }
 
-    public void setAbolishedPassword(int abolishedPassword) {
-        this.abolishedPassword = abolishedPassword;
+    public void addNewPassword() throws Exception {
+        this.errorText = "";
+        if (check()) {
+            this.errorText = "Lozinka je promijenjena";
+            Database db = new Database();
+            db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + code
+                    + "\" return update insert <password>"
+                    + password + "</password> into $x");
+            db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + code
+                    + "\" return update delete $x/abolishPasswordCode");
+            db.close();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("login");
+        }
+    }
+
+    private boolean check() throws Exception {
+
+        if (password.length() == 0 || rpassword.length() == 0) {
+            this.errorText = "Niste unijeli sve podatke";
+            return false;
+        } else {
+            if (password.length() < 8) {
+                this.errorText = "Lozinka je preslaba";
+                return false;
+            } else if (!password.equals(rpassword)) {
+                this.errorText = "Lozinke ne odgovaraju";
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public String getEmail() {
@@ -61,12 +116,20 @@ public class NewPassword implements Serializable {
         this.email = email;
     }
 
-    public List<String> getErrorText() {
+    public String getErrorText() {
         return errorText;
     }
 
-    public void setErrorText(List<String> errorText) {
+    public void setErrorText(String errorText) {
         this.errorText = errorText;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getPassword() {
@@ -83,72 +146,5 @@ public class NewPassword implements Serializable {
 
     public void setRpassword(String rpassword) {
         this.rpassword = rpassword;
-    }
-
-    public void abolishPassword() throws Exception {
-
-        this.errorText.clear();
-        
-        Database db = new Database();
-        ResourceSet resultEmail = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
-        db.close();
-
-        if (resultEmail.getSize() > 0) {
-            String abolishPasswordCode = UUID.randomUUID().toString();
-
-            Database db2 = new Database();
-            db2.xquery("for $x in /users/user where $x/email=\"" + email
-                    + "\" return update insert <abolishPasswordCode>"
-                    + abolishPasswordCode + "</abolishPasswordCode> into $x");
-            db2.xquery("for $x in /users/user where $x/email=\"" + email
-                    + "\" return update delete $x/password");
-            db2.close();
-
-            this.errorText.add("Upute za kreiranje nove lozinke su poslane na vaš e-mail");
-            MailHelper mh = new MailHelper(email, "Nova lozinka",
-                    "Slijedite ovu poveznicu kako bi ste unesli novu lozinku: "
-                    + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
-                    + abolishPasswordCode);
-            mh.sendMail();
-            this.abolishedPassword = 3;
-        } else {
-            this.errorText.add("Unijeli ste nepostojeći e-mail");
-        }
-    }
-
-    public void addNewPassword() throws Exception {
-        this.errorText.clear();
-        if (check()) {
-            this.errorText.add("Lozinka je promijenjena");
-            Database db = new Database();
-            db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + apCode
-                    + "\" return update insert <password>"
-                    + password + "</password> into $x");
-            db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + apCode
-                    + "\" return update delete $x/abolishPasswordCode");
-            db.close();
-            FacesContext.getCurrentInstance().getExternalContext().redirect("home");
-        }
-    }
-
-    private boolean check() throws Exception {
-
-        boolean error = true;
-
-        if (password.length() == 0 || rpassword.length() == 0) {
-            error = printError("Niste unijeli sve podatke");
-        } else {
-            if (password.length() < 8) {
-                error = printError("Lozinka je preslaba");
-            } else if (!password.equals(rpassword)) {
-                error = printError("Lozinke ne odgovaraju");
-            }
-        }
-        return error;
-    }
-
-    private boolean printError(String errorText) {
-        this.errorText.add(errorText);
-        return false;
     }
 }

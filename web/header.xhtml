@@ -10,16 +10,16 @@
         <h:inputText class="search" value="#{search.term}" a:placeholder="#{output['header.placeholder']}" />
         <h:commandButton class="button" value="Traži" action="#{search.showResults()}" />
         <div id="rightElements">
-            <h:panelGroup rendered="#{!home.login}">
+            <h:panelGroup rendered="#{beanHelper.activeUser == null}">
                 <h:link class="button" id="login" value="#{output['header.btnLogin']}" outcome="login" />
                 <h:link class="button" id="registration" value="#{output['header.btnRegistration']}" outcome="registration" />
             </h:panelGroup>
-            <h:panelGroup rendered="#{home.login}">
+            <h:panelGroup rendered="#{beanHelper.activeUser != null}">
                 <h:outputText value="#{output['header.signedIn']} " />
-                <h:link id="user" value="#{home.user.username}" outcome="profile" >
-                    <f:param name="name" value="#{home.user.username}" />
+                <h:link id="user" value="#{beanHelper.activeUser.username}" outcome="profile" >
+                    <f:param name="name" value="#{beanHelper.activeUser.username}" />
                 </h:link>
-                <h:commandLink id="logOut" value="#{output['header.logOut']}" action="#{home.logOut}" />
+                <h:commandLink id="logOut" value="#{output['header.logOut']}" action="#{login.logout()}" />
             </h:panelGroup>
         </div>
     </h:form>

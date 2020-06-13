@@ -84,4 +84,12 @@ public class AppHelper {
 
         return result.getSize() != 0;
     }
+    
+    public static boolean userExists(String email) throws Exception {
+        Database db = new Database();
+        ResourceSet result = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
+        db.close();
+
+        return result.getSize() != 0;
+    }
 }

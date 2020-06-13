@@ -2,13 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <f:view locale="#{language.lang}">
         <h:head>
             <title>Diskuto | #{output['login.title']}</title>
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="account-manage.css"/>
+            <h:outputScript library="js" name="script.js" />
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
         <h:body>
@@ -16,37 +16,18 @@
                 <a id="logo" href="home"><img src="resources/pages/logo.png" /></a>
                 <h:panelGrid columns="2">
                     <h:outputText value="#{output['login.username']}"/>
-                    <h:inputText id="username" value="#{home.username}"/>
+                    <h:inputText id="username" value="#{login.username}"/>
 
                     <h:outputText value="#{output['login.password']}"/>
-                    <h:inputSecret id="password" value="#{home.password}" />
+                    <h:inputSecret id="password" value="#{login.password}" />
                 </h:panelGrid>
-                <h:commandButton id="amBtn" class="button" value="#{output['login.logIn']}" action="#{home.doLogin}">
+                <h:commandButton id="amBtn" class="button" value="#{output['login.logIn']}" action="#{login.doLogin}">
                     <f:ajax event="action" execute="username password" render="@form"/>
                 </h:commandButton>
                 <img id="ajaxloader" src="./resources/pages/loading.gif" />
-                <c:forEach items="#{home.errorText}" var="value">
-                    <h:outputText class="errorText" value="#{value}" />
-                </c:forEach>
+                <h:outputText class="errorText" value="#{login.errorText}" />
                 <h:link value="#{output['login.forgottenPassword']}" outcome="newPassword" />
                 <h:link value="#{output['login.noAccount']}" outcome="registration" />
-                <script>
-                    jsf.ajax.addOnEvent(function (data) {
-                        var ajaxstatus = data.status;
-                        var ajaxloader = document.getElementById("ajaxloader");
-
-                        switch (ajaxstatus) {
-                            case "begin":
-                                ajaxloader.style.display = 'initial';
-                                break;
-                            case "complete":
-                                ajaxloader.style.display = 'none';
-                                break;
-                            case "success":
-                                break;
-                        }
-                    });
-                </script>
             </h:form>
         </h:body>
     </f:view>

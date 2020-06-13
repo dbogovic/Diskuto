@@ -11,6 +11,7 @@
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="form.css"/>
+            <h:outputScript library="js" name="script.js" />
         </h:head>
         <h:body>
             <ui:include src="/header.xhtml" />
@@ -39,23 +40,6 @@
                     <h:outputText class="errorText" value="#{value}" />
                 </c:forEach>
                 <img id="ajaxloader" src="./resources/pages/loading.gif"/>
-                <script>
-                    jsf.ajax.addOnEvent(function (data) {
-                        var ajaxstatus = data.status;
-                        var ajaxloader = document.getElementById("ajaxloader");
-
-                        switch (ajaxstatus) {
-                            case "begin":
-                                ajaxloader.style.display = 'inline';
-                                break;
-                            case "complete":
-                                ajaxloader.style.display = 'none';
-                                break;
-                            case "success":
-                                break;
-                        }
-                    });
-                </script>
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="/footer.xhtml" />

@@ -5,13 +5,10 @@
  */
 package org.diskuto.beans;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-import org.diskuto.listeners.Listener;
-import org.diskuto.models.User;
+import org.diskuto.helpers.AppHelper;
 
 /**
  *
@@ -22,12 +19,32 @@ import org.diskuto.models.User;
 public class ConfirmRegistration {
 
     private String insertedCode;
-    private List<String> errorText = new ArrayList();
-    
+    private String errorText;
+
     /**
      * Creates a new instance of ConfirmRegistration
      */
     public ConfirmRegistration() {
+    }
+
+    public void validate() {
+        try {
+            int code = Integer.parseInt(insertedCode);
+            if (code != AppHelper.getActiveUser().getConfirmCode()) {
+                this.errorText = ("Unijeli ste pogrešan kod");
+            } else {
+                this.errorText = ("Potvrdili ste registraciju");
+                AppHelper.getActiveUser().confirmUser();
+                FacesContext.getCurrentInstance().getExternalContext().redirect("discover");
+            }
+        } catch (Exception ex) {
+            this.errorText = ("Unijeli ste pogrešan kod");
+        }
+    }
+
+    public String sendNewMail() throws Exception {
+        AppHelper.getActiveUser().sendConfirmMail();
+        return "";
     }
 
     public String getInsertedCode() {
@@ -38,38 +55,11 @@ public class ConfirmRegistration {
         this.insertedCode = insertedCode;
     }
 
-    public List<String> getErrorText() {
+    public String getErrorText() {
         return errorText;
     }
 
-    public void setErrorText(List<String> errorText) {
+    public void setErrorText(String errorText) {
         this.errorText = errorText;
-    }
-
-    public User getRegisteredUser(){
-        return (User) Listener.getFromSession("user");
-    }
-    
-    public void validate() {
-        try {
-            int code = Integer.parseInt(insertedCode);
-            if(code != getRegisteredUser().getConfirmCode()) {
-                this.errorText.add("Unijeli ste pogrešan kod");                
-            }
-            else {
-                this.errorText.add("Potvrdili ste registraciju");   
-                getRegisteredUser().confirmUser();
-                //discover page umjesto toga
-                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
-            }
-        }
-        catch(Exception ex){
-            this.errorText.add("Unijeli ste pogrešan kod");
-        }
-    }
-    
-    public String sendNewMail() throws Exception {
-        getRegisteredUser().sendConfirmMail();
-        return "";
     }
 }

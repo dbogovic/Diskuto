@@ -8,10 +8,10 @@ package org.diskuto.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
 import org.diskuto.helpers.XmlHelper;
+import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -43,7 +43,7 @@ public class User {
         this.language = helper.makeValue("language", object);
         this.subscriptions = helper.makeListValue("user/subscriptions/forum");
         this.ignored = helper.makeListValue("user/ignore/user");
-        
+
         Database db = new Database();
         this.unread = Integer.parseInt(new XmlHelper(db.xquery("count(/messages/message[recipient=\"" + this.username + "\" and seen=\"0\"])").getResource(0)).rawValue());
         db.close();
@@ -68,6 +68,16 @@ public class User {
                 + "</code><created>" + this.created + "</created><subscriptions/><ignore/>"
                 + "<disabled>0</disabled><language>" + this.language + "</language></user> into /users");
         db.close();
+
+        Listener.addToSession("user", this);
+    }
+
+    public void login() {
+        Listener.addToSession("user", this);
+    }
+
+    public void logout() {
+        Listener.deleteFromSession("user");
     }
 
     public void sendConfirmMail() throws Exception {
@@ -82,12 +92,12 @@ public class User {
         db.xquery("for $x in /users/user where $x/email=\"" + this.email + "\" return update value $x/code with \"-1\"");
         db.close();
     }
-    
+
     public void changeLanguage(String lang) throws Exception {
         this.language = lang;
-        
+
         Database db = new Database();
-        db.xquery("update value /users/user[name=\"" + this.username +"\"]/language with \"" + this.language + "\"");
+        db.xquery("update value /users/user[name=\"" + this.username + "\"]/language with \"" + this.language + "\"");
         db.close();
     }
 
