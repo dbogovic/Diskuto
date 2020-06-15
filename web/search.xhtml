@@ -21,8 +21,8 @@
                         <h:link class="diskutoTitle" value="#{value.name}" outcome="forum" >
                             <f:param name="name" value="#{value.name}" />
                         </h:link>
-                        <h:commandButton class="button" value="#{search.subscribed(value) ? output['search.button1'] : output['search.button2']}" 
-                                         action="#{search.subscribe(value)}" >
+                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(value.name) ? output['search.button1'] : output['search.button2']}" 
+                                         action="#{forum.subscribe(value)}" >
                             <f:ajax event="action" render="@form"/>
                         </h:commandButton>
                         <h:outputText class="diskutoSubscribers" value="#{value.subscribers} #{output['search.subscribers']}" />

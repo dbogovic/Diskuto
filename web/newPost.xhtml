@@ -20,7 +20,7 @@
 
                 <div class="form">
                     <h:outputText class="label" value="#{output['newPost.diskuto']}" />
-                    <h:inputText class="formInput" disabled="true" id="diskuto" value="#{newPost.chosen.name}" />
+                    <h:inputText class="formInput" disabled="true" id="diskuto" value="#{newPost.diskuto.name}" />
 
                     <h:outputText class="label" value="#{output['newPost.headline']}" />
                     <h:inputText class="formInput" id="headline" value="#{newPost.headline}"/>
@@ -30,15 +30,13 @@
 
                     <h:outputText class="label" value="#{output['newPost.category']}" />
                     <h:selectOneMenu id="category" class="formInput" value="#{newPost.selectedCategory}">
-                        <f:selectItems value="#{newPost.chosen.categories}" var="var" itemValue="#{var}" itemLabel="#{var}" />
+                        <f:selectItems value="#{newPost.diskuto.categories}" var="var" itemValue="#{var}" itemLabel="#{var}" />
                     </h:selectOneMenu>
                 </div>
-                <h:commandButton class="button" value="#{output['newPost.save']}" action="#{newPost.post}">
+                <h:commandButton class="button" value="#{output['newPost.save']}" action="#{newPost.save}">
                     <f:ajax event="action" execute="diskuto headline description category" render="@form"/>
                 </h:commandButton>
-                <c:forEach items="#{newPost.errorText}" var="value">
-                    <h:outputText class="errorText" value="#{value}" />
-                </c:forEach>
+                <h:outputText class="errorText" value="#{newPost.errorText}" />
                 <img id="ajaxloader" src="./resources/pages/loading.gif"/>
             </h:form>
             <ui:include src="/sider.xhtml" />

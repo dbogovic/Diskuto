@@ -18,7 +18,7 @@
                 <h:link value="#{value.owner} • " outcome="profile" >
                     <f:param name="name" value="#{value.owner}" />
                 </h:link>
-                <h:outputText value="#{message.formatted(value.created)}" />
+                <h:outputText value="#{beanHelper.fullDate(value.created)}" />
             </h:panelGroup>
         </div>
     </c:forEach>

@@ -20,7 +20,7 @@
 
                 <div class="form">
                     <h:outputText class="label" value="#{output['editDiskuto.name']}" />
-                    <h:inputText class="formInput" id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.existing != null ? 'true' : 'false'}" />
+                    <h:inputText class="formInput" id="name" value="#{editDiskuto.name}" disabled="#{editDiskuto.diskuto != null ? 'true' : 'false'}" />
 
                     <h:outputText class="label" value="#{output['editDiskuto.description']}" />
                     <h:inputTextarea rows="5" class="formInput" id="description" value="#{editDiskuto.description}" />
@@ -71,9 +71,7 @@
                 <h:commandButton class="button" value="Spremi" action="#{editDiskuto.save}">
                     <f:ajax event="action" execute="name description rules" render="@form"/>
                 </h:commandButton>
-                <c:forEach items="#{editDiskuto.errorText}" var="value">
-                    <h:outputText class="errorText" value="#{value}" />
-                </c:forEach>
+                <h:outputText class="errorText" value="#{editDiskuto.errorText}" />
                 <img id="ajaxloader" src="./resources/pages/loading.gif" />
             </h:form>
             <ui:include src="/sider.xhtml" />

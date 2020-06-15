@@ -10,9 +10,8 @@ import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
-import org.diskuto.helpers.Database;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.models.User;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -49,23 +48,16 @@ public class Registration {
             this.errorText = ("Niste unijeli sve podatke");
             return false;
         } else {
-            Matcher matcher = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email);
-
-            Database db = new Database();
-            ResourceSet resultEmail = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
-            ResourceSet resultUsername = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" return $x");
-            db.close();
-
-            if (!matcher.find()) {
+            if (!AppHelper.regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", email)) {
                 this.errorText = ("E-mail nije ispravan");
                 return false;
-            } else if (resultEmail.getSize() > 0) {
+            } else if (AppHelper.userExists(email)) {
                 this.errorText = ("E-mail već postoji u bazi");
                 return false;
             } else if (username.length() < 3) {
                 this.errorText = ("Korisničko ime je prekratko");
                 return false;
-            } else if (resultUsername.getSize() > 0) {
+            } else if (AppHelper.usernameExists(username)) {
                 this.errorText = ("Korisničko ime već postoji u bazi");
                 return false;
             } else if (password.length() < 8) {

@@ -8,7 +8,7 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | #{post.chosen.headline}</title>
+            <title>Diskuto | #{post.thing.headline}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="post.css"/>
@@ -24,22 +24,22 @@
                         <f:ajax event="action" render="karma"/>
                     </h:commandButton>
                 </h:panelGroup>
-                <h:link id="category" value="(#{post.chosen.category})" outcome="forum" >
-                    <f:param name="name" value="#{post.chosen.diskuto.name}" />
-                    <f:param name="cat" value="#{post.chosen.category}" />
+                <h:link id="category" value="(#{post.thing.category})" outcome="forum" >
+                    <f:param name="name" value="#{post.thing.diskuto}" />
+                    <f:param name="cat" value="#{post.thing.category}" />
                 </h:link>
-                <h:outputText class="diskutoTitle" value="#{post.chosen.headline}" />
+                <h:outputText class="diskutoTitle" value="#{post.thing.headline}" />
                 <h:panelGroup class="postDescription" >
-                    <h:outputText id="karma" value="#{post.chosen.upvote.size() - post.chosen.downvote.size() > 0 ? '+' : ''}#{post.chosen.upvote.size() - post.chosen.downvote.size()} • " />
-                    <h:link value="#{post.chosen.diskuto.name} • " outcome="forum" >
-                        <f:param name="name" value="#{post.chosen.diskuto.name}" />
+                    <h:outputText id="karma" value="#{post.thing.upvote.size() - post.thing.downvote.size() > 0 ? '+' : ''}#{post.thing.upvote.size() - post.thing.downvote.size()} • " />
+                    <h:link value="#{post.thing.diskuto} • " outcome="forum" >
+                        <f:param name="name" value="#{post.thing.diskuto}" />
                     </h:link>
-                    <h:link value="#{post.chosen.owner.username} • " outcome="profile" >
-                        <f:param name="name" value="#{post.chosen.owner.username}" />
+                    <h:link value="#{post.thing.owner} • " outcome="profile" >
+                        <f:param name="name" value="#{post.thing.owner}" />
                     </h:link>
-                    <h:outputText value="#{post.p_created}" />
+                    <h:outputText value="#{beanHelper.fullDate(post.thing.created)}" />
                 </h:panelGroup>
-                <h:outputText class="postValue" value="#{post.chosen.description}" />
+                <h:outputText class="postValue" value="#{post.thing.description}" />
                 <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}"
                                  onkeypress="if (event.keyCode === 13) {
                                              onchange();
@@ -47,7 +47,7 @@
                                          }" >
                     <f:ajax event="keydown" listener="#{post.enableButton}" execute="comment" render="send" />
                 </h:inputTextarea>
-                <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}" disabled="#{!post.enabledButton}" />
+                <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}" disabled="#{!post.button}" />
                 <h:outputText class="element-title" value="#{output['post.comments']} (#{post.comments.size()})" />
                 <c:forEach items="#{post.comments}" var="value">
                     <h:panelGroup class="reaction">
@@ -63,14 +63,14 @@
                     </h:link>
                     <h:panelGroup class="postDescription">
                         <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
-                        <h:outputText value="#{message.formatted(value.created)}" />
+                        <h:outputText value="#{beanHelper.fullDate(value.created)}" />
                     </h:panelGroup>
                     <h:outputText class="textComment" value="#{value.text}" />
                 </c:forEach>
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="about.xhtml">
-                <ui:param name="diskuto" value="#{post.chosen.diskuto}" />
+                <ui:param name="diskuto" value="#{post.thing.diskuto}" />
             </ui:include>
             <ui:include src="/footer.xhtml" />
         </h:body>

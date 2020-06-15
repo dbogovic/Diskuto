@@ -6,8 +6,6 @@
 package org.diskuto.beans;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -24,34 +22,44 @@ import org.diskuto.models.Post;
 @ViewScoped
 public class NewPost implements Serializable {
 
-    private org.diskuto.models.Forum chosen;
-    private List<String> errorText = new ArrayList();
+    private org.diskuto.models.Forum diskuto;
     private String headline;
     private String description;
     private String selectedCategory;
+    private String errorText;
 
     /**
      * Creates a new instance of newPost
      */
     public NewPost() throws Exception {
         Retriever retriever = new Retriever(AppHelper.param("on"));
-        this.chosen = retriever.forum();
+        this.diskuto = retriever.forum();
 
-        if (this.chosen == null) {
+        if (this.diskuto == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
     }
 
-    public Forum getChosen() {
-        return chosen;
+    public void save() throws Exception {
+        errorText = "";
+
+        if (headline == null || headline.length() == 0) {
+            errorText = "Naslov je obavezan";
+        } else if (description == null || description.length() == 0) {
+            errorText = "Opis je obavezan";
+        } else {
+            Post post = new Post();
+            post.save(headline, description, AppHelper.getActiveUser().getUsername(), diskuto.getName(), selectedCategory);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
+        }
     }
 
-    public List<String> getErrorText() {
-        return errorText;
+    public Forum getDiskuto() {
+        return diskuto;
     }
 
-    public void setErrorText(List<String> errorText) {
-        this.errorText = errorText;
+    public void setDiskuto(Forum diskuto) {
+        this.diskuto = diskuto;
     }
 
     public String getHeadline() {
@@ -78,19 +86,14 @@ public class NewPost implements Serializable {
         this.selectedCategory = selectedCategory;
     }
 
-    public void post() throws Exception {
-        errorText.clear();
-
-        if (headline == null || headline.length() == 0) {
-            errorText.add("Naslov je obavezan");
-        } else if (description == null || description.length() == 0) {
-            errorText.add("Opis je obavezan");
-        } else {
-            Post post = new Post();
-            post.save(headline, description, AppHelper.getActiveUser().getUsername(), chosen.getName(), selectedCategory);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
-        }
-
+    public String getErrorText() {
+        return errorText;
     }
+
+    public void setErrorText(String errorText) {
+        this.errorText = errorText;
+    }
+    
+    
 
 }

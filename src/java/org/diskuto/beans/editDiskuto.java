@@ -8,16 +8,12 @@ package org.diskuto.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
-import org.diskuto.helpers.Database;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.models.Forum;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -27,30 +23,109 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class EditDiskuto implements Serializable {
 
+    private Forum diskuto;
     private String name;
     private String description;
     private String rules;
-    private String nameCategory;
     private List<String> categories = new ArrayList();
-    private String nameModerator;
     private List<String> moderators = new ArrayList();
-    private List<String> errorText = new ArrayList();
-    private Forum existing;
+    private String nameCategory;
+    private String nameModerator;
+    private String errorText;
 
     /**
      * Creates a new instance of editDiskuto
      */
     public EditDiskuto() throws Exception {
         Retriever retriever = new Retriever(AppHelper.param("name"));
-        this.existing = retriever.forum();
+        this.diskuto = retriever.forum();
 
-        if (existing != null) {
-            this.name = existing.getName();
-            this.description = existing.getDescription();
-            this.rules = existing.getRules();
-            this.categories = existing.getCategories();
-            this.moderators = existing.getModerators();
+        if (diskuto != null) {
+            this.name = diskuto.getName();
+            this.description = diskuto.getDescription();
+            this.rules = diskuto.getRules();
+            this.categories = diskuto.getCategories();
+            this.moderators = diskuto.getModerators();
         }
+    }
+
+    public void addCategory() {
+        this.errorText = "";
+        if (nameCategory == null || nameCategory.length() == 0) {
+            this.errorText = "Niste unijeli naziv kategorije";
+        } else if (categories.contains(nameCategory)) {
+            this.errorText = "Već ste unijeli tu kategoriju";
+        } else {
+            if (!AppHelper.regex("^[\\w\\d\\s]+$", nameCategory)) {
+                this.errorText = "Naziv kategorije smije imati samo brojeve i slova";
+            } else {
+                categories.add(nameCategory);
+            }
+        }
+        nameCategory = "";
+    }
+
+    public void dropCategory(String category) {
+        this.errorText = "";
+        categories.remove(category);
+    }
+
+    public void addModerator() throws Exception {
+        this.errorText = "";
+        if (AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
+            this.errorText = "Vi ste već vlasnik Diskuta";
+        } else if (!AppHelper.usernameExists(nameModerator)) {
+            this.errorText = "Korisnik pod tim korisničkim imenom ne postoji";
+        } else if (moderators.contains(nameModerator)) {
+            this.errorText = "Već ste unijeli tog moderatora";
+        } else {
+            moderators.add(nameModerator);
+        }
+        nameModerator = "";
+    }
+
+    public void dropModerator(String moderator) {
+        this.errorText = "";
+        moderators.remove(moderator);
+    }
+
+    private boolean check() throws Exception {
+        if (name == null || description == null || rules == null || name.length() == 0
+                || description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
+            this.errorText = "Niste unijeli sve podatke";
+            return false;
+        } else {
+            if (!AppHelper.regex("^[\\w\\d]+$", name)) {
+                this.errorText = "Naziv smije imati samo brojeve i slova bez razmaka";
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void save() throws Exception {
+        this.errorText = "";
+        if (check()) {
+            if (diskuto == null) {
+                if (AppHelper.forumExists(name)) {
+                    this.errorText = "Diskuto pod tim nazivom već postoji";
+                } else {
+                    Forum forum = new Forum();
+                    forum.save(name, description, categories, moderators, rules, AppHelper.getActiveUser().getUsername());
+                }
+            } else {
+                diskuto.update(description, rules, categories, moderators);
+            }
+            FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");
+        }
+    }
+
+    public Forum getDiskuto() {
+        return diskuto;
+    }
+
+    public void setDiskuto(Forum diskuto) {
+        this.diskuto = diskuto;
     }
 
     public String getName() {
@@ -77,28 +152,12 @@ public class EditDiskuto implements Serializable {
         this.rules = rules;
     }
 
-    public String getNameCategory() {
-        return nameCategory;
-    }
-
-    public void setNameCategory(String nameCategory) {
-        this.nameCategory = nameCategory;
-    }
-
     public List<String> getCategories() {
         return categories;
     }
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
-    }
-
-    public String getNameModerator() {
-        return nameModerator;
-    }
-
-    public void setNameModerator(String nameModerator) {
-        this.nameModerator = nameModerator;
     }
 
     public List<String> getModerators() {
@@ -109,108 +168,27 @@ public class EditDiskuto implements Serializable {
         this.moderators = moderators;
     }
 
-    public List<String> getErrorText() {
+    public String getNameCategory() {
+        return nameCategory;
+    }
+
+    public void setNameCategory(String nameCategory) {
+        this.nameCategory = nameCategory;
+    }
+
+    public String getNameModerator() {
+        return nameModerator;
+    }
+
+    public void setNameModerator(String nameModerator) {
+        this.nameModerator = nameModerator;
+    }
+
+    public String getErrorText() {
         return errorText;
     }
 
-    public void setErrorText(List<String> errorText) {
+    public void setErrorText(String errorText) {
         this.errorText = errorText;
-    }
-
-    public Forum getExisting() {
-        return existing;
-    }
-
-    public void addCategory() {
-        errorText.clear();
-
-        if (nameCategory == null || nameCategory.length() == 0) {
-            errorText.add("Niste unijeli naziv kategorije");
-        } else if (categories.contains(nameCategory)) {
-            errorText.add("Već ste unijeli tu kategoriju");
-        } else {
-            Matcher matcher = Pattern.compile("^[\\w\\d\\s]+$", Pattern.CASE_INSENSITIVE).matcher(nameCategory);
-            if (!matcher.find()) {
-                errorText.add("Naziv kategorije smije imati samo brojeve i slova");
-            } else {
-                categories.add(nameCategory);
-            }
-        }
-
-        nameCategory = "";
-    }
-
-    public void dropCategory(Object category) {
-        errorText.clear();
-        categories.remove(category);
-    }
-
-    public void addModerator() throws Exception {
-        errorText.clear();
-
-        Database db = new Database();
-        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + nameModerator + "\" return $x");
-        db.close();
-        
-        if (AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
-            errorText.add("Vi ste već vlasnik Diskuta");
-        } else if (result.getSize() == 0) {
-            errorText.add("Korisnik pod tim korisničkim imenom ne postoji");
-        } else if (moderators.contains(nameModerator)) {
-            errorText.add("Već ste unijeli tog moderatora");
-        } else {
-            moderators.add(nameModerator);
-        }
-
-        nameModerator = "";
-    }
-
-    public void dropModerator(Object moderator) {
-        errorText.clear();
-        org.diskuto.models.User dropModerator = new org.diskuto.models.User();
-        dropModerator.setUsername(moderator.toString());
-        moderators.remove(dropModerator);
-    }
-
-    public void save() throws Exception {
-        errorText.clear();
-        if (check()) {
-
-            if (existing == null) {
-                Database db = new Database();
-                ResourceSet resultDiskuto = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");
-                db.close();
-
-                if (resultDiskuto.getSize() > 0) {
-                    errorText.add("Diskuto pod tim nazivom već postoji");
-                } else {
-                    Forum forum = new Forum();
-                    forum.save(name, description, categories, moderators, rules, AppHelper.getActiveUser().getUsername());
-                }
-            } else {
-                existing.update(description, rules, categories, moderators);
-            }
-
-            FacesContext.getCurrentInstance().getExternalContext().redirect("myDiskuto");
-        }
-    }
-
-    private boolean check() throws Exception {
-
-        if (name == null || description == null || rules == null || name.length() == 0
-                || description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
-            errorText.add("Niste unijeli sve podatke");
-            return false;
-        } else {
-
-            Matcher matcher = Pattern.compile("^[\\w\\d]+$", Pattern.CASE_INSENSITIVE).matcher(name);
-            if (!matcher.find()) {
-                errorText.add("Naziv smije imati samo brojeve i slova bez razmaka");
-                return false;
-            }
-
-        }
-
-        return true;
     }
 }

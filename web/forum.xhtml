@@ -7,7 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | #{forum.chosen.name}</title>
+            <title>Diskuto | #{forum.diskuto.name}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="forum.css"/>
@@ -16,24 +16,26 @@
             <ui:include src="/header.xhtml" />
             <h:form class="element" prependId="false">
                 <div class="element-title">
-                    <h:outputText value="#{forum.chosen.name}" />
-                    <h:outputText rendered="#{forum.cat != null}" value=" - #{forum.cat}" />
+                    <h:outputText value="#{forum.diskuto.name}" />
+                    <h:outputText rendered="#{forum.category != null}" value=" - #{forum.category}" />
                     <h:panelGroup class="element-buttons">
                         <h:button class="button" value="#{output['forum.button1']}" outcome="newPost" >
-                            <f:param name="on" value="#{forum.chosen.name}" />
+                            <f:param name="on" value="#{forum.diskuto.name}" />
                         </h:button>
-                        <h:commandButton class="button" rendered="#{!forum.boss}" value="#{forum.subscribed ? output['forum.button2'] : output['forum.button3']}'" action="#{forum.subscribe}" >
+                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? output['forum.button2'] : output['forum.button3']}'" action="#{forum.subscribe(forum.diskuto)}"
+                                         rendered="#{!(forum.diskuto.owner.equals(beanHelper.activeUser.username) || forum.diskuto.moderators.contains(beanHelper.activeUser.username))}}" >
                             <f:ajax event="action" render="@form" />
                         </h:commandButton>
-                        <h:button class="button" rendered="#{forum.boss}" value="#{output['forum.button4']}" outcome="editDiskuto" >
-                            <f:param name="name" value="#{forum.chosen.name}"/>
+                        <h:button class="button" value="#{output['forum.button4']}" outcome="editDiskuto"
+                                  rendered="#{forum.diskuto.owner.equals(beanHelper.activeUser.username) || forum.diskuto.moderators.contains(beanHelper.activeUser.username)}" >
+                            <f:param name="name" value="#{forum.diskuto.name}"/>
                         </h:button>
                     </h:panelGroup>
                 </div>
-                <c:forEach items="#{forum.chosen.categories}" var="value">
+                <c:forEach items="#{forum.diskuto.categories}" var="value">
                     <div class="categories">
-                        <h:link class="categoryName" rendered="#{forum.cat == null}"  value="#{value}" outcome="forum" >
-                            <f:param name="name" value="#{forum.chosen.name}" />
+                        <h:link class="categoryName" rendered="#{forum.category == null}"  value="#{value}" outcome="forum" >
+                            <f:param name="name" value="#{forum.diskuto.name}" />
                             <f:param name="cat" value="#{value}" />
                         </h:link>
                         <c:forEach items="#{forum.freshPost(value)}" var="item">
@@ -41,10 +43,10 @@
                                 <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
                                     <f:param name="id" value="#{item.id}" />
                                 </h:link>
-                                <h:link value="#{item.owner.username}" outcome="profile" >
-                                    <f:param name="name" value="#{item.owner.username}" />
+                                <h:link value="#{item.owner}" outcome="profile" >
+                                    <f:param name="name" value="#{item.owner}" />
                                 </h:link>
-                                <h:outputText value=" • #{message.formatted(item.created)}" />
+                                <h:outputText value=" • #{beanHelper.date(item.created)}" />
                             </div>
                         </c:forEach>
                     </div>
@@ -58,7 +60,7 @@
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="about.xhtml">
-                <ui:param name="diskuto" value="#{forum.chosen}" />
+                <ui:param name="diskuto" value="#{forum.diskuto}" />
             </ui:include>
             <ui:include src="/footer.xhtml" />
         </h:body>

@@ -12,14 +12,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
-import org.diskuto.helpers.Database;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Comment;
-import org.diskuto.models.User;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -29,12 +25,11 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class Post implements Serializable {
 
-    private org.diskuto.models.Post chosen;
-    private String p_created;
+    private org.diskuto.models.Post thing;
+    private final String user;
+    private List<Comment> comments = new ArrayList<>();
     private String myComment;
-    private User user;
-    private boolean enabledButton;
-    private List<Comment> comments;
+    private boolean button;
 
     /**
      * Creates a new instance of Post
@@ -42,39 +37,91 @@ public class Post implements Serializable {
      * @throws java.lang.Exception
      */
     public Post() throws Exception {
-        this.user = AppHelper.getActiveUser();
+        user = AppHelper.getActiveUser().getUsername();
         Retriever retriever = new Retriever(AppHelper.param("id"));
-        this.chosen = retriever.post();
+        this.thing = retriever.post();
         
-        if (this.chosen == null) {
+        if (this.thing == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
 
-        retrieveComments();
+        ResourceIterator iterator = AppHelper.getResourceSet("/posts/post[id=\"" + this.thing.getId() + "\"]/comments/comment").getIterator();
+        while (iterator.hasMoreResources()) {
+            Comment comment = new Comment();
+            comment.retrieve(new XmlHelper(iterator.nextResource()));
+            comment.setPost(this.thing.getId());
+            this.comments.add(comment);
+        }
+    }
+    
+    public String sendComment() throws Exception {
+        if (!this.myComment.equals("")) {
+            Comment comment = new Comment();
+            comment.save(this.thing.getId(), this.myComment, this.user);
+            this.comments.add(comment);
+            this.myComment = "";
+        }
+        return "";
     }
 
-    public org.diskuto.models.Post getChosen() {
-        return chosen;
+    public void upvotePost() throws Exception {
+        if (!this.thing.getUpvote().contains(this.user)) {
+            this.thing.addVote("upvote", this.user);
+
+            if (this.thing.getDownvote().contains(this.user)) {
+                this.thing.dropVote("downvote", this.user);
+            }
+        } else {
+            this.thing.dropVote("upvote", this.user);
+        }
     }
 
-    public String getP_created() {
-        return AppHelper.fullDate(this.chosen.getCreated());
+    public void downvotePost() throws Exception {
+        if (!this.thing.getDownvote().contains(this.user)) {
+            this.thing.addVote("downvote", this.user);
+
+            if (this.thing.getUpvote().contains(this.user)) {
+                this.thing.dropVote("upvote", this.user);
+            }
+        } else {
+            this.thing.dropVote("downvote", this.user);
+        }
     }
 
-    public String getMyComment() {
-        return myComment;
+    public void upvoteComment(Comment comment) throws Exception {
+        if (!comment.getUpvote().contains(this.user)) {
+            comment.addVote("upvote", this.user);
+
+            if (comment.getDownvote().contains(this.user)) {
+                comment.dropVote("downvote", this.user);
+            }
+        } else {
+            comment.dropVote("upvote", this.user);
+        }
     }
 
-    public void setMyComment(String myComment) {
-        this.myComment = myComment;
+    public void downvoteComment(Comment comment) throws Exception {
+        if (!comment.getDownvote().contains(this.user)) {
+            comment.addVote("downvote", this.user);
+
+            if (comment.getUpvote().contains(this.user)) {
+                comment.dropVote("upvote", this.user);
+            }
+        } else {
+            comment.dropVote("downvote", this.user);
+        }
     }
 
-    public boolean isEnabledButton() {
-        return enabledButton;
+    public void enableButton() {
+        this.button = !"".equals(this.myComment);
     }
 
-    public void setEnabledButton(boolean enabledButton) {
-        this.enabledButton = enabledButton;
+    public org.diskuto.models.Post getThing() {
+        return thing;
+    }
+
+    public void setThing(org.diskuto.models.Post thing) {
+        this.thing = thing;
     }
 
     public List<Comment> getComments() {
@@ -85,86 +132,19 @@ public class Post implements Serializable {
         this.comments = comments;
     }
 
-    public void upvotePost() throws Exception {
-        if (!this.chosen.getUpvote().contains(this.user.getUsername())) {
-            this.chosen.addVote("upvote", user.getUsername());
-
-            if (this.chosen.getDownvote().contains(this.user.getUsername())) {
-                this.chosen.dropVote("downvote", user.getUsername());
-            }
-        } else {
-            this.chosen.dropVote("upvote", user.getUsername());
-        }
+    public String getMyComment() {
+        return myComment;
     }
 
-    public void downvotePost() throws Exception {
-        if (!this.chosen.getDownvote().contains(this.user.getUsername())) {
-            this.chosen.addVote("downvote", user.getUsername());
-
-            if (this.chosen.getUpvote().contains(this.user.getUsername())) {
-                this.chosen.dropVote("upvote", user.getUsername());
-            }
-        } else {
-            this.chosen.dropVote("downvote", user.getUsername());
-        }
+    public void setMyComment(String myComment) {
+        this.myComment = myComment;
     }
 
-    public void upvoteComment(Comment comment) throws Exception {
-        if (!comment.getUpvote().contains(this.user.getUsername())) {
-            comment.addVote("upvote", user.getUsername());
-
-            if (comment.getDownvote().contains(this.user.getUsername())) {
-                comment.dropVote("downvote", user.getUsername());
-            }
-        } else {
-            comment.dropVote("upvote", user.getUsername());
-        }
+    public boolean isButton() {
+        return button;
     }
 
-    public void downvoteComment(Comment comment) throws Exception {
-        if (!comment.getDownvote().contains(this.user.getUsername())) {
-            comment.addVote("downvote", user.getUsername());
-
-            if (comment.getUpvote().contains(this.user.getUsername())) {
-                comment.dropVote("upvote", user.getUsername());
-            }
-        } else {
-            comment.dropVote("downvote", user.getUsername());
-        }
-    }
-
-    public String sendComment() throws Exception {
-        if (!this.myComment.equals("")) {
-            Comment comment = new Comment();
-            comment.save(this.chosen.getId(), this.myComment, this.user.getUsername());
-            this.comments.add(comment);
-            this.myComment = "";
-        }
-        return "";
-    }
-
-    public void enableButton() {
-        this.enabledButton = !"".equals(this.myComment);
-    }
-
-    private void retrieveComments() throws Exception {
-        this.comments = new ArrayList<>();
-
-        Database db = new Database();
-        ResourceSet result = db.xquery("/posts/post[id=\"" + this.chosen.getId() + "\"]/comments/comment");
-        ResourceIterator iterator = result.getIterator();
-        while (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-
-            Comment comment = new Comment();
-            comment.retrieve(helper);
-            comment.setPost(this.chosen.getId());
-            this.comments.add(comment);
-        }
-    }
-
-    public String formatted(long time) {
-        return AppHelper.fullDate(time);
+    public void setButton(boolean button) {
+        this.button = button;
     }
 }

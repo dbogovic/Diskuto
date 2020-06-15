@@ -11,11 +11,10 @@ import java.util.List;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
-import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
-import org.xmldb.api.base.Resource;
+import org.diskuto.models.Forum;
 import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -25,39 +24,45 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class MyDiskuto implements Serializable {
 
-    private List<org.diskuto.models.Forum> owner = new ArrayList();
-    private List<org.diskuto.models.Forum> moderator = new ArrayList();
-    
+    private List<org.diskuto.models.Forum> owner;
+    private List<org.diskuto.models.Forum> moderator;
+
     /**
      * Creates a new instance of myDiskuto
      */
     public MyDiskuto() throws Exception {
-        Database db = new Database();
-        ResourceSet ownership = db.xquery("/forums/forum[owner=\""+AppHelper.getActiveUser().getUsername()+"\"]/name");
-        ResourceSet moderatoring = db.xquery("/forums/forum[moderators/moderator=\""+AppHelper.getActiveUser().getUsername()+"\"]/name");
-        db.close();
-        
-        fillIn(ownership, owner);
-        fillIn(moderatoring, moderator);
+        this.owner = fillIn("/forums/forum[owner=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
+        this.moderator = fillIn("/forums/forum[moderators/moderator=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
     }
 
-    public List<org.diskuto.models.Forum> getOwner() {
+    private List<org.diskuto.models.Forum> fillIn(String query) throws Exception {
+        List<org.diskuto.models.Forum> list = new ArrayList<>();
+
+        ResourceIterator iterator = AppHelper.getResourceSet(query).getIterator();
+        while (iterator.hasMoreResources()) {
+            XmlHelper helper = new XmlHelper(iterator.nextResource());
+            Object objekt = helper.makeObject("");
+            Retriever retriever = new Retriever(helper.makeValue("name", objekt));
+            list.add(retriever.forum());
+        }
+
+        return list;
+    }
+
+    public List<Forum> getOwner() {
         return owner;
     }
 
-    public List<org.diskuto.models.Forum> getModerator() {
+    public void setOwner(List<Forum> owner) {
+        this.owner = owner;
+    }
+
+    public List<Forum> getModerator() {
         return moderator;
     }
-    
-    public void fillIn(ResourceSet resourceSet, List<org.diskuto.models.Forum> list) throws Exception {
-        ResourceIterator iterator = resourceSet.getIterator();
-        while(iterator.hasMoreResources()){
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-            Object objekt = helper.makeObject("");
-            org.diskuto.models.Forum forum = new org.diskuto.models.Forum();
-            forum.setName(helper.makeValue("name", objekt));
-            list.add(forum);
-        }
+
+    public void setModerator(List<Forum> moderator) {
+        this.moderator = moderator;
     }
+
 }

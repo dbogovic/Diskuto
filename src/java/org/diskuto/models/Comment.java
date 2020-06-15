@@ -85,6 +85,11 @@ public class Comment {
         db.close();
     }
 
+    public void post() throws Exception {
+        this.post = Integer.parseInt(new XmlHelper(AppHelper.getResource("for $x in /posts/post where $x/comments/comment/id=\""
+                + this.id + "\" return data($x/id)")).rawValue());
+    }
+
     public int getPost() {
         return post;
     }

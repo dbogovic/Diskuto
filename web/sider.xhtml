@@ -2,7 +2,6 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:outputStylesheet library="css" name="sider.css"/>
@@ -24,7 +23,7 @@
             <h:link value="#{output['login.forgottenPassword']}" outcome="newPassword" />
             <h:link value="#{output['login.noAccount']}" outcome="registration" />
         </h:panelGroup>
-        <h:panelGroup rendered="#{beanHelper.activeUser.login != null}">
+        <h:panelGroup rendered="#{beanHelper.activeUser != null}">
             <div class="menu">
                 <h:graphicImage value="resources/pages/favicon.ico" />
                 <h:link class="menu-option" value="#{output['myDiskuto.title']}" outcome="myDiskuto" />
@@ -63,4 +62,5 @@
             </div>
         </h:panelGroup>
     </h:form>
+
 </ui:composition>

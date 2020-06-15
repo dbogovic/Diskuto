@@ -7,6 +7,8 @@ package org.diskuto.helpers;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import org.diskuto.listeners.Listener;
 import org.diskuto.models.User;
@@ -29,6 +31,18 @@ public class AppHelper {
         return params.get(key);
     }
 
+    public static int generateId(String query) throws Exception {
+        Database db = new Database();
+        ResourceSet rs = db.xquery(query);
+        db.close();
+
+        if (rs.getSize() > 0) {
+            return Integer.parseInt(new XmlHelper(rs.getResource(0)).rawValue()) + 1;
+        } else {
+            return 1;
+        }
+    }
+
     public static String date(long unixTime) {
 
         Calendar calendar = Calendar.getInstance();
@@ -46,25 +60,14 @@ public class AppHelper {
                 + ":" + calendar.get(Calendar.MINUTE);
     }
 
-    public static int generateId(String query) throws Exception {
-        Database db = new Database();
-        ResourceSet rs = db.xquery(query);
-        db.close();
-
-        if (rs.getSize() > 0) {
-            return Integer.parseInt(new XmlHelper(rs.getResource(0)).rawValue()) + 1;
-        } else {
-            return 1;
-        }
-    }
-
-    /*    public static ResourceSet getResourceSet(String query) throws Exception {
+    public static ResourceSet getResourceSet(String query) throws Exception {
         Database db = new Database();
         ResourceSet resourceSet = db.xquery(query);
         db.close();
-        
+
         return resourceSet;
-    }*/
+    }
+
     public static Resource getResource(String query) throws Exception {
         Database db = new Database();
         ResourceSet resourceSet = db.xquery(query);
@@ -84,12 +87,33 @@ public class AppHelper {
 
         return result.getSize() != 0;
     }
-    
+
     public static boolean userExists(String email) throws Exception {
         Database db = new Database();
         ResourceSet result = db.xquery("for $x in /users/user where $x/email=\"" + email + "\" return $x");
         db.close();
 
         return result.getSize() != 0;
+    }
+
+    public static boolean usernameExists(String name) throws Exception {
+        Database db = new Database();
+        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + name + "\" return $x");
+        db.close();
+
+        return result.getSize() != 0;
+    }
+    
+    public static boolean forumExists(String name) throws Exception {
+        Database db = new Database();
+        ResourceSet result = db.xquery("for $x in /forums/forum where $x/name=\"" + name + "\" return $x");
+        db.close();
+
+        return result.getSize() != 0;
+    }
+
+    public static boolean regex(String pattern, String matcher) {
+        Matcher match = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(matcher);
+        return match.find();
     }
 }

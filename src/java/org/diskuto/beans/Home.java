@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import org.diskuto.helpers.Database;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Post;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -31,24 +29,22 @@ public class Home {
      * Creates a new instance of Index
      */
     public Home() throws Exception {
-        Database db = new Database();
-        ResourceSet query = db.xquery("/posts/post/id");
-        ResourceIterator iterator = query.getIterator();
+        ResourceIterator iterator = AppHelper.getResourceSet("/posts/post/id").getIterator();
         while (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-            List<String> results = helper.makeListValue("/id");
-            for (String s : results) {
-                Retriever retriever = new Retriever(s);
+            for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
+                Retriever retriever = new Retriever(id);
                 Post post = retriever.post();
                 items.add(post);
             }
         }
-        db.close();
     }
-    
+
     public List<Post> getItems() {
         return items;
+    }
+
+    public void setItems(List<Post> items) {
+        this.items = items;
     }
 
 }

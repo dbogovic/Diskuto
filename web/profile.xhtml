@@ -6,7 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | #{profile.chosen.username}</title>
+            <title>Diskuto | #{profile.user.username}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="profile.css"/>
@@ -16,22 +16,23 @@
             <ui:include src="/header.xhtml" />
             <h:form class="element" prependId="false">
                 <div class="element-title">
-                    <h:outputText value="#{profile.chosen.username}"/>
+                    <h:outputText value="#{profile.user.username}"/>
                     <h:panelGroup id="myProfilebtn" rendered="#{profile.me}">
                         <h:button class="button" value="#{output['profile.settings']}" outcome="settings" />
                     </h:panelGroup>
                     <h:panelGroup id="otherProfilebtn" rendered="#{!profile.me}">
                         <h:button class="button" value="#{output['profile.message']}" outcome="message" >
-                            <f:param name="with" value="#{profile.chosen.username}" />
+                            <f:param name="with" value="#{profile.user.username}" />
                         </h:button>
-                        <h:commandButton class="button" value="#{profile.ignored ? output['profile.unignore'] : output['profile.ignore']}" action="#{profile.ignore()}" >
+                        <h:commandButton class="button" action="#{profile.ignore()}" 
+                                         value="#{beanHelper.activeUser.ignored.contains(profile.user.username) ? output['profile.unignore'] : output['profile.ignore']}" >
                             <f:ajax event="action" render="@form" />
                         </h:commandButton>
                     </h:panelGroup>
                 </div>
                 <div class="profileDescription">
                     <h:outputText value="#{output['profile.member']} " />
-                    <h:outputText class="profileData" value="#{profile.p_created}" />
+                    <h:outputText class="profileData" value="#{beanHelper.date(profile.user.created)}" />
                     <h:outputText value="#{output['profile.karma']} " />
                     <h:outputText class="profileData" value="#{profile.upvotes - profile.downvotes > 0 ? '+' : ''}#{profile.upvotes - profile.downvotes} (#{profile.upvotes}/#{profile.downvotes})" />
                 </div>

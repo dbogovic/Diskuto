@@ -12,13 +12,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
-import org.diskuto.helpers.Database;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Post;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -28,120 +25,74 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class Forum implements Serializable {
 
-    private org.diskuto.models.Forum chosen;
-    private String f_created;
-    private String cat;
-    private boolean boss;
-    private boolean subscribed;
+    private org.diskuto.models.Forum diskuto;
+    private String category;
     private List<org.diskuto.models.Post> items = new ArrayList();
 
     /**
      * Creates a new instance of Forum
      */
     public Forum() throws Exception {
-        this.cat = AppHelper.param("cat");
+        this.category = AppHelper.param("cat");
         Retriever retrieveForum = new Retriever(AppHelper.param("name"));
-        this.chosen = retrieveForum.forum();
-        
-        if (this.chosen == null) {
+        this.diskuto = retrieveForum.forum();
+        if (this.diskuto == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
 
-        Database db = new Database();
-        ResourceSet query = db.xquery("/posts/post[diskuto=\"" + this.chosen.getName() + "\"]/id");
-        ResourceIterator iterator = query.getIterator();
+        ResourceIterator iterator = AppHelper.getResourceSet("/posts/post[diskuto=\"" + this.diskuto.getName() + "\"]/id").getIterator();
         while (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-            List<String> results = helper.makeListValue("/id");
-            for (String s : results) {
-                Retriever retrievePost = new Retriever(s);
+            for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
+                Retriever retrievePost = new Retriever(id);
                 Post post = retrievePost.post();
                 items.add(post);
             }
         }
-        db.close();
+    }
+
+    public Post freshPost(String category) throws Exception {
+        try {
+            Post post = new Post();
+            post.retrieve(new XmlHelper(AppHelper.getResourceSet("(for $x in /posts/post where $x/category=\"" + category
+                    + "\" and $x/diskuto=\"" + this.diskuto.getName() + "\" order by $x/created descending return $x)[position() le 1]").getResource(0)));
+            return post;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public void subscribe(org.diskuto.models.Forum forum) throws Exception {
+        if (!AppHelper.getActiveUser().getSubscriptions().contains(forum.getName())) {
+            forum.setSubscribers(forum.getSubscribers() + 1);
+            AppHelper.getActiveUser().subscribe(forum.getName());
+        } else {
+            forum.setSubscribers(forum.getSubscribers() - 1);
+            AppHelper.getActiveUser().unsubscribe(forum.getName());
+        }
+    }
+
+    public org.diskuto.models.Forum getDiskuto() {
+        return diskuto;
+    }
+
+    public void setDiskuto(org.diskuto.models.Forum diskuto) {
+        this.diskuto = diskuto;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<Post> getItems() {
         return items;
     }
 
-    public org.diskuto.models.Forum getChosen() {
-        return chosen;
+    public void setItems(List<Post> items) {
+        this.items = items;
     }
 
-    public String getF_created() {
-        return AppHelper.date(chosen.getCreated());
-    }
-
-    public String getCat() {
-        return cat;
-    }
-
-    public boolean isBoss() {
-        if (AppHelper.getActiveUser() == null) {
-            return false;
-        } else if (this.chosen.getOwner().equals(AppHelper.getActiveUser().getUsername())
-                || this.chosen.getModerators().contains(AppHelper.getActiveUser())) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isSubscribed() throws Exception {
-        Database db = new Database();
-        ResourceSet subs = db.xquery("/users/user[name=\"" + AppHelper.getActiveUser().getUsername()
-                + "\"]/subscriptions[forum=\"" + this.chosen.getName() + "\"]");
-        db.close();
-
-        this.subscribed = subs.getSize() > 0;
-        return this.subscribed;
-    }
-
-    public void subscribe() throws Exception {
-
-        Database db = new Database();
-
-        if (!this.subscribed) {
-            this.chosen.setSubscribers(this.chosen.getSubscribers() + 1);
-            db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
-                    + "\" return update insert <forum>" + this.chosen.getName() + "</forum> into $x/subscriptions");
-            this.subscribed = true;
-        } else {
-            this.chosen.setSubscribers(this.chosen.getSubscribers() - 1);
-            db.xquery("for $x in /users/user[name=\"" + AppHelper.getActiveUser().getUsername()
-                    + "\"]/subscriptions[forum=\"" + this.chosen.getName() + "\"] return update delete $x/forum");
-            this.subscribed = false;
-        }
-
-        db.xquery("for $x in /forums/forum where $x/name=\"" + this.chosen.getName()
-                + "\" return update value $x/subscribers with \"" + this.chosen.getSubscribers() + "\"");
-
-        db.close();
-    }
-
-    public List<org.diskuto.models.Post> freshPost(String category) throws Exception {
-        List<org.diskuto.models.Post> post = new ArrayList();
-
-        Database db = new Database();
-
-        ResourceSet query = db.xquery("(for $x in /posts/post where $x/category=\"" + category
-                + "\" order by $x/created descending return $x)[position() le 1]");
-        ResourceIterator iterator = query.getIterator();
-        if (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-            Object object = helper.makeObject("post");
-            org.diskuto.models.Post retrieved = new org.diskuto.models.Post();
-            retrieved.setId(Integer.parseInt(helper.makeValue("id", object)));
-            retrieved.setHeadline(helper.makeValue("headline", object));
-            retrieved.setOwner(helper.makeValue("owner", object));
-            retrieved.setCreated(Long.parseLong(helper.makeValue("created", object)));
-            post.add(retrieved);
-        }
-        db.close();
-
-        return post;
-    }
 }

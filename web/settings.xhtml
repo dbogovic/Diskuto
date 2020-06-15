@@ -45,26 +45,26 @@
                 </h:commandButton>
                 <h:outputText class="errorText" rendered="#{settings.errorPassword}" value="#{output['settings.errorPassword']}" />
 
-                <h:outputText class="settingsLabel" value="#{settings.listDiskuto.size() == 0 ? output['settings.noDiskutos'] : output['settings.yesDiskutos']}" />
-                <c:forEach id="subscribed" items="#{settings.listDiskuto}" var="value">
+                <h:outputText class="settingsLabel" value="#{beanHelper.activeUser.subscriptions.size() == 0 ? output['settings.noDiskutos'] : output['settings.yesDiskutos']}" />
+                <c:forEach id="subscribed" items="#{beanHelper.activeUser.subscriptions}" var="value">
                     <h:panelGroup class="settingsList">
-                        <h:commandButton class="button" value="X" action="#{settings.unsubscribe(value)}">
+                        <h:commandButton class="button" value="X" action="#{beanHelper.activeUser.unsubscribe(value)}">
                             <f:ajax event="action" execute="subscribed" render="@form"/>
                         </h:commandButton>
-                        <h:link value="#{value.name}" outcome="forum" >
-                            <f:param name="name" value="#{value.name}" />
+                        <h:link value="#{value}" outcome="forum" >
+                            <f:param name="name" value="#{value}" />
                         </h:link>
                     </h:panelGroup>
                 </c:forEach>
 
-                <h:outputText class="settingsLabel" value="#{settings.ignoredUsers.size() == 0 ? output['settings.noIgnored'] : output['settings.yesIgnored']}" />
-                <c:forEach id="ignored" items="#{settings.ignoredUsers}" var="value">
+                <h:outputText class="settingsLabel" value="#{beanHelper.activeUser.ignored.size() == 0 ? output['settings.noIgnored'] : output['settings.yesIgnored']}" />
+                <c:forEach id="ignored" items="#{beanHelper.activeUser.ignored}" var="value">
                     <h:panelGroup class="settingsList">
-                        <h:commandButton class="button" value="X" action="#{settings.unignore(value)}">
+                        <h:commandButton class="button" value="X" action="#{beanHelper.activeUser.unignore(value)}">
                             <f:ajax event="action" execute="ignored" render="@form"/>
                         </h:commandButton>
-                        <h:link value="#{value.username}" outcome="profile" >
-                            <f:param name="name" value="#{value.username}" />
+                        <h:link value="#{value}" outcome="profile" >
+                            <f:param name="name" value="#{value}" />
                         </h:link>
                     </h:panelGroup>
                 </c:forEach>

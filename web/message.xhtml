@@ -16,13 +16,13 @@
         <h:body>
             <ui:include src="/header.xhtml" />
             <h:form class="message" prependId="false">
-                <h:link class="messageTitle" rendered="#{message.chosen != null}" value="#{message.chosen.username}" outcome="profile" >
-                    <f:param name="name" value="#{message.chosen.username}" />
+                <h:link class="messageTitle" rendered="#{message.chosen != null}" value="#{message.chosen}" outcome="profile" >
+                    <f:param name="name" value="#{message.chosen}" />
                 </h:link>
                 <h:panelGroup class="messageElement">
                     <h:panelGroup class="chatUsers">
                         <c:forEach items="#{message.chatting}" var="value">
-                            <h:link value="#{value}" outcome="message" style="background:${value.equals(message.chosen.username) ? 'whitesmoke' : 'white' }" >
+                            <h:link value="#{value}" outcome="message" style="background:${value.equals(message.chosen) ? 'whitesmoke' : 'white' }" >
                                 <f:param name="with" value="#{value}" />
                             </h:link>
                         </c:forEach>
@@ -32,7 +32,7 @@
                             <c:forEach rendered="#{!message.me}" items="#{message.messages}" var="value">
                                 <h:panelGroup class="messageThing" style="align-items: #{value.sender != message.chosen ? 'flex-end' : 'flex-start'}">
                                     <h:outputText class="messageText" style="background: #{value.sender != message.chosen? '#61AFE0' : '#f1f0f0'}; color: #{value.sender != message.chosen ? '#2B4758' : 'black'}" value="#{value.text}" />
-                                    <h:outputText class="messageTimestamp" value="#{message.formatted(value.time)}" />
+                                    <h:outputText class="messageTimestamp" value="#{beanHelper.fullDate(value.time)}" />
                                 </h:panelGroup>
                             </c:forEach>
                         </h:panelGroup>

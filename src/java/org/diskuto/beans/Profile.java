@@ -12,14 +12,12 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
-import org.diskuto.helpers.Database;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Comment;
+import org.diskuto.models.Post;
 import org.diskuto.models.User;
-import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
-import org.xmldb.api.base.ResourceSet;
 
 /**
  *
@@ -29,158 +27,153 @@ import org.xmldb.api.base.ResourceSet;
 @ViewScoped
 public class Profile implements Serializable {
 
-    private User chosen;
+    private User user;
     private boolean me;
-    private String p_created;
-    private boolean ignored;
-    private long upvotes;
-    private long downvotes;
-    private List<org.diskuto.models.Post> posts;
-    private int postsIteratorId = 0;
+    private int upvotes;
+    private int downvotes;
     private int totalPosts;
-    private List<Comment> comments;
-    private int commentsIteratorId = 0;
     private int totalComments;
+    private List<org.diskuto.models.Post> posts = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+    private int postsIteratorId = 0, commentsIteratorId = 0;
 
     /**
      * Creates a new instance of Profile
      */
     public Profile() throws Exception {
-        String _user = AppHelper.param("name");
-        if (_user.equals(AppHelper.getActiveUser().getUsername())) {
+        String user = AppHelper.param("name");
+        if (user.equals(AppHelper.getActiveUser().getUsername())) {
             me = true;
-            this.chosen = AppHelper.getActiveUser();
+            this.user = AppHelper.getActiveUser();
         } else {
             me = false;
-            Retriever retriever = new Retriever(_user);
-            this.chosen = retriever.user();
-            if (this.chosen == null) {
+            Retriever retriever = new Retriever(user);
+            this.user = retriever.user();
+            if (this.user == null) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
             }
         }
 
-        Database db = new Database();
-        this.upvotes = db.xquery("//upvote[user=\"" + this.chosen.getUsername() + "\"]").getSize();
-        this.downvotes = db.xquery("//downvote[user=\"" + this.chosen.getUsername() + "\"]").getSize();
-        this.totalPosts = Integer.parseInt(db.xquery("count(//post[owner=\"" + this.chosen.getUsername() + "\"]/id)").getIterator().nextResource().getContent().toString());
-        this.totalComments = Integer.parseInt(db.xquery("count(//post/comments/comment[owner=\"" + this.chosen.getUsername() + "\"])").getIterator().nextResource().getContent().toString());
-        db.close();
+        this.upvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//upvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
+        this.downvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//downvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
+        this.totalPosts = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\"" + this.user.getUsername() + "\"]/id)")).rawValue());
+        this.totalComments = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post/comments/comment[owner=\"" + this.user.getUsername() + "\"])")).rawValue());
 
-        posts = new ArrayList<>();
         loadPosts();
-        comments = new ArrayList<>();
         loadComments();
 
     }
 
-    public long getUpvotes() throws Exception {
-        return upvotes;
+    public void loadPosts() throws Exception {
+        ResourceIterator iterator = AppHelper.getResourceSet("//post[ owner=\"" + user.getUsername() + "\" and " + postsIteratorId + " < position() and position() <= 10 ]/id").getIterator();
+        while (iterator.hasMoreResources()) {
+            for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
+                Retriever retriever = new Retriever(id);
+                org.diskuto.models.Post post = retriever.post();
+                posts.add(post);
+            }
+        }
+        postsIteratorId += 10;
     }
 
-    public long getDownvotes() throws Exception {
-        return downvotes;
+    public void loadComments() throws Exception {
+        ResourceIterator iterator = AppHelper.getResourceSet("//post/comments/comment[owner=\"" + this.user.getUsername()
+                + "\" and " + commentsIteratorId + " < position() and position() <= 10 ]").getIterator();
+        while (iterator.hasMoreResources()) {
+            Comment comment = new Comment();
+            comment.retrieve(new XmlHelper(iterator.nextResource()));
+            comment.post();
+            this.comments.add(comment);
+        }
+        commentsIteratorId += 10;
     }
 
-    public int getTotalPosts() {
-        return totalPosts;
+    public void ignore() throws Exception {
+        if (!AppHelper.getActiveUser().getIgnored().contains(this.user.getUsername())) {
+            AppHelper.getActiveUser().ignore(this.user.getUsername());
+        } else {
+            AppHelper.getActiveUser().unignore(this.user.getUsername());
+        }
     }
 
-    public int getTotalComments() {
-        return totalComments;
+    public User getUser() {
+        return user;
     }
 
-    public int getPostsIteratorId() {
-        return postsIteratorId;
-    }
-
-    public int getCommentsIteratorId() {
-        return commentsIteratorId;
-    }
-
-    public List<org.diskuto.models.Post> getPosts() {
-        return posts;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public User getChosen() {
-        return chosen;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isMe() {
         return me;
     }
 
-    public String getP_created() {
-        return AppHelper.date(chosen.getCreated());
+    public void setMe(boolean me) {
+        this.me = me;
     }
 
-    public boolean isIgnored() throws Exception {
-        Database db = new Database();
-        ResourceSet result = db.xquery("/users/user[name=\"" + AppHelper.getActiveUser().getUsername()
-                + "\"]/ignore/user[\"" + this.chosen.getUsername() + "\"]");
-        db.close();
-
-        this.ignored = result.getSize() > 0;
-        return this.ignored;
+    public int getUpvotes() {
+        return upvotes;
     }
 
-    public void ignore() throws Exception {
-
-        Database db = new Database();
-
-        if (!this.ignored) {
-            db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
-                    + "\" return update insert <user>" + this.chosen.getUsername() + "</user> into $x/ignore");
-            this.ignored = true;
-        } else {
-            db.xquery("for $x in /users/user[name=\"" + AppHelper.getActiveUser().getUsername()
-                    + "\"]/ignore[user=\"" + this.chosen.getUsername() + "\"] return update delete $x/user");
-            this.ignored = false;
-        }
-
-        db.close();
+    public void setUpvotes(int upvotes) {
+        this.upvotes = upvotes;
     }
 
-    public void loadPosts() throws Exception {
-
-        Database db = new Database();
-        ResourceSet query = db.xquery("//post[ owner=\"" + chosen.getUsername() + "\" and " + postsIteratorId + " < position() and position() <= 10 ]/id");
-        ResourceIterator iterator = query.getIterator();
-        while (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
-            List<String> results = helper.makeListValue("/id");
-            for (String s : results) {
-                Retriever retriever = new Retriever(s);
-                org.diskuto.models.Post post = retriever.post();
-                posts.add(post);
-            }
-        }
-        postsIteratorId += 10;
-        db.close();
+    public int getDownvotes() {
+        return downvotes;
     }
 
-    public void loadComments() throws Exception {
+    public void setDownvotes(int downvotes) {
+        this.downvotes = downvotes;
+    }
 
-        Database db = new Database();
-        ResourceSet query = db.xquery("//post/comments/comment[owner=\"" + this.chosen.getUsername()
-                + "\" and " + commentsIteratorId + " < position() and position() <= 10 ]");
-        ResourceIterator iterator = query.getIterator();
-        while (iterator.hasMoreResources()) {
-            Resource r = iterator.nextResource();
-            XmlHelper helper = new XmlHelper(r);
+    public int getTotalPosts() {
+        return totalPosts;
+    }
 
-            Comment comment = new Comment();
-            comment.retrieve(helper);
-            comment.setPost(Integer.valueOf(new XmlHelper(db.xquery("for $x in /posts/post where $x/comments/comment/id=\""
-                    + comment.getId() + "\" return data($x/id)").getResource(0)).rawValue()));
-            this.comments.add(comment);
-        }
-        commentsIteratorId += 10;
-        db.close();
+    public void setTotalPosts(int totalPosts) {
+        this.totalPosts = totalPosts;
+    }
+
+    public int getTotalComments() {
+        return totalComments;
+    }
+
+    public void setTotalComments(int totalComments) {
+        this.totalComments = totalComments;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public int getPostsIteratorId() {
+        return postsIteratorId;
+    }
+
+    public void setPostsIteratorId(int postsIteratorId) {
+        this.postsIteratorId = postsIteratorId;
+    }
+
+    public int getCommentsIteratorId() {
+        return commentsIteratorId;
+    }
+
+    public void setCommentsIteratorId(int commentsIteratorId) {
+        this.commentsIteratorId = commentsIteratorId;
     }
 
 }

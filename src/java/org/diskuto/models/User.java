@@ -8,6 +8,7 @@ package org.diskuto.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
 import org.diskuto.helpers.XmlHelper;
@@ -80,6 +81,14 @@ public class User {
         Listener.deleteFromSession("user");
     }
 
+    public void disable() throws Exception {
+        this.disabled = true;
+        Database db = new Database();
+        db.xquery("update value /users/user[name=\"" + AppHelper.getActiveUser().getUsername() + "\"]/disabled with '1'");
+        db.close();
+        this.logout();
+    }
+
     public void sendConfirmMail() throws Exception {
         MailHelper mh = new MailHelper(email, "Potvrdite registraciju",
                 "Kod za registraciju je: " + confirmCode);
@@ -98,6 +107,44 @@ public class User {
 
         Database db = new Database();
         db.xquery("update value /users/user[name=\"" + this.username + "\"]/language with \"" + this.language + "\"");
+        db.close();
+    }
+
+    public void subscribe(String diskuto) throws Exception {
+        this.subscriptions.add(diskuto);
+
+        Database db = new Database();
+        db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
+                + "\" return update insert <forum>" + diskuto + "</forum> into $x/subscriptions");
+        //trigger koji će povećat broj pretplaćenih
+        db.close();
+    }
+
+    public void unsubscribe(String diskuto) throws Exception {
+        this.subscriptions.remove(diskuto);
+
+        Database db = new Database();
+        db.xquery("for $x in /users/user[name=\"" + this.username
+                + "\"]/subscriptions[forum=\"" + diskuto + "\"] return update delete $x/forum");
+        //trigger koji će smanjit broj pretplaćenih
+        db.close();
+    }
+
+    public void ignore(String user) throws Exception {
+        this.ignored.add(user);
+
+        Database db = new Database();
+        db.xquery("for $x in /users/user where $x/name=\"" + this.username
+                + "\" return update insert <user>" + user + "</user> into $x/ignore");
+        db.close();
+    }
+
+    public void unignore(String user) throws Exception {
+        this.ignored.remove(user);
+
+        Database db = new Database();
+        db.xquery("for $x in /users/user[name=\"" + this.username
+                + "\"]/ignore[user=\"" + user + "\"] return update delete $x/user");
         db.close();
     }
 
