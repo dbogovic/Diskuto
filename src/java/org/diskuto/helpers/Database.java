@@ -16,7 +16,7 @@ import org.xmldb.api.base.XMLDBException;
  * @author dario
  */
 public class Database {
-    
+
     private final String URI = "xmldb:exist://localhost:8080/exist/xmlrpc";
     private final String driver = "org.exist.xmldb.DatabaseImpl";
     private final String collection = "/db/diskuto";
@@ -27,18 +27,18 @@ public class Database {
         Class c = Class.forName(driver);
         database = (org.xmldb.api.base.Database) c.newInstance();
         DatabaseManager.registerDatabase(database);
-        col = DatabaseManager.getCollection(URI+collection, "admin", "");
+        col = DatabaseManager.getCollection(URI + collection, "admin", "");
     }
-    
-    public void close() throws XMLDBException{
+
+    public void close() throws XMLDBException {
         col.close();
         DatabaseManager.deregisterDatabase(database);
     }
-    
-    public ResourceSet xquery(String upit) throws XMLDBException{
+
+    public ResourceSet xquery(String upit) throws XMLDBException {
         EXistXQueryService service = (EXistXQueryService) col.getService("XQueryService", "1.0");
         service.setProperty("indent", "yes");
         return service.query(upit);
     }
-    
+
 }

@@ -70,7 +70,7 @@
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="about.xhtml">
-                <ui:param name="diskuto" value="#{post.thing.diskuto}" />
+                <ui:param name="diskuto" value="#{beanHelper.retrieveDiskuto(post.thing.diskuto)}" />
             </ui:include>
             <ui:include src="/footer.xhtml" />
         </h:body>

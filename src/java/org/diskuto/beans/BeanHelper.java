@@ -8,6 +8,8 @@ package org.diskuto.beans;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import org.diskuto.helpers.AppHelper;
+import org.diskuto.helpers.Retriever;
+import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.User;
 
 /**
@@ -23,16 +25,21 @@ public class BeanHelper {
      */
     public BeanHelper() {
     }
-    
+
     public User getActiveUser() {
         return AppHelper.getActiveUser();
     }
-    
-    public String date(long unixTime){
+
+    public String date(long unixTime) {
         return AppHelper.date(unixTime);
     }
-    
-    public String fullDate(long unixTime){
+
+    public String fullDate(long unixTime) {
         return AppHelper.fullDate(unixTime);
+    }
+
+    public org.diskuto.models.Forum retrieveDiskuto(String name) throws Exception {
+        Retriever retriever = new Retriever(name);
+        return retriever.forum();
     }
 }

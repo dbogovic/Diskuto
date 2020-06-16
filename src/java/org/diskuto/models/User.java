@@ -28,7 +28,6 @@ public class User {
     private boolean disabled;
     private List<String> ignored;
     private List<String> subscriptions;
-    private int unread;
     private String language;
 
     public User() {
@@ -44,10 +43,6 @@ public class User {
         this.language = helper.makeValue("language", object);
         this.subscriptions = helper.makeListValue("user/subscriptions/forum");
         this.ignored = helper.makeListValue("user/ignore/user");
-
-        Database db = new Database();
-        this.unread = Integer.parseInt(new XmlHelper(db.xquery("count(/messages/message[recipient=\"" + this.username + "\" and seen=\"0\"])").getResource(0)).rawValue());
-        db.close();
     }
 
     public void register(String email, String username, String password) throws Exception {
@@ -59,7 +54,6 @@ public class User {
         this.disabled = false;
         this.ignored = new ArrayList();
         this.subscriptions = new ArrayList();
-        this.unread = 0;
         this.language = "en";
 
         sendConfirmMail();
@@ -210,14 +204,6 @@ public class User {
 
     public void setSubscriptions(List<String> subscriptions) {
         this.subscriptions = subscriptions;
-    }
-
-    public int getUnread() {
-        return unread;
-    }
-
-    public void setUnread(int unread) {
-        this.unread = unread;
     }
 
     public String getLanguage() {

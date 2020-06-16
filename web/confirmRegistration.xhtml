@@ -9,7 +9,6 @@
             <title>Diskuto | Potvrda registracije</title>
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="account-manage.css"/>
-            <h:outputScript library="js" name="script.js" />
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
         <h:body>
@@ -27,6 +26,7 @@
                 <h:outputText class="errorText" value="#{confirmRegistration.errorText}" />
                 <h:commandLink value="#{output['confirmRegistration.newMail']}" action="#{confirmRegistration.sendNewMail}" />
             </h:form>
+            <h:outputScript library="js" name="script.js" />
         </h:body>
     </f:view>
 </html>

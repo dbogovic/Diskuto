@@ -15,6 +15,7 @@ import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Post;
+import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 
 /**
@@ -50,15 +51,18 @@ public class Forum implements Serializable {
         }
     }
 
-    public Post freshPost(String category) throws Exception {
-        try {
-            Post post = new Post();
-            post.retrieve(new XmlHelper(AppHelper.getResourceSet("(for $x in /posts/post where $x/category=\"" + category
-                    + "\" and $x/diskuto=\"" + this.diskuto.getName() + "\" order by $x/created descending return $x)[position() le 1]").getResource(0)));
-            return post;
-        } catch (Exception ex) {
-            return null;
+    public List<Post> freshPost(String category) throws Exception {
+        List<Post> freshPost = new ArrayList();
+
+        Post post = new Post();
+        Resource resource = AppHelper.getResource("(for $x in /posts/post where $x/category=\"" + category
+                + "\" and $x/diskuto=\"" + this.diskuto.getName() + "\" order by $x/created descending return $x)[position() le 1]");
+        if (resource != null) {
+            post.retrieve(new XmlHelper(resource));
+            freshPost.add(post);
         }
+
+        return freshPost;
     }
 
     public void subscribe(org.diskuto.models.Forum forum) throws Exception {

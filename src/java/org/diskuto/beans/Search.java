@@ -38,13 +38,13 @@ public class Search implements Serializable {
 
         if (this.term != null && !"".equals(this.term)) {
             Retriever retriever = new Retriever(this.term);
-            
+
             userResults = retriever.searchUsers(term);
             diskutoResults = retriever.searchForum(term);
             postResults = retriever.searchPosts(term);
         }
     }
-    
+
     public void showResults() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("search?term=" + term);
     }

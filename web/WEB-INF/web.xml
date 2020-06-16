@@ -45,5 +45,10 @@
         <error-code>404</error-code>
         <location>/notFound</location>
     </error-page>
-
+    <!--
+    <error-page>
+        <exception-type>javax.servlet.ServletException</exception-type>
+        <location>/home</location>
+    </error-page>
+        !-->
 </web-app>

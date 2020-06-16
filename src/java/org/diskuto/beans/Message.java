@@ -30,21 +30,20 @@ public class Message implements Serializable {
     private String chosen;
     private List<org.diskuto.models.Message> messages;
     private HashSet<String> chatting;
-    private boolean enabledButton = false;
     private String reply;
 
     /**
      * Creates a new instance of Message
      */
     public Message() throws Exception {
-        String user = AppHelper.param("with");
-        if (user == null || user.equals(AppHelper.getActiveUser().getUsername())) {
+        chosen = AppHelper.param("with");
+        if (chosen == null || chosen.equals(AppHelper.getActiveUser().getUsername())) {
             me = true;
         } else {
-            if (AppHelper.usernameExists(user)) {
+            if (!AppHelper.usernameExists(chosen)) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("message");
             } else {
-                Retriever retrieve = new Retriever(user);
+                Retriever retrieve = new Retriever(chosen);
                 this.messages = retrieve.messages();
             }
         }
@@ -55,9 +54,11 @@ public class Message implements Serializable {
     }
 
     public void send() throws Exception {
-        org.diskuto.models.Message message = new org.diskuto.models.Message();
-        message.send(this.chosen, AppHelper.getActiveUser().getUsername(), this.reply);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("message?with=" + this.chosen);
+        if (!"".equals(this.reply)) {
+            org.diskuto.models.Message message = new org.diskuto.models.Message();
+            message.send(AppHelper.getActiveUser().getUsername(), this.chosen, this.reply);
+            this.messages.add(0, message);
+        }
     }
 
     private void fillIn(ResourceSet result, String key) throws Exception {
@@ -71,10 +72,6 @@ public class Message implements Serializable {
                 chatting.add(user);
             });
         }
-    }
-
-    public void enableButton() {
-        this.enabledButton = !"".equals(this.reply);
     }
 
     public boolean isMe() {
@@ -107,14 +104,6 @@ public class Message implements Serializable {
 
     public void setChatting(HashSet<String> chatting) {
         this.chatting = chatting;
-    }
-
-    public boolean isEnabledButton() {
-        return enabledButton;
-    }
-
-    public void setEnabledButton(boolean enabledButton) {
-        this.enabledButton = enabledButton;
     }
 
     public String getReply() {

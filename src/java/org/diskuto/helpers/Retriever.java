@@ -6,6 +6,8 @@
 package org.diskuto.helpers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.diskuto.models.Forum;
 import org.diskuto.models.Message;
@@ -77,6 +79,21 @@ public class Retriever {
             messages.add(message);
         }
 
+        Collections.sort(messages, (Message z1, Message z2) -> {
+            if (z1.getTime() > z2.getTime()) {
+                return -1;
+            }
+            if (z1.getTime() < z2.getTime()) {
+                return 1;
+            }
+            return 0;
+        });
+        
+        Database db = new Database();
+        db.xquery("update value /messages/message[recipient=\"" + AppHelper.getActiveUser().getUsername() 
+                + "\" and sender=\"" + key +"\"]/seen with \"1\"");
+        db.close();
+
         return messages;
     }
 
@@ -84,14 +101,14 @@ public class Retriever {
         List<User> users = new ArrayList();
 
         ResourceIterator iterator = AppHelper.getResourceSet("for $x in /users/user where contains(lower-case($x/name), \""
-                    + term.toLowerCase() + "\") return $x/name").getIterator();
+                + term.toLowerCase() + "\") return $x/name").getIterator();
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/name")) {
                 Retriever retriever = new Retriever(name);
                 users.add(retriever.user());
             }
         }
-        
+
         return users;
     }
 
@@ -114,14 +131,14 @@ public class Retriever {
         List<Post> posts = new ArrayList();
 
         ResourceIterator iterator = AppHelper.getResourceSet("for $x in /posts/post where contains(lower-case($x/headline), \""
-                    + term.toLowerCase() + "\") return $x/id").getIterator();
+                + term.toLowerCase() + "\") return $x/id").getIterator();
         while (iterator.hasMoreResources()) {
-            for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/name")) {
+            for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(name);
                 posts.add(retriever.post());
             }
         }
-        
+
         return posts;
     }
 

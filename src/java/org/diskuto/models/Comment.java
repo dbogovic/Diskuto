@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
+import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 
 /**
@@ -17,7 +18,7 @@ import org.diskuto.helpers.XmlHelper;
  */
 public class Comment {
 
-    private int post;
+    private Post post;
     private int id;
     private String text;
     private long created;
@@ -40,7 +41,7 @@ public class Comment {
         this.downvote = helper.makeListValue("/comment/downvote/user");
     }
 
-    public void save(int post, String text, String owner) throws Exception {
+    public void save(Post post, String text, String owner) throws Exception {
         this.post = post;
         this.id = AppHelper.generateId("max(/posts/post[id=\"" + this.post + "\"]/comments/comment/id)");
         this.text = text;
@@ -86,15 +87,16 @@ public class Comment {
     }
 
     public void post() throws Exception {
-        this.post = Integer.parseInt(new XmlHelper(AppHelper.getResource("for $x in /posts/post where $x/comments/comment/id=\""
+        Retriever retriever = new Retriever(new XmlHelper(AppHelper.getResource("for $x in /posts/post where $x/comments/comment/id=\""
                 + this.id + "\" return data($x/id)")).rawValue());
+        this.post = retriever.post();
     }
 
-    public int getPost() {
+    public Post getPost() {
         return post;
     }
 
-    public void setPost(int post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 

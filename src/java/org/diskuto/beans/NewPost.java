@@ -93,7 +93,5 @@ public class NewPost implements Serializable {
     public void setErrorText(String errorText) {
         this.errorText = errorText;
     }
-    
-    
 
 }

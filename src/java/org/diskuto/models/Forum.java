@@ -29,6 +29,7 @@ public class Forum {
 
     public void retrieve(XmlHelper helper) throws Exception {
         Object objekt = helper.makeObject("forum");
+        this.name = helper.makeValue("name", objekt);
         this.description = helper.makeValue("description", objekt);
         this.categories = helper.makeListValue("/forum/categories/category");
         this.moderators = helper.makeListValue("/forum/moderators/moderator");

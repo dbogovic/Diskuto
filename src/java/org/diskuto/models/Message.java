@@ -31,10 +31,9 @@ public class Message {
         this.text = helper.makeValue("text", object);
         this.seen = Integer.parseInt(helper.makeValue("seen", object)) == 1;
         this.time = Long.parseLong(helper.makeValue("time", object));
-        
-        if(!seen && this.recipient.equals(AppHelper.getActiveUser().getUsername())) {
+
+        if (!seen && this.recipient.equals(AppHelper.getActiveUser().getUsername())) {
             this.seen = true;
-            AppHelper.getActiveUser().setUnread(AppHelper.getActiveUser().getUnread() - 1);
         }
     }
 

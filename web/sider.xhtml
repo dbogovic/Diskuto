@@ -5,7 +5,6 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:outputStylesheet library="css" name="sider.css"/>
-    <h:outputScript library="js" name="script.js" />
     <h:form id="sider" prependId="false">
         <h:panelGroup rendered="#{beanHelper.activeUser == null}">
             <h:panelGrid id="loginTable" columns="2">
@@ -54,7 +53,14 @@
             <div class="menu">
                 <h:graphicImage value="resources/pages/message.png" />
                 <h:link class="menu-option" value="#{output['sider.messages']}" outcome="message" />
-                <h:outputText rendered="#{beanHelper.activeUser.unread > 0}" id="nmbMessages" value="#{beanHelper.activeUser.unread}" />
+                <h:outputText rendered="#{home.unread > 0}" id="nmbMessages" value="#{home.unread}" />
+            </div>
+            <div class="diskutos-parent">
+                <c:forEach items="#{home.messageUsers}" var="value">
+                    <h:link class="diskutos" value="#{value}" outcome="message" >
+                        <f:param name="with" value="#{value}" />
+                    </h:link>
+                </c:forEach>
             </div>
             <div class="menu">
                 <h:graphicImage value="resources/pages/settings.png" />
@@ -62,5 +68,5 @@
             </div>
         </h:panelGroup>
     </h:form>
-
+    <h:outputScript library="js" name="script.js" />
 </ui:composition>

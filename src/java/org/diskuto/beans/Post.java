@@ -40,7 +40,7 @@ public class Post implements Serializable {
         user = AppHelper.getActiveUser().getUsername();
         Retriever retriever = new Retriever(AppHelper.param("id"));
         this.thing = retriever.post();
-        
+
         if (this.thing == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
@@ -49,15 +49,15 @@ public class Post implements Serializable {
         while (iterator.hasMoreResources()) {
             Comment comment = new Comment();
             comment.retrieve(new XmlHelper(iterator.nextResource()));
-            comment.setPost(this.thing.getId());
+            comment.setPost(this.thing);
             this.comments.add(comment);
         }
     }
-    
+
     public String sendComment() throws Exception {
         if (!this.myComment.equals("")) {
             Comment comment = new Comment();
-            comment.save(this.thing.getId(), this.myComment, this.user);
+            comment.save(this.thing, this.myComment, this.user);
             this.comments.add(comment);
             this.myComment = "";
         }

@@ -8,7 +8,6 @@
             <title>Diskuto | #{output['login.title']}</title>
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="account-manage.css"/>
-            <h:outputScript library="js" name="script.js" />
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
         <h:body>
@@ -29,6 +28,7 @@
                 <h:link value="#{output['login.forgottenPassword']}" outcome="newPassword" />
                 <h:link value="#{output['login.noAccount']}" outcome="registration" />
             </h:form>
+            <h:outputScript library="js" name="script.js" />
         </h:body>
     </f:view>
 </html>

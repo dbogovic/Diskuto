@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSessionListener;
 public class Listener implements HttpSessionListener {
 
     private static HttpSession session;
-    
+
     @Override
     public void sessionCreated(HttpSessionEvent se) {
         session = se.getSession();
@@ -31,17 +31,17 @@ public class Listener implements HttpSessionListener {
             deleteFromSession(attributes.nextElement().toString());
         }
     }
-    
+
     public static void addToSession(String attribute, Object object) {
         session.setAttribute(attribute, object);
     }
-    
+
     public static void deleteFromSession(String attribute) {
         session.removeAttribute(attribute);
     }
-    
+
     public static Object getFromSession(String attribute) {
         return session.getAttribute(attribute);
     }
-    
+
 }

@@ -38,13 +38,11 @@
                         </h:panelGroup>
                         <h:panelGroup class="messageInput">
                             <h:inputTextarea disabled="#{message.me}" id="reply" value="#{message.reply}" 
-                                             a:placeholder="#{output['message.placeholder']}" onkeypress="if (event.keyCode === 13) {
-                                                         onchange();
-                                                         return false;
-                                                     }" >
-                                <f:ajax event="keydown" listener="#{message.enableButton}" execute="reply" render="send" />
+                                             a:placeholder="#{output['message.placeholder']}" >
                             </h:inputTextarea>
-                            <h:commandButton class="button" id="send" value="#{output['message.button']}" action="#{message.send()}" disabled="#{!message.enabledButton}" />
+                            <h:commandButton class="button" id="send" value="#{output['message.button']}" action="#{message.send()}">
+                                <f:ajax event="action" execute="reply" render="@form" />
+                            </h:commandButton>
                         </h:panelGroup>
                     </h:panelGroup>
                 </h:panelGroup>

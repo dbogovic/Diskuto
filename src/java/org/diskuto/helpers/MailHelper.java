@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
  * @author dario
  */
 public class MailHelper {
-    
+
     private String to;
     private String subject;
     private String text;
@@ -52,10 +52,10 @@ public class MailHelper {
     public void setText(String text) {
         this.text = text;
     }
-    
+
     public void sendMail() throws Exception {
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
-        sf.setTrustAllHosts(true); 
+        sf.setTrustAllHosts(true);
         Properties props = System.getProperties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.auth", "true");

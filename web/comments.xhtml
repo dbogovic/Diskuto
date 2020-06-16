@@ -12,8 +12,8 @@
             <h:panelGroup class="postDescription" >
                 <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
                 <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
-                <h:link value="#{value.post.diskuto.name} • " outcome="forum" >
-                    <f:param name="name" value="#{value.post.diskuto.name}" />
+                <h:link value="#{value.post.diskuto} • " outcome="forum" >
+                    <f:param name="name" value="#{value.post.diskuto}" />
                 </h:link>
                 <h:link value="#{value.owner} • " outcome="profile" >
                     <f:param name="name" value="#{value.owner}" />

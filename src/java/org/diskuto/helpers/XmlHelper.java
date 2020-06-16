@@ -45,10 +45,10 @@ public class XmlHelper {
         for (int i = 0; i < nodes.getLength(); i++) {
             list.add(nodes.item(i).getTextContent());
         }
-        
+
         return list;
     }
-    
+
     public String rawValue() {
         return xml;
     }

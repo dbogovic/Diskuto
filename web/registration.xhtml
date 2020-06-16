@@ -9,7 +9,6 @@
             <title>Diskuto | #{output['registration.title']}</title>
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="account-manage.css"/>
-            <h:outputScript library="js" name="script.js" />
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
         <h:body>
@@ -34,6 +33,7 @@
                 <img id="ajaxloader" src="./resources/pages/loading.gif" />
                 <h:outputText class="errorText" value="#{registration.errorText}" />
             </h:form>
+            <h:outputScript library="js" name="script.js" />
         </h:body>
     </f:view>
 </html>
