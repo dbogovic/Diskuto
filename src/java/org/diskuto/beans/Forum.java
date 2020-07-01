@@ -29,6 +29,8 @@ public class Forum implements Serializable {
     private org.diskuto.models.Forum diskuto;
     private String category;
     private List<org.diskuto.models.Post> items = new ArrayList();
+    private int totalItems;
+    private int itemsIteratorId = 0;
 
     /**
      * Creates a new instance of Forum
@@ -41,7 +43,23 @@ public class Forum implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
         }
 
-        ResourceIterator iterator = AppHelper.getResourceSet("/posts/post[diskuto=\"" + this.diskuto.getName() + "\"]/id").getIterator();
+        String query = "count(/posts/post[diskuto=\"" + this.diskuto.getName() + "\"";
+        if (this.category != null) {
+            query += " and category=\"" + this.category + "\"";
+        }
+        query += "])";
+
+        this.totalItems = Integer.parseInt(new XmlHelper(AppHelper.getResource(query)).rawValue());
+        loadItems();
+    }
+
+    public void loadItems() throws Exception {
+        String query = "reverse(/posts/post[diskuto=\"" + this.diskuto.getName() + "\"";
+        if (this.category != null) {
+            query += " and category=\"" + this.category + "\"";
+        }
+        query += "][position() <= last()-" + itemsIteratorId + " and position() > last()-10 ]/id)";
+        ResourceIterator iterator = AppHelper.getResourceSet(query).getIterator();
         while (iterator.hasMoreResources()) {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retrievePost = new Retriever(id);
@@ -49,6 +67,7 @@ public class Forum implements Serializable {
                 items.add(post);
             }
         }
+        itemsIteratorId += 10;
     }
 
     public List<Post> freshPost(String category) throws Exception {
@@ -97,6 +116,22 @@ public class Forum implements Serializable {
 
     public void setItems(List<Post> items) {
         this.items = items;
+    }
+
+    public int getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(int totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getItemsIteratorId() {
+        return itemsIteratorId;
+    }
+
+    public void setItemsIteratorId(int itemsIteratorId) {
+        this.itemsIteratorId = itemsIteratorId;
     }
 
 }

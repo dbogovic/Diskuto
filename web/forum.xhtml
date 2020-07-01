@@ -22,8 +22,8 @@
                         <h:button class="button" value="#{output['forum.button1']}" outcome="newPost" >
                             <f:param name="on" value="#{forum.diskuto.name}" />
                         </h:button>
-                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? output['forum.button2'] : output['forum.button3']}'" action="#{forum.subscribe(forum.diskuto)}"
-                                         rendered="#{!(forum.diskuto.owner.equals(beanHelper.activeUser.username) || forum.diskuto.moderators.contains(beanHelper.activeUser.username))}}" >
+                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? output['forum.button2'] : output['forum.button3']}" action="#{forum.subscribe(forum.diskuto)}"
+                                         rendered="#{!forum.diskuto.owner.equals(beanHelper.activeUser.username) and !(forum.diskuto.moderators.contains(beanHelper.activeUser.username))}" >
                             <f:ajax event="action" render="@form" />
                         </h:commandButton>
                         <h:button class="button" value="#{output['forum.button4']}" outcome="editDiskuto"
@@ -32,30 +32,36 @@
                         </h:button>
                     </h:panelGroup>
                 </div>
-                <c:forEach items="#{forum.diskuto.categories}" var="value">
-                    <div class="categories">
-                        <h:link class="categoryName" rendered="#{forum.category == null}"  value="#{value}" outcome="forum" >
-                            <f:param name="name" value="#{forum.diskuto.name}" />
-                            <f:param name="cat" value="#{value}" />
-                        </h:link>
-                        <c:forEach items="#{forum.freshPost(value)}" var="item">
-                            <div class="categoryValue">
-                                <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
-                                    <f:param name="id" value="#{item.id}" />
-                                </h:link>
-                                <h:link value="#{item.owner}" outcome="profile" >
-                                    <f:param name="name" value="#{item.owner}" />
-                                </h:link>
-                                <h:outputText value=" • #{beanHelper.date(item.created)}" />
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:forEach>
+                <h:panelGroup rendered="#{forum.category == null}">
+                    <c:forEach items="#{forum.diskuto.categories}" var="value">
+                        <div class="categories">
+                            <h:link class="categoryName" value="#{value}" outcome="forum" >
+                                <f:param name="name" value="#{forum.diskuto.name}" />
+                                <f:param name="cat" value="#{value}" />
+                            </h:link>
+                            <c:forEach items="#{forum.freshPost(value)}" var="item">
+                                <div class="categoryValue">
+                                    <h:link class="categoryValueTitle" value="#{item.headline}" outcome="post" >
+                                        <f:param name="id" value="#{item.id}" />
+                                    </h:link>
+                                    <h:link value="#{item.owner}" outcome="profile" >
+                                        <f:param name="name" value="#{item.owner}" />
+                                    </h:link>
+                                    <h:outputText value=" • #{beanHelper.date(item.created)}" />
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:forEach>
+                </h:panelGroup>
                 <h:panelGroup class="posts">
                     <h:outputText class="element-title" value="#{output['forum.title']}" />
                     <ui:include src="thing.xhtml">
                         <ui:param name="items" value="#{forum.items}" />
                     </ui:include>
+                    <h:commandButton rendered="#{forum.totalItems > forum.itemsIteratorId}" class="button" value="#{output['profile.load']}" action="#{forum.loadItems()}" >
+                        <f:ajax event="action" render="@form" />
+                    </h:commandButton>
+                    <img id="ajaxloader" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
                 </h:panelGroup>
             </h:form>
             <ui:include src="/sider.xhtml" />
@@ -63,6 +69,7 @@
                 <ui:param name="diskuto" value="#{forum.diskuto}" />
             </ui:include>
             <ui:include src="/footer.xhtml" />
+            <h:outputScript library="js" name="script.js" />
         </h:body>
     </f:view>
 </html>

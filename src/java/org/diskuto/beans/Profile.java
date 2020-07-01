@@ -65,7 +65,7 @@ public class Profile implements Serializable {
     }
 
     public void loadPosts() throws Exception {
-        ResourceIterator iterator = AppHelper.getResourceSet("//post[ owner=\"" + user.getUsername() + "\" and " + postsIteratorId + " < position() and position() <= 10 ]/id").getIterator();
+        ResourceIterator iterator = AppHelper.getResourceSet("reverse(//post[ owner=\"" + user.getUsername() + "\"][ position() <= last()-" + postsIteratorId + " and position() > last()-10 ]/id)").getIterator();
         while (iterator.hasMoreResources()) {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(id);
@@ -77,8 +77,8 @@ public class Profile implements Serializable {
     }
 
     public void loadComments() throws Exception {
-        ResourceIterator iterator = AppHelper.getResourceSet("//post/comments/comment[owner=\"" + this.user.getUsername()
-                + "\" and " + commentsIteratorId + " < position() and position() <= 10 ]").getIterator();
+        ResourceIterator iterator = AppHelper.getResourceSet("reverse(//post/comments/comment[owner=\"" + this.user.getUsername()
+                + "\"][position() <= last()-" + commentsIteratorId + " and position() > last()-10 ])").getIterator();
         while (iterator.hasMoreResources()) {
             Comment comment = new Comment();
             comment.retrieve(new XmlHelper(iterator.nextResource()));
