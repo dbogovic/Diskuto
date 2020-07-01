@@ -40,14 +40,10 @@
                     <h:outputText value="#{beanHelper.fullDate(post.thing.created)}" />
                 </h:panelGroup>
                 <h:outputText class="postValue" value="#{post.thing.description}" />
-                <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}"
-                                 onkeypress="if (event.keyCode === 13) {
-                                             onchange();
-                                             return false;
-                                         }" >
-                    <f:ajax event="keydown" listener="#{post.enableButton}" execute="comment" render="send" />
-                </h:inputTextarea>
-                <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}" disabled="#{!post.button}" />
+                <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}" />
+                <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}">
+                    <f:ajax event="action" execute="comment" render="@form"/>
+                </h:commandButton>
                 <h:outputText class="element-title" value="#{output['post.comments']} (#{post.comments.size()})" />
                 <c:forEach items="#{post.comments}" var="value">
                     <h:panelGroup class="reaction">

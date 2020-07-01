@@ -58,6 +58,7 @@ public class Message implements Serializable {
             org.diskuto.models.Message message = new org.diskuto.models.Message();
             message.send(AppHelper.getActiveUser().getUsername(), this.chosen, this.reply);
             this.messages.add(0, message);
+            this.reply = "";
         }
     }
 

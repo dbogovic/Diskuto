@@ -6,9 +6,12 @@
     <f:view locale="#{language.lang}">
         <h:head>
             <title>Diskuto | #{output['notFound.value']}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
-        <h:body>
-            <h:outputText>#{output['notFound.value']}</h:outputText>
+        <h:body id="account-manage">
+            #{output['notFound.value']}
+            <br/>
+            <h:link outcome="home" value="#{output['notFound.goBack']}" />
         </h:body>
     </f:view>
 </html>

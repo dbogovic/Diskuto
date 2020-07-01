@@ -29,7 +29,6 @@ public class Post implements Serializable {
     private final String user;
     private List<Comment> comments = new ArrayList<>();
     private String myComment;
-    private boolean button;
 
     /**
      * Creates a new instance of Post
@@ -54,14 +53,13 @@ public class Post implements Serializable {
         }
     }
 
-    public String sendComment() throws Exception {
+    public void sendComment() throws Exception {
         if (!this.myComment.equals("")) {
             Comment comment = new Comment();
             comment.save(this.thing, this.myComment, this.user);
             this.comments.add(comment);
             this.myComment = "";
         }
-        return "";
     }
 
     public void upvotePost() throws Exception {
@@ -112,10 +110,6 @@ public class Post implements Serializable {
         }
     }
 
-    public void enableButton() {
-        this.button = !"".equals(this.myComment);
-    }
-
     public org.diskuto.models.Post getThing() {
         return thing;
     }
@@ -139,12 +133,5 @@ public class Post implements Serializable {
     public void setMyComment(String myComment) {
         this.myComment = myComment;
     }
-
-    public boolean isButton() {
-        return button;
-    }
-
-    public void setButton(boolean button) {
-        this.button = button;
-    }
+    
 }

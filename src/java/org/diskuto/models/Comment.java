@@ -43,7 +43,7 @@ public class Comment {
 
     public void save(Post post, String text, String owner) throws Exception {
         this.post = post;
-        this.id = AppHelper.generateId("max(/posts/post[id=\"" + this.post + "\"]/comments/comment/id)");
+        this.id = AppHelper.generateId("max(/posts/post[id=\"" + this.post.getId() + "\"]/comments/comment/id)");
         this.text = text;
         this.created = System.currentTimeMillis() / 1000L;
         this.owner = owner;
@@ -56,7 +56,7 @@ public class Comment {
         db.xquery("update insert <comment><id>" + this.id + "</id><text>" + this.text
                 + "</text><created>" + this.created + "</created><owner>" + this.owner
                 + "</owner><deleted>0</deleted><upvote><user>" + this.owner
-                + "</user></upvote><downvote/></comment> into /posts/post[id=\"" + this.post + "\"]/comments");
+                + "</user></upvote><downvote/></comment> into /posts/post[id=\"" + this.post.getId() + "\"]/comments");
         db.close();
     }
 

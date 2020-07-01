@@ -1,5 +1,5 @@
 * {
-    font-family: Tahoma;
+    font-family: Arial;
 }
 
 body {
@@ -127,4 +127,8 @@ div {
 
 .thing:nth-of-type(odd) {
     background: #fafafa;
+}
+
+.thing a:hover {
+    text-decoration: underline;
 }
