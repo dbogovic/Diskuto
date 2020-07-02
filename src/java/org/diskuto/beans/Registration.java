@@ -5,8 +5,6 @@
  */
 package org.diskuto.beans;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -45,26 +43,26 @@ public class Registration {
     private boolean check() throws Exception {
 
         if (email.length() == 0 || username.length() == 0 || password.length() == 0 || rpassword.length() == 0) {
-            this.errorText = ("Niste unijeli sve podatke");
+            this.errorText = AppHelper.getOutput("error.somethingMissing");
             return false;
         } else {
             if (!AppHelper.regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", email)) {
-                this.errorText = ("E-mail nije ispravan");
+                this.errorText = AppHelper.getOutput("error.email1");
                 return false;
             } else if (AppHelper.userExists(email)) {
-                this.errorText = ("E-mail već postoji u bazi");
+                this.errorText = AppHelper.getOutput("error.email2");
                 return false;
             } else if (username.length() < 3) {
-                this.errorText = ("Korisničko ime je prekratko");
+                this.errorText = AppHelper.getOutput("error.username1");
                 return false;
             } else if (AppHelper.usernameExists(username)) {
-                this.errorText = ("Korisničko ime već postoji u bazi");
+                this.errorText = AppHelper.getOutput("error.username2");
                 return false;
             } else if (password.length() < 8) {
-                this.errorText = ("Lozinka je preslaba");
+                this.errorText = AppHelper.getOutput("error.password1");
                 return false;
             } else if (!password.equals(rpassword)) {
-                this.errorText = ("Lozinke ne odgovaraju");
+                this.errorText = AppHelper.getOutput("error.password2");
                 return false;
             }
         }

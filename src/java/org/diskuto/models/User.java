@@ -84,8 +84,8 @@ public class User {
     }
 
     public void sendConfirmMail() throws Exception {
-        MailHelper mh = new MailHelper(email, "Potvrdite registraciju",
-                "Kod za registraciju je: " + confirmCode);
+        MailHelper mh = new MailHelper(email, AppHelper.getOutput("mail.h2"),
+                AppHelper.getOutput("mail.t2") + confirmCode);
         mh.sendMail();
     }
 

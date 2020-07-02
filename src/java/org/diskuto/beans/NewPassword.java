@@ -56,15 +56,15 @@ public class NewPassword implements Serializable {
                     + "\" return update delete $x/password");
             db.close();
 
-            this.errorText = "Upute za kreiranje nove lozinke su poslane na vaš e-mail";
-            MailHelper mh = new MailHelper(email, "Nova lozinka",
-                    "Slijedite ovu poveznicu kako bi ste unesli novu lozinku: "
+            this.errorText = AppHelper.getOutput("success.msg2");
+            MailHelper mh = new MailHelper(email, AppHelper.getOutput("mail.h1"),
+                    AppHelper.getOutput("mail.t1")
                     + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
                     + abolishPasswordCode);
             mh.sendMail();
             this.state = 3;
         } else {
-            this.errorText = "Unijeli ste nepostojeći e-mail";
+            this.errorText = AppHelper.getOutput("error.email3");
         }
     }
 
@@ -86,14 +86,14 @@ public class NewPassword implements Serializable {
     private boolean check() throws Exception {
 
         if (password.length() == 0 || rpassword.length() == 0) {
-            this.errorText = "Niste unijeli sve podatke";
+            this.errorText = AppHelper.getOutput("error.somethingMissing");
             return false;
         } else {
             if (password.length() < 8) {
-                this.errorText = "Lozinka je preslaba";
+                this.errorText = AppHelper.getOutput("error.password1");
                 return false;
             } else if (!password.equals(rpassword)) {
-                this.errorText = "Lozinke ne odgovaraju";
+                this.errorText = AppHelper.getOutput("error.password2");
                 return false;
             }
         }

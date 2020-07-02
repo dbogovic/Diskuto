@@ -7,6 +7,7 @@ package org.diskuto.helpers;
 
 import java.util.Calendar;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
@@ -29,6 +30,12 @@ public class AppHelper {
         Map<String, String> params = FacesContext.getCurrentInstance().
                 getExternalContext().getRequestParameterMap();
         return params.get(key);
+    }
+
+    public static String getOutput(String key) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = context.getApplication().getResourceBundle(context, "output");
+        return bundle.getString(key);
     }
 
     public static int generateId(String query) throws Exception {
@@ -56,7 +63,7 @@ public class AppHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(unixTime * 1000);
         return calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH) + 1)
-                + "." + calendar.get(Calendar.YEAR) + ". " 
+                + "." + calendar.get(Calendar.YEAR) + ". "
                 + String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
 

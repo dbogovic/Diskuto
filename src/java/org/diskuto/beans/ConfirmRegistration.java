@@ -31,14 +31,14 @@ public class ConfirmRegistration {
         try {
             int code = Integer.parseInt(insertedCode);
             if (code != AppHelper.getActiveUser().getConfirmCode()) {
-                this.errorText = ("Unijeli ste pogrešan kod");
+                this.errorText = AppHelper.getOutput("error.wrongCode");
             } else {
-                this.errorText = ("Potvrdili ste registraciju");
+                this.errorText = AppHelper.getOutput("success.msg1");
                 AppHelper.getActiveUser().confirmUser();
                 FacesContext.getCurrentInstance().getExternalContext().redirect("discover");
             }
         } catch (Exception ex) {
-            this.errorText = ("Unijeli ste pogrešan kod");
+            this.errorText = AppHelper.getOutput("error.wrongCode");
         }
     }
 

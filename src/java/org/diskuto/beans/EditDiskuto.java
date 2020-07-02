@@ -52,12 +52,12 @@ public class EditDiskuto implements Serializable {
     public void addCategory() {
         this.errorText = "";
         if (nameCategory == null || nameCategory.length() == 0) {
-            this.errorText = "Niste unijeli naziv kategorije";
+            this.errorText = AppHelper.getOutput("error.noCategory");
         } else if (categories.contains(nameCategory)) {
-            this.errorText = "Već ste unijeli tu kategoriju";
+            this.errorText = AppHelper.getOutput("error.alreadyCategory");
         } else {
             if (!AppHelper.regex("^[\\w\\d\\s]+$", nameCategory)) {
-                this.errorText = "Naziv kategorije smije imati samo brojeve i slova";
+                this.errorText = AppHelper.getOutput("error.categorySyntax");
             } else {
                 categories.add(nameCategory);
             }
@@ -73,11 +73,11 @@ public class EditDiskuto implements Serializable {
     public void addModerator() throws Exception {
         this.errorText = "";
         if (AppHelper.getActiveUser().getUsername().equals(nameModerator)) {
-            this.errorText = "Vi ste već vlasnik Diskuta";
+            this.errorText = AppHelper.getOutput("error.alreadyOwner");
         } else if (!AppHelper.usernameExists(nameModerator)) {
-            this.errorText = "Korisnik pod tim korisničkim imenom ne postoji";
+            this.errorText = AppHelper.getOutput("error.username3");
         } else if (moderators.contains(nameModerator)) {
-            this.errorText = "Već ste unijeli tog moderatora";
+            this.errorText = AppHelper.getOutput("error.alreadyModerator");
         } else {
             moderators.add(nameModerator);
         }
@@ -92,11 +92,11 @@ public class EditDiskuto implements Serializable {
     private boolean check() throws Exception {
         if (name == null || description == null || rules == null || name.length() == 0
                 || description.length() == 0 || rules.length() == 0 || categories.isEmpty()) {
-            this.errorText = "Niste unijeli sve podatke";
+            this.errorText = AppHelper.getOutput("error.somethingMissing");
             return false;
         } else {
             if (!AppHelper.regex("^[\\w\\d]+$", name)) {
-                this.errorText = "Naziv smije imati samo brojeve i slova bez razmaka";
+                this.errorText = AppHelper.getOutput("error.onlyNmbLet");
                 return false;
             }
         }
@@ -108,7 +108,7 @@ public class EditDiskuto implements Serializable {
         if (check()) {
             if (diskuto == null) {
                 if (AppHelper.forumExists(name)) {
-                    this.errorText = "Diskuto pod tim nazivom već postoji";
+                    this.errorText = AppHelper.getOutput("error.alreadyDiskuto");
                 } else {
                     Forum forum = new Forum();
                     forum.save(name, description, categories, moderators, rules, AppHelper.getActiveUser().getUsername());

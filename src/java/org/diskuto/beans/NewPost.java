@@ -44,9 +44,9 @@ public class NewPost implements Serializable {
         errorText = "";
 
         if (headline == null || headline.length() == 0) {
-            errorText = "Naslov je obavezan";
+            errorText = AppHelper.getOutput("error.headline");
         } else if (description == null || description.length() == 0) {
-            errorText = "Opis je obavezan";
+            errorText = AppHelper.getOutput("error.description");
         } else {
             Post post = new Post();
             post.save(headline, description, AppHelper.getActiveUser().getUsername(), diskuto.getName(), selectedCategory);

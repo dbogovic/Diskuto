@@ -43,7 +43,7 @@ public class Login {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             }
         } else {
-            this.errorText = "Neuspjela prijava";
+            this.errorText = AppHelper.getOutput("error.login");
         }
     }
 
