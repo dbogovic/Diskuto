@@ -49,7 +49,9 @@ public class Post implements Serializable {
             Comment comment = new Comment();
             comment.retrieve(new XmlHelper(iterator.nextResource()));
             comment.setPost(this.thing);
-            this.comments.add(comment);
+            if (!AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
+                this.comments.add(comment);
+            }
         }
     }
 
@@ -133,5 +135,5 @@ public class Post implements Serializable {
     public void setMyComment(String myComment) {
         this.myComment = myComment;
     }
-    
+
 }

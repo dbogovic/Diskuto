@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
+import org.diskuto.models.User;
 import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
@@ -27,7 +28,8 @@ import org.xmldb.api.base.ResourceSet;
 public class Message implements Serializable {
 
     private boolean me = false;
-    private String chosen;
+    private boolean ignored = false;
+    private User chosen;
     private List<org.diskuto.models.Message> messages;
     private HashSet<String> chatting;
     private String reply;
@@ -36,15 +38,23 @@ public class Message implements Serializable {
      * Creates a new instance of Message
      */
     public Message() throws Exception {
-        chosen = AppHelper.param("with");
-        if (chosen == null || chosen.equals(AppHelper.getActiveUser().getUsername())) {
+
+        if (AppHelper.param("with") == null) {
             me = true;
         } else {
-            if (!AppHelper.usernameExists(chosen)) {
+            Retriever retriever = new Retriever(AppHelper.param("with"));
+            this.chosen = retriever.user();
+
+            if (this.chosen == null) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("message");
             } else {
-                Retriever retrieve = new Retriever(chosen);
+                Retriever retrieve = new Retriever(chosen.getUsername());
                 this.messages = retrieve.messages();
+
+                if (AppHelper.getActiveUser().getIgnored().contains(chosen.getUsername())
+                        || chosen.getIgnored().contains(AppHelper.getActiveUser().getUsername())) {
+                    ignored = true;
+                }
             }
         }
 
@@ -56,7 +66,7 @@ public class Message implements Serializable {
     public void send() throws Exception {
         if (!"".equals(this.reply)) {
             org.diskuto.models.Message message = new org.diskuto.models.Message();
-            message.send(AppHelper.getActiveUser().getUsername(), this.chosen, this.reply);
+            message.send(AppHelper.getActiveUser().getUsername(), this.chosen.getUsername(), this.reply);
             this.messages.add(0, message);
             this.reply = "";
         }
@@ -83,11 +93,19 @@ public class Message implements Serializable {
         this.me = me;
     }
 
-    public String getChosen() {
+    public boolean isIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
+
+    public User getChosen() {
         return chosen;
     }
 
-    public void setChosen(String chosen) {
+    public void setChosen(User chosen) {
         this.chosen = chosen;
     }
 

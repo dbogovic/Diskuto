@@ -38,7 +38,9 @@ public class Home {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(id);
                 Post post = retriever.post();
-                items.add(post);
+                if (!AppHelper.getActiveUser().getIgnored().contains(post.getOwner())) {
+                    items.add(post);
+                }
             }
         }
         this.unread = new XmlHelper(AppHelper.getResource("count(/messages/message[recipient=\"" + AppHelper.getActiveUser().getUsername() + "\" and seen=\"0\"])")).rawValue();

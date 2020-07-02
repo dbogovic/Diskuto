@@ -64,7 +64,9 @@ public class Forum implements Serializable {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retrievePost = new Retriever(id);
                 Post post = retrievePost.post();
-                items.add(post);
+                if (!AppHelper.getActiveUser().getIgnored().contains(post.getOwner())) {
+                    items.add(post);
+                }
             }
         }
         itemsIteratorId += 10;
@@ -78,7 +80,9 @@ public class Forum implements Serializable {
                 + "\" and $x/diskuto=\"" + this.diskuto.getName() + "\" order by $x/created descending return $x)[position() le 1]");
         if (resource != null) {
             post.retrieve(new XmlHelper(resource));
-            freshPost.add(post);
+            if (!AppHelper.getActiveUser().getIgnored().contains(post.getOwner())) {
+                freshPost.add(post);
+            }
         }
 
         return freshPost;
