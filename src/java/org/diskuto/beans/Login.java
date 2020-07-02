@@ -48,7 +48,7 @@ public class Login {
     }
 
     public void logout() throws Exception {
-        this.user.logout();
+        AppHelper.getActiveUser().logout();
         FacesContext.getCurrentInstance().getExternalContext().redirect("home");
     }
 

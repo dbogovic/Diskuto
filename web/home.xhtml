@@ -12,14 +12,19 @@
         </h:head>
         <h:body>
             <ui:include src="/header.xhtml" />
-            <h:panelGroup class="element">
+            <h:form class="element" prependId="false">
                 <h:outputText class="element-title" value="#{output['home.welcome']}" />
                 <ui:include src="thing.xhtml">
                     <ui:param name="items" value="#{home.items}" />
                 </ui:include>
-            </h:panelGroup> 
+                <h:commandButton rendered="#{home.totalItems > home.itemsIteratorId}" class="button" value="#{output['profile.load']}" action="#{home.loadItems()}" >
+                    <f:ajax event="action" render="@form" />
+                </h:commandButton><br/><br/>
+                <img id="ajaxloader" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+            </h:form> 
             <ui:include src="/sider.xhtml" />
-            <ui:include src="/footer.xhtml" /> 
+            <ui:include src="/footer.xhtml" />
+            <h:outputScript library="js" name="script.js" />
         </h:body>
     </f:view>
 </html>

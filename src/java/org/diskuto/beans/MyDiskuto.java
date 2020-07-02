@@ -31,8 +31,10 @@ public class MyDiskuto implements Serializable {
      * Creates a new instance of myDiskuto
      */
     public MyDiskuto() throws Exception {
-        this.owner = fillIn("/forums/forum[owner=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
-        this.moderator = fillIn("/forums/forum[moderators/moderator=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
+        if (AppHelper.getActiveUser() != null) {
+            this.owner = fillIn("/forums/forum[owner=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
+            this.moderator = fillIn("/forums/forum[moderators/moderator=\"" + AppHelper.getActiveUser().getUsername() + "\"]/name");
+        }
     }
 
     private List<org.diskuto.models.Forum> fillIn(String query) throws Exception {
