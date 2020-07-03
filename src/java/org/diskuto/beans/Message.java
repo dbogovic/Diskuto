@@ -38,6 +38,7 @@ public class Message implements Serializable {
      * Creates a new instance of Message
      */
     public Message() throws Exception {
+        AppHelper.checkLogged();
 
         if (AppHelper.param("with") == null) {
             me = true;

@@ -37,6 +37,7 @@ public class EditDiskuto implements Serializable {
      * Creates a new instance of editDiskuto
      */
     public EditDiskuto() throws Exception {
+        AppHelper.checkLogged();
         Retriever retriever = new Retriever(AppHelper.param("name"));
         this.diskuto = retriever.forum();
 

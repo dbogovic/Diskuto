@@ -41,27 +41,31 @@ public class Profile implements Serializable {
      * Creates a new instance of Profile
      */
     public Profile() throws Exception {
-        String user = AppHelper.param("name");
-        if (user.equals(AppHelper.getActiveUser().getUsername())) {
-            me = true;
-            this.user = AppHelper.getActiveUser();
-        } else {
-            me = false;
-            Retriever retriever = new Retriever(user);
-            this.user = retriever.user();
-            if (this.user == null) {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
+        AppHelper.checkLogged();
+
+        if (AppHelper.getActiveUser() != null) {
+
+            String user = AppHelper.param("name");
+            if (user.equals(AppHelper.getActiveUser().getUsername())) {
+                me = true;
+                this.user = AppHelper.getActiveUser();
+            } else {
+                me = false;
+                Retriever retriever = new Retriever(user);
+                this.user = retriever.user();
+                if (this.user == null) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
+                }
             }
+
+            this.upvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//upvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
+            this.downvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//downvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
+            this.totalPosts = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\"" + this.user.getUsername() + "\"]/id)")).rawValue());
+            this.totalComments = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post/comments/comment[owner=\"" + this.user.getUsername() + "\"])")).rawValue());
+
+            loadPosts();
+            loadComments();
         }
-
-        this.upvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//upvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
-        this.downvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//downvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
-        this.totalPosts = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\"" + this.user.getUsername() + "\"]/id)")).rawValue());
-        this.totalComments = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post/comments/comment[owner=\"" + this.user.getUsername() + "\"])")).rawValue());
-
-        loadPosts();
-        loadComments();
-
     }
 
     public void loadPosts() throws Exception {

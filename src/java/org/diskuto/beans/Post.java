@@ -26,7 +26,6 @@ import org.xmldb.api.base.ResourceIterator;
 public class Post implements Serializable {
 
     private org.diskuto.models.Post thing;
-    private final String user;
     private List<Comment> comments = new ArrayList<>();
     private String myComment;
 
@@ -36,7 +35,6 @@ public class Post implements Serializable {
      * @throws java.lang.Exception
      */
     public Post() throws Exception {
-        user = AppHelper.getActiveUser().getUsername();
         Retriever retriever = new Retriever(AppHelper.param("id"));
         this.thing = retriever.post();
 
@@ -49,66 +47,71 @@ public class Post implements Serializable {
             Comment comment = new Comment();
             comment.retrieve(new XmlHelper(iterator.nextResource()));
             comment.setPost(this.thing);
-            if (!AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
+            if (AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
                 this.comments.add(comment);
             }
         }
     }
 
     public void sendComment() throws Exception {
+        AppHelper.checkLogged();
         if (!this.myComment.equals("")) {
             Comment comment = new Comment();
-            comment.save(this.thing, this.myComment, this.user);
+            comment.save(this.thing, this.myComment, AppHelper.getActiveUser().getUsername());
             this.comments.add(comment);
             this.myComment = "";
         }
     }
 
     public void upvotePost() throws Exception {
-        if (!this.thing.getUpvote().contains(this.user)) {
-            this.thing.addVote("upvote", this.user);
+        AppHelper.checkLogged();
+        if (!this.thing.getUpvote().contains(AppHelper.getActiveUser().getUsername())) {
+            this.thing.addVote("upvote", AppHelper.getActiveUser().getUsername());
 
-            if (this.thing.getDownvote().contains(this.user)) {
-                this.thing.dropVote("downvote", this.user);
+            if (this.thing.getDownvote().contains(AppHelper.getActiveUser().getUsername())) {
+                this.thing.dropVote("downvote", AppHelper.getActiveUser().getUsername());
             }
         } else {
-            this.thing.dropVote("upvote", this.user);
+            this.thing.dropVote("upvote", AppHelper.getActiveUser().getUsername());
         }
     }
 
     public void downvotePost() throws Exception {
-        if (!this.thing.getDownvote().contains(this.user)) {
-            this.thing.addVote("downvote", this.user);
+        AppHelper.checkLogged();
+        if (!this.thing.getDownvote().contains(AppHelper.getActiveUser().getUsername())) {
+            this.thing.addVote("downvote", AppHelper.getActiveUser().getUsername());
 
-            if (this.thing.getUpvote().contains(this.user)) {
-                this.thing.dropVote("upvote", this.user);
+            if (this.thing.getUpvote().contains(AppHelper.getActiveUser().getUsername())) {
+                this.thing.dropVote("upvote", AppHelper.getActiveUser().getUsername());
             }
         } else {
-            this.thing.dropVote("downvote", this.user);
+            this.thing.dropVote("downvote", AppHelper.getActiveUser().getUsername());
         }
     }
 
     public void upvoteComment(Comment comment) throws Exception {
-        if (!comment.getUpvote().contains(this.user)) {
-            comment.addVote("upvote", this.user);
+        AppHelper.checkLogged();
+        if (!comment.getUpvote().contains(AppHelper.getActiveUser().getUsername())) {
+            comment.addVote("upvote", AppHelper.getActiveUser().getUsername());
 
-            if (comment.getDownvote().contains(this.user)) {
-                comment.dropVote("downvote", this.user);
+            if (comment.getDownvote().contains(AppHelper.getActiveUser().getUsername())) {
+                comment.dropVote("downvote", AppHelper.getActiveUser().getUsername());
             }
         } else {
-            comment.dropVote("upvote", this.user);
+            comment.dropVote("upvote", AppHelper.getActiveUser().getUsername());
         }
     }
 
     public void downvoteComment(Comment comment) throws Exception {
-        if (!comment.getDownvote().contains(this.user)) {
-            comment.addVote("downvote", this.user);
+        AppHelper.checkLogged();
+        if (!comment.getDownvote().contains(AppHelper.getActiveUser().getUsername())) {
+            comment.addVote("downvote", AppHelper.getActiveUser().getUsername());
 
-            if (comment.getUpvote().contains(this.user)) {
-                comment.dropVote("upvote", this.user);
+            if (comment.getUpvote().contains(AppHelper.getActiveUser().getUsername())) {
+                comment.dropVote("upvote", AppHelper.getActiveUser().getUsername());
             }
         } else {
-            comment.dropVote("downvote", this.user);
+            comment.dropVote("downvote", AppHelper.getActiveUser().getUsername());
         }
     }
 

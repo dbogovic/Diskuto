@@ -32,6 +32,7 @@ public class NewPost implements Serializable {
      * Creates a new instance of newPost
      */
     public NewPost() throws Exception {
+        AppHelper.checkLogged();
         Retriever retriever = new Retriever(AppHelper.param("on"));
         this.diskuto = retriever.forum();
 

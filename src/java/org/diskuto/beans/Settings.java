@@ -33,7 +33,8 @@ public class Settings implements Serializable {
     /**
      * Creates a new instance of Settings
      */
-    public Settings() {
+    public Settings() throws Exception {
+        AppHelper.checkLogged();
     }
 
     public void changeEmail() throws Exception {

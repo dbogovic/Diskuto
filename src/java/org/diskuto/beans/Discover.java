@@ -29,6 +29,7 @@ public class Discover implements Serializable {
      * Creates a new instance of Discover
      */
     public Discover() throws Exception {
+        AppHelper.checkLogged();
 
         ResourceIterator iterator = AppHelper.getResourceSet("/forums/forum").getIterator();
         while (iterator.hasMoreResources()) {
