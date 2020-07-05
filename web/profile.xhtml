@@ -24,6 +24,7 @@
                             <f:param name="with" value="#{profile.user.username}" />
                         </h:button>
                         <h:commandButton class="button" action="#{profile.ignore()}" 
+                                         style="background: #{beanHelper.activeUser.ignored.contains(profile.user.username) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
                                          value="#{beanHelper.activeUser.ignored.contains(profile.user.username) ? output['profile.unignore'] : output['profile.ignore']}" >
                             <f:ajax event="action" render="@form" />
                         </h:commandButton>
@@ -42,7 +43,7 @@
                 <h:commandButton rendered="#{profile.totalPosts > profile.postsIteratorId}" class="button" value="#{output['profile.load']}" action="#{profile.loadPosts()}" >
                     <f:ajax event="action" render="@form" onevent="ajaxload1" />
                 </h:commandButton>
-                <img id="ajaxloader1" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                <img id="ajaxloader1" class="ajaxloader" src="./resources/pages/loading.gif" />
                 <h:outputText rendered="#{profile.posts.size() == 0}" class="no-results" value="#{output['profile.noPosts']}" />
                 <h:outputText class="searchLabel" value="#{output['profile.comments']}" />
                 <ui:include src="comments.xhtml">
@@ -51,7 +52,7 @@
                 <h:commandButton rendered="#{profile.totalComments > profile.commentsIteratorId}" class="button" value="#{output['profile.load']}" action="#{profile.loadComments()}" >
                     <f:ajax event="action" render="@form" onevent="ajaxload2" />
                 </h:commandButton>
-                <img id="ajaxloader2" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                <img id="ajaxloader2" class="ajaxloader" src="./resources/pages/loading.gif" />
                 <h:outputText rendered="#{profile.comments.size() == 0}" class="no-results" value="#{output['profile.noComments']}" />
             </h:form>
             <ui:include src="/sider.xhtml" />

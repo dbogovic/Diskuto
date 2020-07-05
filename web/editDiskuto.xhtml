@@ -7,7 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | Novi diskuto</title>
+            <title>Diskuto | #{output['myDiskuto.editDiskuto']}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="form.css"/>
@@ -71,7 +71,7 @@
                     <f:ajax event="action" execute="name description rules" render="@form"/>
                 </h:commandButton>
                 <h:outputText class="errorText" value="#{editDiskuto.errorText}" />
-                <img id="ajaxloader" src="./resources/pages/loading.gif" />
+                <img id="ajaxloader" class="ajaxloader" src="./resources/pages/loading.gif" />
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="/footer.xhtml" />

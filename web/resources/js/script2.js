@@ -4,7 +4,7 @@ function ajaxload1(data) {
 
     switch (ajaxstatus) {
         case "begin":
-            ajaxloader.style.display = 'block';
+            ajaxloader.style.display = 'initial';
             break;
         case "complete":
             ajaxloader.style.display = 'none';
@@ -20,7 +20,7 @@ function ajaxload2(data) {
 
     switch (ajaxstatus) {
         case "begin":
-            ajaxloader.style.display = 'block';
+            ajaxloader.style.display = 'initial';
             break;
         case "complete":
             ajaxloader.style.display = 'none';

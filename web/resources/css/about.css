@@ -10,6 +10,10 @@
     margin-bottom: 2.5%;
 }
 
+#forumDescription > a:hover {
+    text-decoration: underline;
+}
+
 #forumDescription > img {
     width: 20px;
 }

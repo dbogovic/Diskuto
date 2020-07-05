@@ -19,8 +19,8 @@
                 </ui:include>
                 <h:commandButton rendered="#{home.totalItems > home.itemsIteratorId}" class="button" value="#{output['profile.load']}" action="#{home.loadItems()}" >
                     <f:ajax event="action" render="@form" />
-                </h:commandButton><br/><br/>
-                <img id="ajaxloader" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                </h:commandButton>
+                <img id="ajaxloader" class="ajaxloader" src="./resources/pages/loading.gif" />
             </h:form> 
             <ui:include src="/sider.xhtml" />
             <ui:include src="/footer.xhtml" />

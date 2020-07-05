@@ -36,7 +36,7 @@
                     <f:ajax event="action" execute="diskuto headline description category" render="@form"/>
                 </h:commandButton>
                 <h:outputText class="errorText" value="#{newPost.errorText}" />
-                <img id="ajaxloader" src="./resources/pages/loading.gif"/>
+                <img id="ajaxloader" class="ajaxloader" src="./resources/pages/loading.gif"/>
             </h:form>
             <ui:include src="/sider.xhtml" />
             <ui:include src="/footer.xhtml" />

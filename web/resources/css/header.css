@@ -3,6 +3,10 @@
     border-bottom: 1px solid #DCDCDC;
 }
 
+#home {
+    text-align: center;
+}
+
 #logo {
     width: 66%;
 }

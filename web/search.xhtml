@@ -22,7 +22,8 @@
                             <f:param name="name" value="#{value.name}" />
                         </h:link>
                         <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(value.name) ? output['search.button1'] : output['search.button2']}" 
-                                         action="#{forum.subscribe(value)}" >
+                                         style="background: #{beanHelper.activeUser.subscriptions.contains(value.name) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                         action="#{beanHelper.subscribe(value)}" >
                             <f:ajax event="action" render="@form"/>
                         </h:commandButton>
                         <h:outputText class="diskutoSubscribers" value="#{value.subscribers} #{output['search.subscribers']}" />

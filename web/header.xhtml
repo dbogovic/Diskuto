@@ -6,7 +6,7 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:outputStylesheet library="css" name="header.css"/>
     <h:form id="header" prependId="false">      
-        <a href="home"><img id="logo" src="resources/pages/logo.png" /></a>
+        <a id="home" href="home"><img id="logo" src="resources/pages/logo.png" /></a>
         <h:inputText class="search" value="#{search.term}" a:placeholder="#{output['header.placeholder']}" />
         <h:commandButton class="button" value="Traži" action="#{search.showResults()}" />
         <div id="rightElements">

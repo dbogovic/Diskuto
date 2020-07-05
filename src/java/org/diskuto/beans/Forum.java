@@ -88,17 +88,6 @@ public class Forum implements Serializable {
         return freshPost;
     }
 
-    public void subscribe(org.diskuto.models.Forum forum) throws Exception {
-        AppHelper.checkLogged();
-        if (!AppHelper.getActiveUser().getSubscriptions().contains(forum.getName())) {
-            forum.setSubscribers(forum.getSubscribers() + 1);
-            AppHelper.getActiveUser().subscribe(forum.getName());
-        } else {
-            forum.setSubscribers(forum.getSubscribers() - 1);
-            AppHelper.getActiveUser().unsubscribe(forum.getName());
-        }
-    }
-
     public org.diskuto.models.Forum getDiskuto() {
         return diskuto;
     }

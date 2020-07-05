@@ -7,7 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <f:view locale="#{language.lang}">
         <h:head>
-            <title>Diskuto | Otkrij Diskuta</title>
+            <title>Diskuto | #{output['discover.title']}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
             <h:outputStylesheet library="css" name="global.css"/>
             <h:outputStylesheet library="css" name="discover.css"/>
@@ -22,7 +22,8 @@
                             <f:param name="name" value="#{value.name}" />
                         </h:link>
                         <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(value.name) ? output['discover.button1'] : output['discover.button2']}" 
-                                         action="#{forum.subscribe(value)}" >
+                                         style="background: #{beanHelper.activeUser.subscriptions.contains(value.name) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                         action="#{beanHelper.subscribe(value)}" >
                             <f:ajax event="action" render="@form"/>
                         </h:commandButton>
                         <h:outputText class="postDescription" value="#{value.description}" />

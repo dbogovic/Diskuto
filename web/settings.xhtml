@@ -56,7 +56,6 @@
                         </h:link>
                     </h:panelGroup>
                 </c:forEach>
-
                 <h:outputText class="settingsLabel" value="#{beanHelper.activeUser.ignored.size() == 0 ? output['settings.noIgnored'] : output['settings.yesIgnored']}" />
                 <c:forEach id="ignored" items="#{beanHelper.activeUser.ignored}" var="value">
                     <h:panelGroup class="settingsList">
@@ -68,11 +67,6 @@
                         </h:link>
                     </h:panelGroup>
                 </c:forEach>
-
-                <!--
-                <h:outputText value="Privatnost" />
-                !-->
-
                 <h:commandLink id="delete" value="#{output['settings.delete']}" action="#{settings.disableAccount}" >
                     <f:ajax event="action" render="@form"/>
                 </h:commandLink>

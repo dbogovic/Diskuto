@@ -22,8 +22,8 @@
                         <h:button class="button" value="#{output['forum.button1']}" outcome="newPost" >
                             <f:param name="on" value="#{forum.diskuto.name}" />
                         </h:button>
-                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? output['forum.button2'] : output['forum.button3']}" action="#{forum.subscribe(forum.diskuto)}"
-                                         rendered="#{!forum.diskuto.owner.equals(beanHelper.activeUser.username) and !(forum.diskuto.moderators.contains(beanHelper.activeUser.username))}" >
+                        <h:commandButton class="button" value="#{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? output['forum.button2'] : output['forum.button3']}" action="#{beanHelper.subscribe(forum.diskuto)}"
+                                         style="background: #{beanHelper.activeUser.subscriptions.contains(forum.diskuto.name) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}" >
                             <f:ajax event="action" render="@form" />
                         </h:commandButton>
                         <h:button class="button" value="#{output['forum.button4']}" outcome="editDiskuto"
@@ -61,7 +61,7 @@
                     <h:commandButton rendered="#{forum.totalItems > forum.itemsIteratorId}" class="button" value="#{output['profile.load']}" action="#{forum.loadItems()}" >
                         <f:ajax event="action" render="@form" />
                     </h:commandButton>
-                    <img id="ajaxloader" class="ajaxloader-centered" src="./resources/pages/loading.gif" />
+                    <img id="ajaxloader" class="ajaxloader" src="./resources/pages/loading.gif" />
                 </h:panelGroup>
             </h:form>
             <ui:include src="/sider.xhtml" />

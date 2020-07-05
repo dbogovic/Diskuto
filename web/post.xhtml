@@ -17,11 +17,15 @@
             <ui:include src="/header.xhtml" />
             <h:form class="element" prependId="false">
                 <h:panelGroup class="reaction">
-                    <h:commandButton class="button" value="+" action="#{post.upvotePost}" >
-                        <f:ajax event="action" render="karma"/>
+                    <h:commandButton id="btnUpt" class="button" value="+" 
+                                     style="background: #{post.thing.upvote.contains(beanHelper.activeUser.username) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                     action="#{post.upvotePost}" >
+                        <f:ajax event="action" render="karma btnUpt btnDwn"/>
                     </h:commandButton>
-                    <h:commandButton class="button" value="-" action="#{post.downvotePost}" >
-                        <f:ajax event="action" render="karma"/>
+                    <h:commandButton id="btnDwn" class="button" value="-"
+                                     style="background: #{post.thing.downvote.contains(beanHelper.activeUser.username) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                     action="#{post.downvotePost}" >
+                        <f:ajax event="action" render="karma btnDwn btnUpt"/>
                     </h:commandButton>
                 </h:panelGroup>
                 <h:link id="category" value="(#{post.thing.category})" outcome="forum" >
@@ -31,12 +35,14 @@
                 <h:outputText class="diskutoTitle" value="#{post.thing.headline}" />
                 <h:panelGroup class="postDescription" >
                     <h:outputText id="karma" value="#{post.thing.upvote.size() - post.thing.downvote.size() > 0 ? '+' : ''}#{post.thing.upvote.size() - post.thing.downvote.size()} • " />
-                    <h:link value="#{post.thing.diskuto} • " outcome="forum" >
+                    <h:link value="#{post.thing.diskuto}" outcome="forum" >
                         <f:param name="name" value="#{post.thing.diskuto}" />
                     </h:link>
-                    <h:link value="#{post.thing.owner} • " outcome="profile" >
+                    <h:outputText value=" • " />
+                    <h:link value="#{post.thing.owner}" outcome="profile" >
                         <f:param name="name" value="#{post.thing.owner}" />
                     </h:link>
+                    <h:outputText value=" • " />
                     <h:outputText value="#{beanHelper.fullDate(post.thing.created)}" />
                 </h:panelGroup>
                 <h:outputText class="postValue" value="#{post.thing.description}" />
@@ -47,11 +53,15 @@
                 <h:outputText class="element-title" value="#{output['post.comments']} (#{post.comments.size()})" />
                 <c:forEach items="#{post.comments}" var="value">
                     <h:panelGroup class="reaction">
-                        <h:commandButton class="button" value="+" action="#{post.upvoteComment(value)}" >
-                            <f:ajax event="action" render="c_karma#{value.id}"/>
+                        <h:commandButton id="btnUptCom#{value.id}" class="button" value="+"
+                                         style="background: #{value.upvote.contains(beanHelper.activeUser.username) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                         action="#{post.upvoteComment(value)}" >
+                            <f:ajax event="action" render="c_karma#{value.id} btnUptCom#{value.id} btnDwn#{value.id}"/>
                         </h:commandButton>
-                        <h:commandButton class="button" value="-" action="#{post.downvoteComment(value)}" >
-                            <f:ajax event="action" render="c_karma#{value.id}"/>
+                        <h:commandButton id="btnDwn#{value.id}" class="button" value="-"
+                                         style="background: #{value.downvote.contains(beanHelper.activeUser.username) ? 'white' : 'linear-gradient(to bottom,#A7DEFF,#91D5FF)'}"
+                                         action="#{post.downvoteComment(value)}" >
+                            <f:ajax event="action" render="c_karma#{value.id} btnUptCom#{value.id} btnDwn#{value.id}"/>
                         </h:commandButton>
                     </h:panelGroup>
                     <h:link class="profileComment" value="#{value.owner}" outcome="profile" >
