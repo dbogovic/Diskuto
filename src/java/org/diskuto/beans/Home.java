@@ -82,7 +82,7 @@ public class Home {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retrievePost = new Retriever(id);
                 Post post = retrievePost.post();
-                if (AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(post.getOwner())) {
+                if ((AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(post.getOwner())) && !post.isDeleted()) {
                     items.add(post);
                 }
             }

@@ -23,9 +23,10 @@ public class Comment {
     private String text;
     private long created;
     private String owner;
-    private boolean deleted;
     private List<String> upvote;
     private List<String> downvote;
+    private boolean reported;
+    private boolean deleted;
 
     public Comment() {
     }
@@ -37,6 +38,7 @@ public class Comment {
         this.created = Long.parseLong(helper.makeValue("created", object));
         this.owner = helper.makeValue("owner", object);
         this.deleted = Integer.parseInt(helper.makeValue("deleted", object)) == 1;
+        this.reported = Integer.parseInt(helper.makeValue("reported", object)) == 1;
         this.upvote = helper.makeListValue("/comment/upvote/user");
         this.downvote = helper.makeListValue("/comment/downvote/user");
     }
@@ -48,6 +50,7 @@ public class Comment {
         this.created = System.currentTimeMillis() / 1000L;
         this.owner = owner;
         this.deleted = false;
+        this.reported = false;
         upvote = new ArrayList();
         downvote = new ArrayList();
         upvote.add(owner);
@@ -55,8 +58,9 @@ public class Comment {
         Database db = new Database();
         db.xquery("update insert <comment><id>" + this.id + "</id><text>" + this.text
                 + "</text><created>" + this.created + "</created><owner>" + this.owner
-                + "</owner><deleted>0</deleted><upvote><user>" + this.owner
-                + "</user></upvote><downvote/></comment> into /posts/post[id=\"" + this.post.getId() + "\"]/comments");
+                + "</owner><upvote><user>" + this.owner
+                + "</user></upvote><downvote/><reported>0</reported><deleted>0</deleted></comment> into /posts/post[id=\"" 
+                + this.post.getId() + "\"]/comments");
         db.close();
     }
 
@@ -91,6 +95,31 @@ public class Comment {
                 + this.id + "\" return data($x/id)")).rawValue());
         this.post = retriever.post();
     }
+
+    public void report() throws Exception {
+        this.reported = true;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/reported with \"1\"");
+        db.close();
+    }
+    
+    public void itsOk() throws Exception {
+        this.reported = false;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/reported with \"0\"");
+        db.close();
+    }
+
+    public void delete() throws Exception {
+        this.deleted = true;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/deleted with \"1\"");
+        db.close();
+    }
+
 
     public Post getPost() {
         return post;
@@ -140,6 +169,14 @@ public class Comment {
         this.deleted = deleted;
     }
 
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
+    }
+
     public List<String> getUpvote() {
         return upvote;
     }
@@ -155,5 +192,4 @@ public class Comment {
     public void setDownvote(List<String> downvote) {
         this.downvote = downvote;
     }
-
 }

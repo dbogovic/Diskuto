@@ -74,7 +74,9 @@ public class Profile implements Serializable {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(id);
                 org.diskuto.models.Post post = retriever.post();
-                posts.add(post);
+                if (!post.isDeleted()) {
+                    posts.add(post);
+                }
             }
         }
         postsIteratorId += 10;
@@ -87,7 +89,9 @@ public class Profile implements Serializable {
             Comment comment = new Comment();
             comment.retrieve(new XmlHelper(iterator.nextResource()));
             comment.post();
-            this.comments.add(comment);
+            if (!comment.isDeleted()) {
+                this.comments.add(comment);
+            }
         }
         commentsIteratorId += 10;
     }

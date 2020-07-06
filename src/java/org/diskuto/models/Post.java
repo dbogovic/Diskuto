@@ -15,7 +15,6 @@ import javax.servlet.http.Part;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
-import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -33,6 +32,8 @@ public class Post {
     private String category;
     private List<String> upvote;
     private List<String> downvote;
+    private boolean reported;
+    private boolean deleted;
 
     public Post() {
     }
@@ -49,6 +50,8 @@ public class Post {
         this.category = helper.makeValue("category", object);
         this.upvote = helper.makeListValue("/post/upvote/user");
         this.downvote = helper.makeListValue("/post/downvote/user");
+        this.reported = Integer.parseInt(helper.makeValue("reported", object)) == 1;
+        this.deleted = Integer.parseInt(helper.makeValue("deleted", object)) == 1;
     }
 
     public void save(String headline, String description, Part attachment, String owner, String diskuto, String category) throws Exception {
@@ -60,6 +63,8 @@ public class Post {
         this.owner = owner;
         this.diskuto = diskuto;
         this.category = category;
+        this.reported = false;
+        this.deleted = false;
         upvote = new ArrayList();
         downvote = new ArrayList();
         upvote.add(this.owner);
@@ -77,7 +82,7 @@ public class Post {
                 + this.file + "</attachment><created>" + this.created
                 + "</created><owner>" + this.owner + "</owner><diskuto>" + this.diskuto
                 + "</diskuto><category>" + this.category + "</category><upvote><user>" + this.owner
-                + "</user></upvote><downvote/><comments/></post> into /posts");
+                + "</user></upvote><downvote/><comments/><reported>0</reported><deleted>0</deleted></post> into /posts");
         db.close();
     }
 
@@ -104,6 +109,30 @@ public class Post {
         Database db = new Database();
         db.xquery("for $x in /posts/post where $x/id=\"" + this.id
                 + "\" return update delete $x/" + type + "/user[.=\"" + vote + "\"]");
+        db.close();
+    }
+    
+    public void report() throws Exception {
+        this.reported = true;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.id + "\"]/reported with \"1\"");
+        db.close();
+    }
+    
+    public void itsOk() throws Exception {
+        this.reported = false;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.id + "\"]/reported with \"0\"");
+        db.close();
+    }
+
+    public void delete() throws Exception {
+        this.deleted = true;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.id + "\"]/deleted with \"1\"");
         db.close();
     }
 
@@ -185,6 +214,22 @@ public class Post {
 
     public void setDownvote(List<String> downvote) {
         this.downvote = downvote;
+    }
+
+    public boolean isReported() {
+        return reported;
+    }
+
+    public void setReported(boolean reported) {
+        this.reported = reported;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
 }

@@ -46,7 +46,7 @@ public class Post implements Serializable {
                 Comment comment = new Comment();
                 comment.retrieve(new XmlHelper(iterator.nextResource()));
                 comment.setPost(this.thing);
-                if (AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
+                if ((AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) && !comment.isDeleted()) {
                     this.comments.add(comment);
                 }
             }
@@ -61,6 +61,16 @@ public class Post implements Serializable {
             this.comments.add(comment);
             this.myComment = "";
         }
+    }
+    
+    public void reportPost() throws Exception {
+        this.thing.report();
+        this.thing.setDescription(AppHelper.getOutput("success.msg3"));
+    }
+    
+    public void reportComment(Comment comment) throws Exception {
+        comment.report();
+        comment.setText(AppHelper.getOutput("success.msg3"));
     }
 
     public void upvotePost() throws Exception {

@@ -43,10 +43,14 @@
                         <f:param name="name" value="#{post.thing.owner}" />
                     </h:link>
                     <h:outputText value=" • #{beanHelper.fullDate(post.thing.created)}" />
-                    <h:outputText value=" • " /> obriši
-                    <h:outputText value=" • " /> prijavi
+                    <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username}" value=" • " />
+                    <h:commandLink action="#{beanHelper.deletePost(post.thing)}" rendered="#{post.thing.owner==beanHelper.activeUser.username}" value="#{output['post.delete']}"/>
+                    <h:outputText rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value=" • " />
+                    <h:commandLink action="#{post.reportPost()}" rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value="#{output['post.report']}" >
+                        <f:ajax event="action" execute="postValue" />
+                    </h:commandLink>
                 </h:panelGroup>
-                <h:outputText rendered="#{post.thing.description != ''}" class="postValue" value="#{post.thing.description}" />
+                <h:outputText id="postValue" rendered="#{post.thing.description != ''}" class="postValue" value="#{post.thing.description}" />
                 <h:graphicImage rendered="#{post.thing.file != ''}" class="postValue" value="resources/attachments/#{post.thing.file}" />
                 <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}" />
                 <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}">
@@ -72,10 +76,14 @@
                     <h:panelGroup class="postDescription">
                         <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
                         <h:outputText value="#{beanHelper.fullDate(value.created)}" />
-                        <h:outputText value=" • " /> obriši
-                        <h:outputText value=" • " /> prijavi
+                        <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username}" value=" • " />
+                        <h:commandLink action="#{beanHelper.deleteComment(value)}" rendered="#{post.thing.owner==beanHelper.activeUser.username}" value="#{output['post.delete']}" />
+                        <h:outputText rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value=" • " />
+                        <h:commandLink action="#{post.reportComment(value)}" rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value="#{output['post.report']}" >
+                            <f:ajax event="action" execute="textComment_#{value.id}" />
+                        </h:commandLink>
                     </h:panelGroup>
-                    <h:outputText class="textComment" value="#{value.text}" />
+                    <h:outputText id="textComment_#{value.id}" class="textComment" value="#{value.text}" />
                 </c:forEach>
             </h:form>
             <ui:include src="/sider.xhtml" />

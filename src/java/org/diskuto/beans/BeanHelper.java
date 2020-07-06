@@ -7,9 +7,10 @@ package org.diskuto.beans;
 
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
-import org.diskuto.helpers.XmlHelper;
+import org.diskuto.models.Comment;
 import org.diskuto.models.User;
 
 /**
@@ -52,5 +53,14 @@ public class BeanHelper {
             forum.setSubscribers(forum.getSubscribers() - 1);
             AppHelper.getActiveUser().unsubscribe(forum.getName());
         }
+    }
+    
+    public void deletePost(org.diskuto.models.Post post) throws Exception {
+        post.delete();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("forum?name="+post.getDiskuto());
+    }
+    
+    public void deleteComment(Comment comment) throws Exception {
+        comment.delete();
     }
 }

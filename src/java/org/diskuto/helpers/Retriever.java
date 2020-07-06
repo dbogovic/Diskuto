@@ -7,7 +7,6 @@ package org.diskuto.helpers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.diskuto.models.Forum;
 import org.diskuto.models.Message;
