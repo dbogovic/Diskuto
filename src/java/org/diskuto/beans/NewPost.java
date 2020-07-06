@@ -9,6 +9,7 @@ import java.io.Serializable;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.Part;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.models.Forum;
@@ -25,6 +26,7 @@ public class NewPost implements Serializable {
     private org.diskuto.models.Forum diskuto;
     private String headline;
     private String description;
+    private Part file;
     private String selectedCategory;
     private String errorText;
 
@@ -44,17 +46,22 @@ public class NewPost implements Serializable {
     public void save() throws Exception {
         errorText = "";
 
+        if(file != null && !file.getContentType().contains("image")) {
+            file = null;
+        }
+        
+        
         if (headline == null || headline.length() == 0) {
             errorText = AppHelper.getOutput("error.headline");
-        } else if (description == null || description.length() == 0) {
+        } else if ((description == null || description.length() == 0) && file == null) {
             errorText = AppHelper.getOutput("error.description");
         } else {
             Post post = new Post();
-            post.save(headline, description, AppHelper.getActiveUser().getUsername(), diskuto.getName(), selectedCategory);
+            post.save(headline, description, file, AppHelper.getActiveUser().getUsername(), diskuto.getName(), selectedCategory);
             FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
         }
     }
-
+    
     public Forum getDiskuto() {
         return diskuto;
     }
@@ -93,6 +100,14 @@ public class NewPost implements Serializable {
 
     public void setErrorText(String errorText) {
         this.errorText = errorText;
+    }
+
+    public Part getFile() {
+        return file;
+    }
+
+    public void setFile(Part file) {
+        this.file = file;
     }
 
 }

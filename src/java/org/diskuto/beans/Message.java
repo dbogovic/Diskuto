@@ -40,28 +40,30 @@ public class Message implements Serializable {
     public Message() throws Exception {
         AppHelper.checkLogged();
 
-        if (AppHelper.param("with") == null) {
-            me = true;
-        } else {
-            Retriever retriever = new Retriever(AppHelper.param("with"));
-            this.chosen = retriever.user();
-
-            if (this.chosen == null) {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("message");
+        if (AppHelper.getActiveUser() != null) {
+            if (AppHelper.param("with") == null) {
+                me = true;
             } else {
-                Retriever retrieve = new Retriever(chosen.getUsername());
-                this.messages = retrieve.messages();
+                Retriever retriever = new Retriever(AppHelper.param("with"));
+                this.chosen = retriever.user();
 
-                if (AppHelper.getActiveUser().getIgnored().contains(chosen.getUsername())
-                        || chosen.getIgnored().contains(AppHelper.getActiveUser().getUsername())) {
-                    ignored = true;
+                if (this.chosen == null) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("message");
+                } else {
+                    Retriever retrieve = new Retriever(chosen.getUsername());
+                    this.messages = retrieve.messages();
+
+                    if (AppHelper.getActiveUser().getIgnored().contains(chosen.getUsername())
+                            || chosen.getIgnored().contains(AppHelper.getActiveUser().getUsername())) {
+                        ignored = true;
+                    }
                 }
             }
-        }
 
-        chatting = new HashSet<>();
-        fillIn(AppHelper.getResourceSet("for $x in /messages/message where $x/recipient=\"" + AppHelper.getActiveUser().getUsername() + "\" return $x/sender"), "sender");
-        fillIn(AppHelper.getResourceSet("for $x in /messages/message where $x/sender=\"" + AppHelper.getActiveUser().getUsername() + "\" return $x/recipient"), "recipient");
+            chatting = new HashSet<>();
+            fillIn(AppHelper.getResourceSet("for $x in /messages/message where $x/recipient=\"" + AppHelper.getActiveUser().getUsername() + "\" return $x/sender"), "sender");
+            fillIn(AppHelper.getResourceSet("for $x in /messages/message where $x/sender=\"" + AppHelper.getActiveUser().getUsername() + "\" return $x/recipient"), "recipient");
+        }
     }
 
     public void send() throws Exception {

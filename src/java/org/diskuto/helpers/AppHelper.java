@@ -5,6 +5,7 @@
  */
 package org.diskuto.helpers;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -42,6 +43,10 @@ public class AppHelper {
         if(getActiveUser() == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("login");
         }
+    }
+    
+    public static String getAttachmentsPath(){
+        return Listener.session.getServletContext().getRealPath("/") + "resources" + File.separator + "attachments";
     }
 
     public static int generateId(String query) throws Exception {

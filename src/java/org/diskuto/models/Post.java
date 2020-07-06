@@ -5,11 +5,17 @@
  */
 package org.diskuto.models;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.Part;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.XmlHelper;
+import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -20,6 +26,7 @@ public class Post {
     private int id;
     private String headline;
     private String description;
+    private String file;
     private long created;
     private String owner;
     private String diskuto;
@@ -37,16 +44,18 @@ public class Post {
         this.headline = helper.makeValue("headline", object);
         this.description = helper.makeValue("description", object);
         this.owner = helper.makeValue("owner", object);
+        this.file = helper.makeValue("attachment", object);
         this.diskuto = helper.makeValue("diskuto", object);
         this.category = helper.makeValue("category", object);
         this.upvote = helper.makeListValue("/post/upvote/user");
         this.downvote = helper.makeListValue("/post/downvote/user");
     }
 
-    public void save(String headline, String description, String owner, String diskuto, String category) throws Exception {
+    public void save(String headline, String description, Part attachment, String owner, String diskuto, String category) throws Exception {
         this.id = AppHelper.generateId("max(/posts/post/id)");
         this.headline = headline;
         this.description = description;
+        this.file = "";
         this.created = System.currentTimeMillis() / 1000L;
         this.owner = owner;
         this.diskuto = diskuto;
@@ -55,9 +64,17 @@ public class Post {
         downvote = new ArrayList();
         upvote.add(this.owner);
 
+        if (attachment != null) {
+            this.file = "res-" + this.id;
+            try (InputStream input = attachment.getInputStream()) {
+                Files.copy(input, new File(AppHelper.getAttachmentsPath(), this.file).toPath());
+            } catch (IOException e) {}
+        }
+
         Database db = new Database();
         db.xquery("update insert <post><id>" + this.id + "</id><headline>" + this.headline
-                + "</headline><description>" + this.description + "</description><created>" + created
+                + "</headline><description>" + this.description + "</description><attachment>"
+                + this.file + "</attachment><created>" + this.created
                 + "</created><owner>" + this.owner + "</owner><diskuto>" + this.diskuto
                 + "</diskuto><category>" + this.category + "</category><upvote><user>" + this.owner
                 + "</user></upvote><downvote/><comments/></post> into /posts");
@@ -128,6 +145,14 @@ public class Post {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
     public String getDiskuto() {

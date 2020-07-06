@@ -6,21 +6,26 @@
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <c:forEach items="#{items}" var="value" >
         <div class="thing">
-            <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
-                <f:param name="id" value="#{value.id}" />
-            </h:link>
-            <h:panelGroup class="postDescription" >
-                <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
-                <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
-                <h:link value="#{value.diskuto}" outcome="forum" >
-                    <f:param name="name" value="#{value.diskuto}" />
+            <a href="resources/attachments/#{value.file}" target="_blank" >
+                <h:graphicImage class="postImg" rendered="#{value.file != ''}" value="resources/attachments/#{value.file}" />
+            </a>
+            <h:panelGroup class="post">
+                <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
+                    <f:param name="id" value="#{value.id}" />
                 </h:link>
-                <h:outputText value=" • " />
-                <h:link value="#{value.owner}" outcome="profile" >
-                    <f:param name="name" value="#{value.owner}" />
-                </h:link>
-                <h:outputText value=" • " />
-                <h:outputText value="#{beanHelper.fullDate(value.created)}" />
+                <h:panelGroup class="postDescription" >
+                    <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
+                    <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
+                    <h:link value="#{value.diskuto}" outcome="forum" >
+                        <f:param name="name" value="#{value.diskuto}" />
+                    </h:link>
+                    <h:outputText value=" • " />
+                    <h:link value="#{value.owner}" outcome="profile" >
+                        <f:param name="name" value="#{value.owner}" />
+                    </h:link>
+                    <h:outputText value=" • " />
+                    <h:outputText value="#{beanHelper.fullDate(value.created)}" />
+                </h:panelGroup>
             </h:panelGroup>
         </div>
     </c:forEach>

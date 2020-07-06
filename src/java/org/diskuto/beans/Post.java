@@ -40,15 +40,15 @@ public class Post implements Serializable {
 
         if (this.thing == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
-        }
-
-        ResourceIterator iterator = AppHelper.getResourceSet("/posts/post[id=\"" + this.thing.getId() + "\"]/comments/comment").getIterator();
-        while (iterator.hasMoreResources()) {
-            Comment comment = new Comment();
-            comment.retrieve(new XmlHelper(iterator.nextResource()));
-            comment.setPost(this.thing);
-            if (AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
-                this.comments.add(comment);
+        } else {
+            ResourceIterator iterator = AppHelper.getResourceSet("/posts/post[id=\"" + this.thing.getId() + "\"]/comments/comment").getIterator();
+            while (iterator.hasMoreResources()) {
+                Comment comment = new Comment();
+                comment.retrieve(new XmlHelper(iterator.nextResource()));
+                comment.setPost(this.thing);
+                if (AppHelper.getActiveUser() == null || !AppHelper.getActiveUser().getIgnored().contains(comment.getOwner())) {
+                    this.comments.add(comment);
+                }
             }
         }
     }

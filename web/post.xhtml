@@ -42,10 +42,12 @@
                     <h:link value="#{post.thing.owner}" outcome="profile" >
                         <f:param name="name" value="#{post.thing.owner}" />
                     </h:link>
-                    <h:outputText value=" • " />
-                    <h:outputText value="#{beanHelper.fullDate(post.thing.created)}" />
+                    <h:outputText value=" • #{beanHelper.fullDate(post.thing.created)}" />
+                    <h:outputText value=" • " /> obriši
+                    <h:outputText value=" • " /> prijavi
                 </h:panelGroup>
-                <h:outputText class="postValue" value="#{post.thing.description}" />
+                <h:outputText rendered="#{post.thing.description != ''}" class="postValue" value="#{post.thing.description}" />
+                <h:graphicImage rendered="#{post.thing.file != ''}" class="postValue" value="resources/attachments/#{post.thing.file}" />
                 <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}" />
                 <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}">
                     <f:ajax event="action" execute="comment" render="@form"/>
@@ -70,6 +72,8 @@
                     <h:panelGroup class="postDescription">
                         <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
                         <h:outputText value="#{beanHelper.fullDate(value.created)}" />
+                        <h:outputText value=" • " /> obriši
+                        <h:outputText value=" • " /> prijavi
                     </h:panelGroup>
                     <h:outputText class="textComment" value="#{value.text}" />
                 </c:forEach>

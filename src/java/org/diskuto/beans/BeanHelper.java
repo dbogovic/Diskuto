@@ -25,7 +25,7 @@ public class BeanHelper {
      */
     public BeanHelper() {
     }
-
+    
     public User getActiveUser() {
         return AppHelper.getActiveUser();
     }
