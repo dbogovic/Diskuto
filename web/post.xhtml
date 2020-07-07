@@ -43,16 +43,21 @@
                         <f:param name="name" value="#{post.thing.owner}" />
                     </h:link>
                     <h:outputText value=" • #{beanHelper.fullDate(post.thing.created)}" />
-                    <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username}" value=" • " />
-                    <h:commandLink action="#{beanHelper.deletePost(post.thing)}" rendered="#{post.thing.owner==beanHelper.activeUser.username}" value="#{output['post.delete']}"/>
+                    <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username or (beanHelper.activeUser != null and (post.main.moderators.contains(beanHelper.activeUser.username) or post.main.owner == beanHelper.activeUser.username))}" value=" • " />
+                    <h:commandLink action="#{post.deletePost()}" rendered="#{post.thing.owner==beanHelper.activeUser.username or (beanHelper.activeUser != null and (post.main.moderators.contains(beanHelper.activeUser.username) or post.main.owner == beanHelper.activeUser.username))}" value="#{output['post.delete']}"/>
                     <h:outputText rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value=" • " />
                     <h:commandLink action="#{post.reportPost()}" rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value="#{output['post.report']}" >
-                        <f:ajax event="action" execute="postValue" />
+                        <f:ajax event="action" render="postValue" />
                     </h:commandLink>
+                    <h:panelGroup rendered="#{(beanHelper.activeUser != null and (post.main.moderators.contains(beanHelper.activeUser.username) or post.main.owner == beanHelper.activeUser.username))}">
+                        <h:outputText value=" • " />
+                        <h:commandLink action="#{post.lock()}" rendered="#{post.thing.locked eq false}" value="#{output['post.lock']}" />
+                        <h:commandLink action="#{post.unlock()}" rendered="#{post.thing.locked eq true}" value="#{output['post.unlock']}" />
+                    </h:panelGroup>
                 </h:panelGroup>
-                <h:outputText id="postValue" rendered="#{post.thing.description != ''}" class="postValue" value="#{post.thing.description}" />
+                <h:outputText id="postValue" class="postValue" value="#{post.thing.description}" style="display: #{post.thing.description == '' ? 'none' : 'block'}" />
                 <h:graphicImage rendered="#{post.thing.file != ''}" class="postValue" value="resources/attachments/#{post.thing.file}" />
-                <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{output['post.comment']}" />
+                <h:inputTextarea id="comment" rows="5" value="#{post.myComment}" a:placeholder="#{post.thing.locked ? output['post.locked'] : output['post.comment']}" disabled="#{post.thing.locked}" />
                 <h:commandButton class="button" id="send" value="#{output['post.send']}" action="#{post.sendComment}">
                     <f:ajax event="action" execute="comment" render="@form"/>
                 </h:commandButton>
@@ -76,11 +81,11 @@
                     <h:panelGroup class="postDescription">
                         <h:outputText id="c_karma#{value.id}" value="#{value.upvote.size() - value.downvote.size() > 0 ? '+' : ''}#{value.upvote.size() - value.downvote.size()}  • " />
                         <h:outputText value="#{beanHelper.fullDate(value.created)}" />
-                        <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username}" value=" • " />
-                        <h:commandLink action="#{beanHelper.deleteComment(value)}" rendered="#{post.thing.owner==beanHelper.activeUser.username}" value="#{output['post.delete']}" />
+                        <h:outputText rendered="#{post.thing.owner==beanHelper.activeUser.username or post.main.moderators.contains(beanHelper.activeUser.username) or post.main.owner == beanHelper.activeUser.username}" value=" • " />
+                        <h:commandLink action="#{post.deleteComment(value)}" rendered="#{post.thing.owner==beanHelper.activeUser.username or post.main.moderators.contains(beanHelper.activeUser.username) or post.main.owner == beanHelper.activeUser.username}" value="#{output['post.delete']}" />
                         <h:outputText rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value=" • " />
                         <h:commandLink action="#{post.reportComment(value)}" rendered="#{beanHelper.activeUser != null and post.thing.owner != beanHelper.activeUser.username}" value="#{output['post.report']}" >
-                            <f:ajax event="action" execute="textComment_#{value.id}" />
+                            <f:ajax event="action" render="textComment_#{value.id}" />
                         </h:commandLink>
                     </h:panelGroup>
                     <h:outputText id="textComment_#{value.id}" class="textComment" value="#{value.text}" />

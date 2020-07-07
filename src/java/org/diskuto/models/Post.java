@@ -34,6 +34,7 @@ public class Post {
     private List<String> downvote;
     private boolean reported;
     private boolean deleted;
+    private boolean locked;
 
     public Post() {
     }
@@ -52,6 +53,7 @@ public class Post {
         this.downvote = helper.makeListValue("/post/downvote/user");
         this.reported = Integer.parseInt(helper.makeValue("reported", object)) == 1;
         this.deleted = Integer.parseInt(helper.makeValue("deleted", object)) == 1;
+        this.locked = Integer.parseInt(helper.makeValue("locked", object)) == 1;
     }
 
     public void save(String headline, String description, Part attachment, String owner, String diskuto, String category) throws Exception {
@@ -65,6 +67,7 @@ public class Post {
         this.category = category;
         this.reported = false;
         this.deleted = false;
+        this.locked = false;
         upvote = new ArrayList();
         downvote = new ArrayList();
         upvote.add(this.owner);
@@ -82,7 +85,7 @@ public class Post {
                 + this.file + "</attachment><created>" + this.created
                 + "</created><owner>" + this.owner + "</owner><diskuto>" + this.diskuto
                 + "</diskuto><category>" + this.category + "</category><upvote><user>" + this.owner
-                + "</user></upvote><downvote/><comments/><reported>0</reported><deleted>0</deleted></post> into /posts");
+                + "</user></upvote><downvote/><comments/><reported>0</reported><deleted>0</deleted><locked>0</locked></post> into /posts");
         db.close();
     }
 
@@ -133,6 +136,22 @@ public class Post {
         
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/deleted with \"1\"");
+        db.close();
+    }
+    
+    public void lock() throws Exception {
+        this.locked = true;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.id + "\"]/locked with \"1\"");
+        db.close();
+    }
+    
+    public void unlock() throws Exception {
+        this.locked = false;
+        
+        Database db = new Database();
+        db.xquery("update value /posts/post[id=\"" + this.id + "\"]/locked with \"0\"");
         db.close();
     }
 
@@ -230,6 +249,14 @@ public class Post {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
 }

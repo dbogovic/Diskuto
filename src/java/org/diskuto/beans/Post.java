@@ -15,6 +15,7 @@ import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
 import org.diskuto.models.Comment;
+import org.diskuto.models.Forum;
 import org.xmldb.api.base.ResourceIterator;
 
 /**
@@ -25,6 +26,7 @@ import org.xmldb.api.base.ResourceIterator;
 @ViewScoped
 public class Post implements Serializable {
 
+    private org.diskuto.models.Forum main;
     private org.diskuto.models.Post thing;
     private List<Comment> comments = new ArrayList<>();
     private String myComment;
@@ -50,27 +52,50 @@ public class Post implements Serializable {
                     this.comments.add(comment);
                 }
             }
+            retriever = new Retriever(this.thing.getDiskuto());
+            this.main = retriever.forum();
         }
     }
 
     public void sendComment() throws Exception {
         AppHelper.checkLogged();
-        if (!this.myComment.equals("")) {
+        if (!this.thing.isLocked() && !this.myComment.equals("")) {
             Comment comment = new Comment();
             comment.save(this.thing, this.myComment, AppHelper.getActiveUser().getUsername());
             this.comments.add(comment);
             this.myComment = "";
         }
     }
-    
+
     public void reportPost() throws Exception {
         this.thing.report();
         this.thing.setDescription(AppHelper.getOutput("success.msg3"));
     }
-    
+
     public void reportComment(Comment comment) throws Exception {
         comment.report();
         comment.setText(AppHelper.getOutput("success.msg3"));
+    }
+
+    public void deletePost() throws Exception {
+        this.thing.delete();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("forum?name=" + this.thing.getDiskuto());
+    }
+
+    public void deleteComment(Comment comment) throws Exception {
+        comment.delete();
+        this.comments.remove(comment);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + this.thing.getId());
+    }
+
+    public void lock() throws Exception {
+        this.thing.lock();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + this.thing.getId());
+    }
+
+    public void unlock() throws Exception {
+        this.thing.unlock();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + this.thing.getId());
     }
 
     public void upvotePost() throws Exception {
@@ -123,6 +148,14 @@ public class Post implements Serializable {
         } else {
             comment.dropVote("downvote", AppHelper.getActiveUser().getUsername());
         }
+    }
+
+    public Forum getMain() {
+        return main;
+    }
+
+    public void setMain(Forum main) {
+        this.main = main;
     }
 
     public org.diskuto.models.Post getThing() {
