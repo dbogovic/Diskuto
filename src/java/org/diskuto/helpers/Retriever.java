@@ -87,10 +87,10 @@ public class Retriever {
             }
             return 0;
         });
-        
+
         Database db = new Database();
-        db.xquery("update value /messages/message[recipient=\"" + AppHelper.getActiveUser().getUsername() 
-                + "\" and sender=\"" + key +"\"]/seen with \"1\"");
+        db.xquery("update value /messages/message[recipient=\"" + AppHelper.getActiveUser().getUsername()
+                + "\" and sender=\"" + key + "\"]/seen with \"1\"");
         db.close();
 
         return messages;
@@ -134,7 +134,10 @@ public class Retriever {
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(name);
-                posts.add(retriever.post());
+                Post post = retriever.post();
+                if (!post.isDeleted()) {
+                    posts.add(post);
+                }
             }
         }
 

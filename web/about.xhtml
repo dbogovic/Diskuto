@@ -24,5 +24,8 @@
                 <f:param name="name" value="#{value}" />
             </h:link>
         </c:forEach>
+        <h:link rendered="#{(beanHelper.activeUser != null and (diskuto.moderators.contains(beanHelper.activeUser.username) or diskuto.owner == beanHelper.activeUser.username))}" class="forumDescriptionLabel" value="#{output['about.reports']}" outcome="reports" >
+            <f:param name="name" value="#{diskuto.name}" />
+        </h:link>
     </div>
 </ui:composition>

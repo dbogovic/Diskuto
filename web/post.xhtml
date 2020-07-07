@@ -33,6 +33,7 @@
                     <f:param name="cat" value="#{post.thing.category}" />
                 </h:link>
                 <h:outputText class="diskutoTitle" value="#{post.thing.headline}" />
+                <h:graphicImage rendered="#{post.thing.locked}" class="lock" value="resources/pages/lock.png"/>
                 <h:panelGroup class="postDescription" >
                     <h:outputText id="karma" value="#{post.thing.upvote.size() - post.thing.downvote.size() > 0 ? '+' : ''}#{post.thing.upvote.size() - post.thing.downvote.size()} • " />
                     <h:link value="#{post.thing.diskuto}" outcome="forum" >

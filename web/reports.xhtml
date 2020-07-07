@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <f:view locale="#{language.lang}">
+        <h:head>
+            <title>Diskuto | #{output['reports.title']}</title>
+            <link rel="icon" href="resources/pages/favicon.ico" />
+            <h:outputStylesheet library="css" name="global.css"/>
+        </h:head>
+        <h:body id="account-manage">
+            <ui:include src="/header.xhtml" />
+            <h:form class="element" prependId="false">
+                <h:outputText class="element-title" value="#{output['reports.title']}" />
+                <h:outputText class="searchLabel" value="#{output['reports.posts']}" />
+                <c:forEach items="#{reports.items}" var="value">
+                    <div class="thing">
+                        <a href="resources/attachments/#{value.file}" target="_blank" >
+                            <h:graphicImage class="postImg" rendered="#{value.file != ''}" value="resources/attachments/#{value.file}" />
+                        </a>
+                        <h:panelGroup class="post">
+                            <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
+                                <f:param name="id" value="#{value.id}" />
+                            </h:link>
+                            <h:graphicImage rendered="#{value.locked}" class="lock" value="resources/pages/lock.png"/>
+                            <h:panelGroup class="postDescription" >
+                                <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
+                                <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
+                                <h:link value="#{value.diskuto}" outcome="forum" >
+                                    <f:param name="name" value="#{value.diskuto}" />
+                                </h:link>
+                                <h:outputText value=" • " />
+                                <h:link value="#{value.owner}" outcome="profile" >
+                                    <f:param name="name" value="#{value.owner}" />
+                                </h:link>
+                                <h:outputText value=" • " />
+                                <h:outputText value="#{beanHelper.fullDate(value.created)}" />
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </div>
+                    <h:panelGroup class="actions">
+                        <h:commandButton class="button" value="#{output['reports.deletePost']}" action="#{reports.deletePost(value)}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                        <h:commandButton class="button" value="#{output['reports.ignore']}" action="#{reports.okPost(value)}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                    </h:panelGroup>
+                </c:forEach>
+                <h:outputText rendered="#{reports.items == null or reports.items.size() == 0}" class="no-results" value="#{output['reports.noPosts']}" />
+
+                <h:outputText class="searchLabel" value="#{output['reports.comments']}" />
+                <c:forEach items="#{reports.comments}" var="value">
+                    <div class="block">
+                        <h:panelGroup class="postDescription" >
+                            <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
+                            <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />
+                            <h:link value="#{value.owner}" outcome="profile" >
+                                <f:param name="name" value="#{value.owner}" />
+                            </h:link>
+                            <h:outputText value=" • " />
+                            <h:outputText value="#{beanHelper.fullDate(value.created)}" />
+                        </h:panelGroup>
+                        <h:outputText class="commentText" value="#{value.text}" />
+                    </div>
+                    <h:panelGroup class="actions">
+                        <h:commandButton class="button" value="#{output['reports.deleteComment']}" action="#{reports.deleteComment(value)}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                        <h:commandButton class="button" value="#{output['reports.ignore']}" action="#{reports.okComment(value)}" >
+                            <f:ajax event="action" render="@form" />
+                        </h:commandButton>
+                    </h:panelGroup>
+                </c:forEach>
+                <h:outputText rendered="#{reports.comments == null or reports.comments.size() == 0}" class="no-results" value="#{output['reports.noComments']}" />
+            </h:form>
+            <ui:include src="/sider.xhtml" />
+            <ui:include src="about.xhtml">
+                <ui:param name="diskuto" value="#{reports.diskuto}" />
+            </ui:include>
+            <ui:include src="/footer.xhtml" />
+        </h:body>
+    </f:view>
+</html>

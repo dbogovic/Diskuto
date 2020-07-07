@@ -13,6 +13,7 @@
                 <h:link class="diskutoTitle" value="#{value.headline}" outcome="post" >
                     <f:param name="id" value="#{value.id}" />
                 </h:link>
+                <h:graphicImage rendered="#{value.locked}" class="lock" value="resources/pages/lock.png"/>
                 <h:panelGroup class="postDescription" >
                     <h:outputText rendered="#{value.upvote.size() - value.downvote.size() > 0}" value="+"/>
                     <h:outputText value="#{value.upvote.size() - value.downvote.size()} • " />

@@ -23,7 +23,7 @@ div {
     min-height: 500px;
 }
 
-.element > input, .posts > input  {
+.element > input, .posts > input, .actions > input {
     font-size: 10px;
     padding: 5px;
     height: auto;
@@ -143,5 +143,33 @@ div {
 }
 
 .thing a:hover {
+    text-decoration: underline;
+}
+
+.lock {
+    width: 20px;
+    margin-left: 5px;
+}
+
+.actions {
+    display: flex;
+    margin-top: 1%;
+    margin-bottom: 2.5%;
+}
+
+#welcome li:first-of-type {
+    margin-top: 5%;
+}
+
+#welcome li {
+    margin-top: 2.5%;
+}
+
+#welcome a {
+    color: cornflowerblue;
+    text-decoration: none;
+}
+
+#welcome a:hover {
     text-decoration: underline;
 }
