@@ -5,11 +5,12 @@
  */
 package org.diskuto.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Retriever;
 import org.diskuto.helpers.XmlHelper;
@@ -22,8 +23,8 @@ import org.xmldb.api.base.ResourceIterator;
  * @author dario
  */
 @Named(value = "home")
-@RequestScoped
-public class Home {
+@ViewScoped
+public class Home implements Serializable {
 
     private List<org.diskuto.models.Post> items = new ArrayList();
     private HashSet<String> messageUsers = new HashSet<>();

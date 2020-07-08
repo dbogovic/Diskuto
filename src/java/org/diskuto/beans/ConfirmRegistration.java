@@ -35,7 +35,7 @@ public class ConfirmRegistration {
             } else {
                 this.errorText = AppHelper.getOutput("success.msg1");
                 AppHelper.getActiveUser().confirmUser();
-                FacesContext.getCurrentInstance().getExternalContext().redirect("discover");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("home");
             }
         } catch (Exception ex) {
             this.errorText = AppHelper.getOutput("error.wrongCode");

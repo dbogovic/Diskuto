@@ -122,7 +122,7 @@ public class User {
         db.xquery("for $x in /users/user[name=\"" + this.username
                 + "\"]/subscriptions[forum=\"" + diskuto + "\"] return update delete $x/forum");
         db.xquery("let $number := data(/forums/forum[name=\"" + diskuto +"\"]/subscribers)\n"
-                + "return update value /forums/forum[name=\"" + diskuto + "\"]/subscribers with $number-1");
+                + "return update value /forums/forum[name=\"" + diskuto + "\"]/subscribers with ($number - 1)");
         db.close();
     }
 
