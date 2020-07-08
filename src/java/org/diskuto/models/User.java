@@ -110,7 +110,8 @@ public class User {
         Database db = new Database();
         db.xquery("for $x in /users/user where $x/name=\"" + AppHelper.getActiveUser().getUsername()
                 + "\" return update insert <forum>" + diskuto + "</forum> into $x/subscriptions");
-        //trigger koji će povećat broj pretplaćenih
+        db.xquery("let $number := data(/forums/forum[name=\"" + diskuto +"\"]/subscribers)\n"
+                + "return update value /forums/forum[name=\"" + diskuto + "\"]/subscribers with $number+1");
         db.close();
     }
 
@@ -120,7 +121,8 @@ public class User {
         Database db = new Database();
         db.xquery("for $x in /users/user[name=\"" + this.username
                 + "\"]/subscriptions[forum=\"" + diskuto + "\"] return update delete $x/forum");
-        //trigger koji će smanjit broj pretplaćenih
+        db.xquery("let $number := data(/forums/forum[name=\"" + diskuto +"\"]/subscribers)\n"
+                + "return update value /forums/forum[name=\"" + diskuto + "\"]/subscribers with $number-1");
         db.close();
     }
 
