@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
+import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -59,8 +60,8 @@ public class NewPassword implements Serializable {
             this.errorText = AppHelper.getOutput("success.msg2");
             MailHelper mh = new MailHelper(email, AppHelper.getOutput("mail.h1"),
                     AppHelper.getOutput("mail.t1")
-                    + "http://127.0.0.1:3000/Diskuto/faces/newPassword?code="
-                    + abolishPasswordCode);
+                    + Listener.session.getServletContext().getRealPath("/")
+                    + "newPassword?code=" + abolishPasswordCode);
             mh.sendMail();
             this.state = 3;
         } else {
@@ -71,7 +72,7 @@ public class NewPassword implements Serializable {
     public void addNewPassword() throws Exception {
         this.errorText = "";
         if (check()) {
-            this.errorText = "Lozinka je promijenjena";
+            this.errorText = AppHelper.getOutput("success.msg4");
             Database db = new Database();
             db.xquery("for $x in /users/user where $x/abolishPasswordCode=\"" + code
                     + "\" return update insert <password>"

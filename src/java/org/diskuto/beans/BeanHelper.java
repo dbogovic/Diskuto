@@ -24,7 +24,7 @@ public class BeanHelper {
      */
     public BeanHelper() {
     }
-    
+
     public User getActiveUser() {
         return AppHelper.getActiveUser();
     }
@@ -41,7 +41,7 @@ public class BeanHelper {
         Retriever retriever = new Retriever(name);
         return retriever.forum();
     }
-    
+
     public void subscribe(org.diskuto.models.Forum forum) throws Exception {
         AppHelper.checkLogged();
         if (!AppHelper.getActiveUser().getSubscriptions().contains(forum.getName())) {

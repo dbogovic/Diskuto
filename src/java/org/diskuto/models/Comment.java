@@ -59,7 +59,7 @@ public class Comment {
         db.xquery("update insert <comment><id>" + this.id + "</id><text>" + this.text
                 + "</text><created>" + this.created + "</created><owner>" + this.owner
                 + "</owner><upvote><user>" + this.owner
-                + "</user></upvote><downvote/><reported>0</reported><deleted>0</deleted></comment> into /posts/post[id=\"" 
+                + "</user></upvote><downvote/><reported>0</reported><deleted>0</deleted></comment> into /posts/post[id=\""
                 + this.post.getId() + "\"]/comments");
         db.close();
     }
@@ -98,15 +98,15 @@ public class Comment {
 
     public void report() throws Exception {
         this.reported = true;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/reported with \"1\"");
         db.close();
     }
-    
+
     public void itsOk() throws Exception {
         this.reported = false;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/reported with \"0\"");
         db.close();
@@ -114,12 +114,11 @@ public class Comment {
 
     public void delete() throws Exception {
         this.deleted = true;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.post.getId() + "\"]/comments/comment[id=\"" + this.id + "\"]/deleted with \"1\"");
         db.close();
     }
-
 
     public Post getPost() {
         return post;

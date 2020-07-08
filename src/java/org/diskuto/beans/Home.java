@@ -77,7 +77,7 @@ public class Home {
             iterator = AppHelper.getResourceSet("reverse((" + query + ")[position() <= last()-"
                     + itemsIteratorId + " and position() > last()-" + (10 + itemsIteratorId) + "])").getIterator();
         }
-        
+
         while (iterator.hasMoreResources()) {
             for (String id : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retrievePost = new Retriever(id);

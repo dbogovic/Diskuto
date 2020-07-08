@@ -62,11 +62,6 @@
                         </c:forEach>
                     </h:panelGrid>
                 </div>
-
-                <!--
-                <h:outputText value="Blokirani korisnici:" />
-                <h:outputText value="Tema: "/> 
-                !-->
                 <h:commandButton class="button" value="Spremi" action="#{editDiskuto.save}">
                     <f:ajax event="action" execute="name description rules" render="@form"/>
                 </h:commandButton>

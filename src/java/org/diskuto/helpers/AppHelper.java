@@ -38,14 +38,14 @@ public class AppHelper {
         ResourceBundle bundle = context.getApplication().getResourceBundle(context, "output");
         return bundle.getString(key);
     }
-    
+
     public static void checkLogged() throws Exception {
-        if(getActiveUser() == null) {
+        if (getActiveUser() == null) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("login");
         }
     }
-    
-    public static String getAttachmentsPath(){
+
+    public static String getAttachmentsPath() {
         return Listener.session.getServletContext().getRealPath("/") + "resources" + File.separator + "attachments";
     }
 

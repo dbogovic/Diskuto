@@ -76,7 +76,8 @@ public class Post {
             this.file = "res-" + this.id;
             try (InputStream input = attachment.getInputStream()) {
                 Files.copy(input, new File(AppHelper.getAttachmentsPath(), this.file).toPath());
-            } catch (IOException e) {}
+            } catch (IOException e) {
+            }
         }
 
         Database db = new Database();
@@ -114,18 +115,18 @@ public class Post {
                 + "\" return update delete $x/" + type + "/user[.=\"" + vote + "\"]");
         db.close();
     }
-    
+
     public void report() throws Exception {
         this.reported = true;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/reported with \"1\"");
         db.close();
     }
-    
+
     public void itsOk() throws Exception {
         this.reported = false;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/reported with \"0\"");
         db.close();
@@ -133,23 +134,23 @@ public class Post {
 
     public void delete() throws Exception {
         this.deleted = true;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/deleted with \"1\"");
         db.close();
     }
-    
+
     public void lock() throws Exception {
         this.locked = true;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/locked with \"1\"");
         db.close();
     }
-    
+
     public void unlock() throws Exception {
         this.locked = false;
-        
+
         Database db = new Database();
         db.xquery("update value /posts/post[id=\"" + this.id + "\"]/locked with \"0\"");
         db.close();

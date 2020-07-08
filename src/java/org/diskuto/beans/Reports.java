@@ -52,7 +52,7 @@ public class Reports implements Serializable {
                     }
                 }
             }
-            
+
             iterator = AppHelper.getResourceSet("/posts/post[diskuto=\"" + this.diskuto.getName() + "\"]/comments/comment[reported=\"1\"]").getIterator();
             while (iterator.hasMoreResources()) {
                 Comment comment = new Comment();
@@ -69,7 +69,7 @@ public class Reports implements Serializable {
             }
         }
     }
-    
+
     public void deletePost(org.diskuto.models.Post post) throws Exception {
         post.delete();
         this.items.remove(post);
@@ -79,10 +79,10 @@ public class Reports implements Serializable {
         comment.delete();
         this.comments.remove(comment);
     }
-    
+
     public void okPost(org.diskuto.models.Post post) throws Exception {
         post.itsOk();
-        this.items.remove(post);        
+        this.items.remove(post);
     }
 
     public void okComment(Comment comment) throws Exception {

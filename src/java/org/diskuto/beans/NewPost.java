@@ -46,11 +46,10 @@ public class NewPost implements Serializable {
     public void save() throws Exception {
         errorText = "";
 
-        if(file != null && !file.getContentType().contains("image")) {
+        if (file != null && !file.getContentType().contains("image")) {
             file = null;
         }
-        
-        
+
         if (headline == null || headline.length() == 0) {
             errorText = AppHelper.getOutput("error.headline");
         } else if ((description == null || description.length() == 0) && file == null) {
@@ -61,7 +60,7 @@ public class NewPost implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().redirect("post?id=" + post.getId());
         }
     }
-    
+
     public Forum getDiskuto() {
         return diskuto;
     }
