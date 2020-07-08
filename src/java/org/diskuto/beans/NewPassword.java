@@ -60,7 +60,7 @@ public class NewPassword implements Serializable {
             this.errorText = AppHelper.getOutput("success.msg2");
             MailHelper mh = new MailHelper(email, AppHelper.getOutput("mail.h1"),
                     AppHelper.getOutput("mail.t1")
-                    + Listener.session.getServletContext().getRealPath("/")
+                    + Listener.sc.getRealPath("/")
                     + "newPassword?code=" + abolishPasswordCode);
             mh.sendMail();
             this.state = 3;

@@ -46,7 +46,7 @@ public class AppHelper {
     }
 
     public static String getAttachmentsPath() {
-        return Listener.session.getServletContext().getRealPath("/") + "resources" + File.separator + "attachments";
+        return Listener.sc.getRealPath("/") + "resources" + File.separator + "attachments";
     }
 
     public static int generateId(String query) throws Exception {

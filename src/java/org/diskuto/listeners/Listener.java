@@ -5,43 +5,41 @@
  */
 package org.diskuto.listeners;
 
-import java.util.Enumeration;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * Web application lifecycle listener.
  *
  * @author dario
  */
-public class Listener implements HttpSessionListener {
+@WebListener
+public class Listener implements ServletContextListener {
 
-    public static HttpSession session;
+    public static ServletContext sc;
 
     @Override
-    public void sessionCreated(HttpSessionEvent se) {
-        session = se.getSession();
+    public void contextInitialized(ServletContextEvent sce) {
+        sc = sce.getServletContext();
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
-        Enumeration attributes = session.getAttributeNames();
-        while (attributes.hasMoreElements()) {
-            deleteFromSession(attributes.nextElement().toString());
-        }
+    public void contextDestroyed(ServletContextEvent sce) {
     }
-
+    
     public static void addToSession(String attribute, Object object) {
-        session.setAttribute(attribute, object);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(attribute, object);
     }
 
     public static void deleteFromSession(String attribute) {
-        session.removeAttribute(attribute);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(attribute);
     }
 
     public static Object getFromSession(String attribute) {
-        return session.getAttribute(attribute);
+        return FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(attribute);
     }
 
 }
