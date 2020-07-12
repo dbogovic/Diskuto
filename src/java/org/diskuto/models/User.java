@@ -37,9 +37,10 @@ public class User {
         Object object = helper.makeObject("user");
         this.email = helper.makeValue("email", object);
         this.username = helper.makeValue("name", object);
+        this.password = helper.makeValue("password", object);
         this.confirmCode = Integer.parseInt(helper.makeValue("code", object));
         this.created = Long.parseLong(helper.makeValue("created", object));
-        this.disabled = Integer.parseInt(helper.makeValue("code", object)) == 0;
+        this.disabled = Integer.parseInt(helper.makeValue("disabled", object)) == 1;
         this.language = helper.makeValue("language", object);
         this.subscriptions = helper.makeListValue("user/subscriptions/forum");
         this.ignored = helper.makeListValue("user/ignore/user");

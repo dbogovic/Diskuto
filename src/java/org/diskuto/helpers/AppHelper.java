@@ -100,7 +100,7 @@ public class AppHelper {
 
     public static boolean login(String username, String password) throws Exception {
         Database db = new Database();
-        ResourceSet result = db.xquery("for $x in /users/user where $x/name=\"" + username + "\" and $x/password=\"" + password + "\" return $x");
+        ResourceSet result = db.xquery("for $x in /users/user where $x/disabled=0 and $x/name=\"" + username + "\" and $x/password=\"" + password + "\" return $x");
         db.close();
 
         return result.getSize() != 0;

@@ -13,7 +13,6 @@ import javax.faces.view.ViewScoped;
 import org.diskuto.helpers.AppHelper;
 import org.diskuto.helpers.Database;
 import org.diskuto.helpers.MailHelper;
-import org.diskuto.listeners.Listener;
 
 /**
  *
@@ -59,9 +58,8 @@ public class NewPassword implements Serializable {
 
             this.errorText = AppHelper.getOutput("success.msg2");
             MailHelper mh = new MailHelper(email, AppHelper.getOutput("mail.h1"),
-                    AppHelper.getOutput("mail.t1")
-                    + Listener.sc.getRealPath("/")
-                    + "newPassword?code=" + abolishPasswordCode);
+                    AppHelper.getOutput("mail.t1") + FacesContext.getCurrentInstance().getExternalContext().getRequestServerName()
+                    + "/Diskuto/newPassword?code=" + abolishPasswordCode);
             mh.sendMail();
             this.state = 3;
         } else {

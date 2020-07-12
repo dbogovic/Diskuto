@@ -17,7 +17,7 @@
             <h:form class="element" prependId="false">
                 <div class="element-title">
                     <h:outputText value="#{output['myDiskuto.title']}"/>
-                    <h:button class="button" value="Novi diskuto" outcome="editDiskuto" />
+                    <h:button class="button" value="#{output['myDiskuto.newDiskuto']}" outcome="editDiskuto" />
                 </div>
                 <h:outputText class="searchLabel" value="#{output['myDiskuto.owner']}" />
                 <c:forEach items="#{myDiskuto.owner}" var="value">

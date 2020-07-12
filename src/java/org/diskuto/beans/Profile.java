@@ -56,12 +56,21 @@ public class Profile implements Serializable {
                 if (this.user == null) {
                     FacesContext.getCurrentInstance().getExternalContext().redirect("notFound");
                 }
+                if (this.user.isDisabled()) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("disabledProfile");                    
+                }
             }
 
-            this.upvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//upvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
-            this.downvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//downvote[user=\"" + this.user.getUsername() + "\"])")).rawValue());
-            this.totalPosts = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\"" + this.user.getUsername() + "\"]/id)")).rawValue());
-            this.totalComments = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post/comments/comment[owner=\"" + this.user.getUsername() + "\"])")).rawValue());
+            this.upvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\""
+                    + this.user.getUsername() + "\"]/upvote/user)+count(//comment[owner=\"" + this.user.getUsername()
+                    + "\"]/upvote/user)")).rawValue());
+            this.downvotes = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\""
+                    + this.user.getUsername() + "\"]/downvote/user)+count(//comment[owner=\"" + this.user.getUsername()
+                    + "\"]/downvote/user)")).rawValue());
+            this.totalPosts = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post[owner=\""
+                    + this.user.getUsername() + "\"]/id)")).rawValue());
+            this.totalComments = Integer.parseInt(new XmlHelper(AppHelper.getResource("count(//post/comments/comment[owner=\""
+                    + this.user.getUsername() + "\"])")).rawValue());
 
             loadPosts();
             loadComments();

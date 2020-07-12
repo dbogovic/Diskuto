@@ -34,6 +34,7 @@
         <url-pattern>/login</url-pattern>
         <url-pattern>/notFound</url-pattern>
         <url-pattern>/reports</url-pattern>
+        <url-pattern>/disabledProfile</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

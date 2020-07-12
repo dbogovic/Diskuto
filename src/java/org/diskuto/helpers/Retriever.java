@@ -104,7 +104,10 @@ public class Retriever {
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/name")) {
                 Retriever retriever = new Retriever(name);
-                users.add(retriever.user());
+                User user = retriever.user();
+                if (!user.isDisabled()) {
+                    users.add(retriever.user());
+                }
             }
         }
 

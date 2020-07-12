@@ -8,7 +8,8 @@
             <title>Diskuto | #{output['notFound.value']}</title>
             <link rel="icon" href="resources/pages/favicon.ico" />
         </h:head>
-        <h:body id="account-manage">
+        <h:body style="text-align: center">
+            <a id="logo" href="home"><img src="resources/pages/logo.png" /></a><br/>
             #{output['notFound.value']}
             <br/>
             <h:link outcome="home" value="#{output['notFound.goBack']}" />

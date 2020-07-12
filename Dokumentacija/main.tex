@@ -81,6 +81,208 @@ Ovdje treba sažeto rezimirati najvažnije rezultate razrade teme rada. Potrebno
 \section{Java web-aplikacija}
 
 \chapter{Primjeri korištenja}
+
+U ovom poglavlju ću opisati primjere korištenje izrađene web aplikacije. Svaka izrađena funkcionalnost će biti prikazana uz odgovarajuće slike zaslona i njihov opis.
+
+\section{Početna stranica}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/pocetna.png}
+    \caption{Prikaz početne stranice (neprijavljen korisnik)}
+\end{figure}
+
+Na slici 1 je prikazana početna stranica web aplikacije. Sastoji se od tri dijela: zaglavlja stranice, podnožja stranice i glavnog dijela stranice. Zaglavlje stranice sadrži s lijeva na desno: logo, pretraživač web aplikacije i dvije poveznice koje vode na prijavu korisnika u aplikaciju ili na registraciju korisnika. Glavni dio početne stranice je prikazan u sredini i sadrži s desne strane blok element za brzu prijavu korisnika s poveznicama koje vode do forme za obnavljanje zaboravljene lozinke ili za registraciju novog korisnika. S lijeve strane glavnog dijela web aplikacije nalazi se poruka dobrodošlice i ispod koje poveznice na 10 najnovijih objava u aplikaciji. Na kraju se nalazi gumb za učitavanje dodatnih 10 objava. Podnožje stranice sadrži detalje o web aplikaciji i poveznicu na e-mail adresu autora.
+
+\subsection{Početna stranica prijavljenog korisnika}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/pocetna-prijavljen.png}
+    \caption{Prikaz početne stranice (prijavljen korisnik)}
+\end{figure}
+
+Prijavom korisnika, bilo preko stranice namijenjene prijavi ili preko brze prijave, korisnika se preusmjerava na njegovu početnu stranicu. Za razliku od početne stranice neprijavljenog korisnika, kod prijavljenog korisnika ona sadrži u glavnom dijelu s lijeve strane popis najnovijih objava sa foruma na koje se korisnik pretplatio (za razliku od popisa najnovijih objava sa svih foruma), a sa desne strane glavni izbornik sa mogućnostima. U glavnom izborniku može se odabrati opcija "Moja Diskuta" koja korisnika vodi na stranicu sa svojim kreiranim forumima na kojem može kreirati forume ili im mijenjati postavke. Ispod poveznice na opciju se nalazi popis svih vlasititih foruma, te se klikom na njih može brzo pristupiti. Sljedeća mogućnost je "Pretplaćena Diskuta" koja korisnika vodi na stranicu za otkrivanje novih foruma na koje bi se korisnik mogao pretplatiti. Ispod poveznice se nalazi popis svih foruma na koje se korisnik pretplatio, te se njima može brzo pristupiti. Mogućnost "Moje poruke" korisnika vodi do stranice sa privatnim porukama. S desne strane se može vidjeti broj nepročitanih poruka koje korisnik ima, a ispod poveznice se može brzo pristupiti razgovoru s korisnicima s kojima ima nepročitanih poruka. Zadnja opcija u glavnom izborniku su "Postavke" koje korisnika vode do stranice sa postavkama korisničkog računa. U zaglavlju stranice, s desne strane, je prikazan naziv trenutačno prijavljenog korisnika. Pritiskom na naziv otvara se javni profil korisnika. Ispod naziva, nalazi se poveznica "Odjava" koja korisnika odjavljuje iz aplikacije.
+
+\section{Registracija}
+
+Na početnoj stranici kod neprijavljenog korisnika, klikom na poveznicu "Registration" u zaglavlju stranice ili "Don't have an account?" u glavnom dijelu stranice, otvara se web stranica sa formom za registraciju korisnika u aplikaciji prikazana na slici 3.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/registracija.png}
+    \caption{Forma za registraciju novog korisnika}
+\end{figure}
+
+Prilikom registracije, korisnik mora unijeti željeno korisničko ime, e-mail, lozinku i ponoviti lozinku. Postoje nekoliko ograničenja prilikom registracije koja se moraju poštovati:
+
+\begin{itemize}
+\item Svi podaci moraju biti obavezno uneseni
+\item Korisničko ime i e-mali ne smije postojati u bazi; svako korisničko ime se veže za isključivo jednog korisnika, te svaki e-mail se veže isljučivo za jednog korisnika
+\item Korisničko ime ne smije biti kraće od 3 znaka, lozinka ne smije biti kraća od 8 znakova, a e-mail mora biti pravilnog formata
+\item Unesena lozinka i ponovljena lozinka moraju biti jednake
+\end{itemize}
+
+Ukoliko neko ograničenje nije zadovoljeno, korisniku će se na zaslon ispisati poruka sa greškom. Tek kada je sve u redu sa unešenim podacima, u bazu se spremaju podaci i korisnika se preusmjerava na formu za potvrdu registracije. U međuvremenu, korisniku se dodijeljuju još neki meta-podaci: generira se kod za potvrdu koji će korisniku biti poslan na njegov e-mail, dodijeljuje mu se datum i vrijeme kada mu je kreiran račun, te se kao jezik aplikacije postavlja se engleski. Na kraju se šalje e-mail za potvrdu registracije.
+
+\subsection{Potvrda registracije}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/potvrda-registracije.png}
+    \caption{Forma za potvrdu registracije novog korisnika}
+\end{figure}
+
+Na slici 4 je prikazana forma za potvrdu registracije novog korisnika. Kako bi potvrdio registraciju, korisnik mora unijeti šesteroznamenkasti kojeg je primio na mail. Ukoliko krivo unese kod, prikazuje mu se poruka greške. Ako je bilo problema oko primanja koda, korisnik može zatražiti ponovno slanje na njegov e-mail klikom na poveznicu "Send again". Tek kada unese ispravan kod, korisniku se potvrđuje registracija i postaje član Diskuta. Nepotvrđeni korisnici ne mogu se služiti aplikacijom, odnosno imaju iste ovlasti kao i drugi neregistrirani korisnici.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/novoregistrirani-pocetna.png}
+    \caption{Forma za potvrdu registracije novog korisnika}
+\end{figure}
+
+Potvrdom registracije, korisnika se preusmjerava na početnu stranicu koja je prikazana na slici 5. Ona sadrži sve kao i početna stranica za druge korisnike, osim što na mjestu gdje bi trebali biti prikazane objave prikazuje se neke smjernice za novog korisnika. Savjetuje mu se da otkrije forume i pretplati se na njih, da ima mogućnost kreirati svoje forume i uređivati ih, te da pogleda stranicu sa postavkama gdje može urediti svoje korisničke podatke ili promijeniti jezik aplikacije.
+
+\section{Prijava}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/prijava.png}
+    \caption{Forma za prijavu korisnika}
+\end{figure}
+
+U zaglavlju početne stranice, odabirom na poveznicu "Login", korisnika se preusmjerava na stranicu za prijavu prikazanu na slici 6. Kako bi se prijavio u aplikaciju, korisnik je dužan unijeti svoje korisničko ime i lozinku. Jedino sa ispravnim korisničkim imenom i lozinkom korisnik se može prijaviti u aplikaciju, inače se korisniku javlja greška da je korisničko ime i/ili lozinka krive. Ako korisnik nema korisnički račun, pritiskom na poveznicu "Don't have an account?" preusmjerava ga se na stranicu za registraciju. Ako je korisnik zaboravio lozinku, klikom na poveznicu "Forgotten password?" otvara mu se stranica za poništavanje lozinke.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/zaboravljena-lozinka.png}
+    \caption{Stranica za poništavanje lozinke}
+\end{figure}
+
+Korisnik mora unijeti svoj e-mail na kojem će se poslati poveznica za kreiranje nove lozinke. Ako je e-mail nepostojeći u bazi, javit će se poruka greške. Nakon unosa pravilnog e-maila, korisniku se poništava stara lozinka i šalje mu se poruka sa uputama za kreiranje nove lozinke. U poruci će dobiti poveznicu koja ga vodi do forme za kreiranje nove lozinke. Moraju se poštivati ista pravila pri unosu lozinke kao i kod registracije (ne smije imati manje od 8 znakova i lozinka i ponovljena lozinka moraju biti jednake), u suprotnosti javit će mu se greška i korisnik neće moći obnoviti lozinku. Sve dok korisnik ne zada novu lozinku neće se moći prijaviti u aplikaciju. Obnovom lozinke korisnik se može prijaviti u aplikaciju i služiti se njome.
+
+\section{Pronalaženje Diskuta}
+
+Na početnoj stranici u glavnom izborniku, odabirom opcije "Pretplaćena Diskuta" (eng. "Subscribed Diskuto") korisniku se otvara stranica za pronalaženje zanimljivih foruma na koje bi se mogao pretplatiti i pratiti ih. Izgled ove stranice je prikazan na slici 8.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/otkrij.png}
+    \caption{Stranica za otkrivanje Diskuta}
+\end{figure}
+
+Korisniku se prikazuje popis svih foruma koji se nalaze u bazi podataka.  Za svaki pojedinačni forum je prikazan naziv, opis i broj pretplaćenih korisnika. Klikom na naziv, korisnika se preusmjerava na odabrani forum. Kraj naziva postoji jedan gumb preko kojeg je moguće pretplatiti se, odnosno ukinuti pretplatu ako već postoji pretplata na njega. Pretplatom na forum, korisnik postaje njegov član i na početnoj stranici prima najnovije objave koje su objavljene na njemu. Pretplaćeni forumi se prikazuju u glavnom izborniku odmah ispod opcije za pretragu foruma, čime korisnik može na brz i jednostavan način svojim forumima pristupiti.
+
+\section{Kreiranje novog Diskuta}
+
+Kako bi kreirao novi forum, korisnik se mora prebaciti na stranicu "Moja Diskuta" (eng. "My Diskuto") tako da odabere opciju u glavnom izborniku. Korisniku se tada prikazuje popis svih foruma kojih je vlasnik i na kojima je moderator. Pritiskom na gumb "Novi Diskuto" (eng. "New Diskuto"), korisniku se otvara forma za kreiranje novog foruma.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/novi-forum.png}
+    \caption{Forma za kreiranje novog Diskuta}
+\end{figure}
+
+Obavezno je unijeti naziv foruma, njegov opis, pravila, te barem jednu kategoriju koju će forum sadržavati. Opcionalno je moguće dodati moderatore, odnosno korisnike koji nad novokreiranim  forumom budu imali iste ovlasti kao i vlasnik. Naziv foruma je konačan i njega se nakon kreiranja ne može promijeniti, dok svi drugi atributi mogu kasnije biti modificirani. Postoji ograničenje da već ne smije postojati forum sa istim nazivom u bazi, odnosno naziv foruma se isključivo veže sa jedan i samo jedan forum. U slučaju greške korisniku će se ispisati poruka, a tek kada svi podaci budu pravilno uneseni podaci se spremaju u bazu i forum postaje kreiran.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/moji-forumi.png}
+    \caption{Popis mojih Diskuta}
+\end{figure}
+
+Korisnika se preusmjerava na stranicu sa popisom foruma kojima je vlasnik ili moderator. Novokreirani forum se prikazuje u tablici, kao i u glavnom izborniku sa desne strane. Klikom na gumb "Uredi Diskuto" (eng. "Edit Diskuto"), korisnik može promijeniti opis i pravila foruma, brisati i dodavati kategorije, te korisnicima davati ili uklanjati ovlasti za moderatora foruma.
+
+\section{Pregled Diskuta}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/forum.png}
+    \caption{Izgled stranice foruma}
+\end{figure}
+
+Na slici 11 je prikazan izgled stranice foruma za korisnika koji nije vlasnik ili moderator. Ispod glavnog izbornika aplikacije prikazan je blok sa detaljima određenog foruma: broj pretplatnika, opis, datum kreiranja, pravila foruma i poveznice na profile vlasnika i moderatora foruma.  Korisnik se može pretplatiti na forum klikom na gumb "Pretplati se" (eng. "Subscribe"), a postaviti novu objavu klikom na gumb "Nova objava" (eng. "New Post"). U glavnom dijelu aplikacije se nalazi popis svih kategorija koje forum sadrži, te sa desne strane poveznicu na najnoviju objavu na pojedinoj kategoriji. Klikom na pojedinu kategoriju otvara se popis objava sa te kategorije. Ispod elementa sa kategorijama, nalazi se popis 10 najnovijih objava na forumu i gumb za učitavanje dodatnih 10 objava. Nad svakom objavom je prikazan naslov objave odnosno poveznica nad svaku objavu, karma (odnos pluseva i minusa) koju ima, forum na kojem je objavljena, poveznica na profil vlasnika objave i datum i vrijeme kreiranja objave.
+
+\section{Kreiranje nove objave}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/nova-objava.png}
+    \caption{Forma za kreiranje nove objave}
+\end{figure}
+
+Klikom na gumb za kreiranje nove objave nad pojedinim forumom, korisnika se preusmjerava na formu za kreiranje objave (slika 12). Prikazan je forum nad kojem se kreira nova objava, a korisnik mora unijeti naslov i dodatno opisati svoju objavu ili učitati sliku. Obavezno je odabrati i kategoriju na koju želi da se objava spremi. Slika koja se unosi mora biti u slikovnom formatu, a ako nije ili ako korisnik je nešto zaboravio unijeti prikazuje mu se poruka greške. Tek kada je sve u redu objava se sprema u bazu i postaje vidljiva na forumu.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/objava.png}
+    \caption{Izgled objave}
+\end{figure}
+
+Izgled objave je vidljiv na slici 13. Prikazan je naslov objave, poveznica do stranice kategorija foruma na kojem je ona objavljena, karma (odnos pluseva i minusa) koju ima, forum na kojem je objavljena, autor i vrijeme kreiranja objave. Sa lijeve strane se nalazi gumb za označavanje objave sa "+" čime se povećava karma objave i karma autora, odnosno sa "-" čime se smanjuje karma objave i karma autora. Prema zadanome autor objave automatski sam sebi zadaje "+", ali naknadno može si maknuti "+" ili si dodijeliti "-". U svakom trenutku autor objave može obrisati svoju objavu. Ako drugi korisnici foruma smatraju da objava krši pravila foruma, mogu ju prijaviti moderatorima. Ispod naslova objave slijedi tekstualni opis ili slika objave, ovisno o tome što je autor stavio kao opis. Ispod opisa se nalazi tekstualno polje za unos komentara koji se sprema u bazu pritiskom na gumb ispod njega. Zatim se nalazi element sa komentarima koji ispisuje broj ukupnih komentara i sadržaj komentara. Nad svakim komentarom se ispisuje autor objave i poveznica do njegovog profila, karma (odnos pluseva/minusa), datum i vrijeme kada je komentar postavljen, tekst komentara i gumbi sa označavanjem komentara kao "+" čime se povećava karma komentara i njegovog autora, odnosno kao "-" čime se smanjuje karma komentara i njegovog autora. Prema zadanome autor komentara automatski sam sebi zadaje "+", ali naknadno može si maknuti "+" ili si dodijeliti "-". Ispod se nalazi sami tekst komentara. U svakom trenutku autor komentara može obrisati svoj komentar. Ako drugi korisnici foruma smatraju da komentar krši pravila foruma, mogu ga prijaviti moderatorima.
+
+\section{Ovlasti moderatora nad pojedinim Diskutom}
+
+Kao što je već opisano u poglavlju kod kreiranja foruma, moderatori imaju naprednije ovlasti nad forumom od običnih korisnika. Imaju iste ovlasti kao i vlasnik, a oni se dodaju i brišu na stranici za uređivanje i brisanje foruma. Razlika u odnosu na vlasnika je jedino ta što je vlasnik "doživotni moderator", odnosno on ima trajne i neopozive ovlasti nad forumom. Moderatori mogu obrisati bilo koju objavu ili komentar za koji smatraju da je neprimjeren, za razliku od običnih korisnika koji jedino mogu obrisati svoju objavu/komentar. Moderatori mogu zaključati objavu i tako onemogućiti komentiranje na njoj. U svakom trenutku objava se može otključati i tako omogućiti korisnicima da nastave komentirati. Zaključane objave imaju kraj svog naslova ikonu lokota, čime ih razlikuje od drugih otključanih objava. Drugi korisnici mogu moderatorima prijaviti objave ili komentare za koje smatraju da su neprimjerene. U elementu opisa foruma, moderatori klikom na poveznicu "Popis prijava" (eng. "List of reports") mogu otvoriti stranicu sa popisom svih prijavljenih objava/komentara na njihovom forumu.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/prijave.png}
+    \caption{Popis prijavljenih objava/komentara}
+\end{figure}
+
+Moderatori mogu odlučiti obrisati objavu/komentar ako smatraju da krši pravila foruma ili zanemariti prijavu ako smatraju da je sve u redu.
+
+\section{Profil korisnika}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/profil.png}
+    \caption{Profil korisnika}
+\end{figure}
+
+Bilo gdje na stranici kada se klikne na korisničko ime pojedinog korisnika, preusmjerava se na stranicu njegovog profila kao na slici 15. U glavnom dijelu stranice vidljivo je korisničko ime i gumbi za slanje poruke korisniku i za ignoriranje korisnika. Kada se klikne gumb za slanje poruke, korisnika se preusmjerava na stranicu sa porukama na kojoj može vidjeti prethodnu komunikaciju sa odabranim korisnikom (ako je bilo) i ima mogućnost poslati mu poruku. Naravno to je moguće ako korisnik nije drugog korisnika blokirao (ili obratno). Klikom na gumb za ignoriranje korisnik više neće vidjeti objave i komentare odabranog korisnika, kao ni primati i slati privatne poruke od njega. Deblokirati ga se može u postavkama korisničkog računa ili ako korisnik ponovno ode na njegov profil i klikne gumb za deblokiranje. Ispod naziva korisničkog imena i gumbova, mogu se vidjeti detalji o odabranom korisniku poput datuma kada je kreiran korisnički račun i ukupne karme (omjer pluseva i minusa na svim objavama i komentarima). Ispod ovog elementa, navedene su sve objave i svi komentari pojedinog korisnika. Radi boljih performansi stranice navedeno je samo 10 njih, a klikom na gumb za učitavanje može se učitati dodatnih 10 objava/komentara. Kod objava vidljiv je naslov objave čijim odabirom se preusmjerava na samu objavu, te detalji o objavi: karma, datum kreiranja i forum na kojem je objavljen. Kod komentara vidljiv je naslov objave na kojoj je komentar objavljen i čijim odabirom se preusmjerava na samu objavu, detalji poput karme, datuma kreiranja, foruma na kojem je objavljen, te na kraju sami tekst komentara.
+
+\section{Poruke}
+
+Osim što korisnici mogu javno komunicirati, oni si mogu slati jedni drugima i privatne poruke. Korisnik inicira razgovor sa drugim korisnikom odabirom gumba za slanje poruka na njegovom privatnom profilu. Tada se korisnika preusmjerava na stranicu sa porukama kojoj se može pristupiti i sa glavnog izbornika odabirom opcije "Poruke" (eng. "Messages"). 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/poruke.png}
+    \caption{Poruke}
+\end{figure}
+
+Prikaz stranice za slanje privatnih poruka je vidljiv na slici 16. Između zaglavlja i podnožja stranice nalazi se glavni dio stranice koji se sastoji od: korisničkog imena korisnika sa kojim je trenutno aktivna komunikacija i poveznica na njegov profil, s lijeve strane popis svih korisnika sa kojima je korisnik komunicirao u prošlosti i poveznica na njihovu stranicu komunikacije, te u glavnom dijelu se nalaze same poruke koje su si korisnici međusobno razmijenili. Poruke koje je korisnik primio su poravnate sa lijeve strane i imaju crnu boju teksta na sivoj pozadini. Poruke koje je korisnik poslao su poravnate sa desne strane i imaju tamnoplavu boju teksta na plavoj pozadini. Ispod svake poruke nalazi se točan datum i vrijeme kada je poruka poslana ili primljena. Ispod elementa sa porukama nalazi se tekstualni element za slanje poruke. Poruku je jedino moguće poslati ako se korisnici ne ignoriraju, odnosno ako jedan nije stavio drugoga na listu ignoriranja. Kada pošiljatelj pošalje poruku, primatelja se obaviještava na način da u glavnom izborniku aplikacije mu se prikaže da ima nepročitanu poruku i ispod mu se prikaže na poveznicu razgovora sa korisnikom od kojeg je primio poruku. Sve dok primatelj poruku ne pročita, ta će mu obavijest biti prikazana u glavnom izborniku.
+
+\section{Pretraga}
+
+Tijekom većine vremena služenja sa aplikacijom se u zaglavlju nalazi traka za pretragu foruma. Registrirani korisnici mogu pretražiti po ključnoj riječi sve forume, korisnike i objave na forumima. Ako ključna riječ je sadržana u nazivu foruma, korisničkom imenu korisnika ili naslovu objave na nekom forumu ona će se prikazati kao rezultat pretrage.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/pretraga.png}
+    \caption{Izgled stranice za pretragu}
+\end{figure}
+
+Na slici 17 je prikazan primjer izgleda stranice za pretragu ako je unesena ključna riječ "hrvat". Vidljivo je kako je aplikacija vratila kao rezultat pretrage jedan forum pod nazivom "Hrvatska", niti jedan profil sa korisničkim imenom koji sadrži tu ključnu riječ, te jednu objavu koja u sebi sadrži ključnu riječ "hrvat". Ako aplikacija vrati forum kao rezultat pretrage, ona će ispisati naziv foruma koja je poveznica na stranicu foruma, gumb za pretplatu/poništenje pretplate i detalje o forumu poput broja pretplaćenih korisnika i opis. Ako aplikacija vrati korisnika kao rezultat pretrage, ona će ispisati korisničko ime koje je ujedno i poveznica na profil, te gumb čijim klikom se preusmjerava na slanje privatne poruke. Ako aplikacija vrati objavu kao rezultat pretrage, ispisat će se puni naslov objave koja je i poveznica na samu objavu, te detalji o objavi poput karme (omjer pluseva/minusa), poveznica na forum gdje je objava objavljena, poveznica na profil autora objave i datum i vrijeme kada je objava objavljena. Ako aplikacija ne vrati niti jedan forum, korisnika ili objavu ispisat će se obavijest o neuspjehu.
+
+\section{Postavke}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/postavke.png}
+    \caption{Korisničke postavke}
+\end{figure}
+
+Korisničkim postavkama se može pristupiti odabirom opcije "Postavke" (eng. "Settings") u glavnom izborniku aplikacije. Korisnik može promijeniti jezik aplikacije, a na raspolaganju su mu dva jezika: engleski i hrvatski. Klikom na gumb za promjenu spremaju se postavke i u bazi, pa kada se korisnik ponovno prijavi prikazati će mu se željeni jezik kojeg je promijenio u postavkama. Korisničko ime je nepromijenjivo, te ga se nakon registracije ne može mijenjati. Korisnik može promijeniti e-mail tako da nakon što klikne gumb za promjenu umjesto sadašnjeg unese novi e-mail. Ako unese krivi format, aplikacija mu neće dozvoliti promijenu i ispisat će se greška. Korisnik može promijeniti i svoju lozinku tako da nakon što klikne gumb za promjenu unese novu lozinku. I dalje stoji pravilo da lozinka ne smije biti preslaba, odnosno ne smije imati manje od osam znakova. Ako je lozinka preslaba, aplikacija mu neće dozvoliti promijenu lozinke i ispisat će se greška. Korisnik također može vidjeti na koje forume je trenutno pretplaćen, te klikom na gumb "X" koji stoji pokraj poveznice na forum može ukloniti pretplatu. Korisnik može vidjeti i koje je korisnike blokirao, te klikom na gumb "X" koji stoji pokraj poveznice na njegov profil može ga deblokirati. Klikom na opciju "Obriši račun" (eng. "Delete account") korisnik može trajno obrisati svoj račun. Za potvrdu je potrebno unijeti trenutnu lozinku. Ako je lozinka pogrešna ispisat će se greška, a ako unese dobru lozinku i potvrdi je račun se trajno briše i prikazuje mu se poruka kao na slici:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/deaktivacija.png}
+    \caption{Poruka o deaktiviranom računu}
+\end{figure}
+
 \chapter{Zaključak}
 
 \printbibliography[title=Popis literature]

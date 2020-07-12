@@ -71,7 +71,7 @@ public class Comment {
             this.downvote.add(vote);
         }
         Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post.getId()
                 + "\" return update insert <user>" + vote
                 + "</user> into $x/comments/comment[id=\"" + this.id + "\"]/" + type);
         db.close();
@@ -84,7 +84,7 @@ public class Comment {
             this.downvote.remove(vote);
         }
         Database db = new Database();
-        db.xquery("for $x in /posts/post where $x/id=\"" + this.post
+        db.xquery("for $x in /posts/post where $x/id=\"" + this.post.getId()
                 + "\" return update delete $x/comments/comment[id=\"" + this.id
                 + "\"]/" + type + "/user[.=\"" + vote + "\"]");
         db.close();
@@ -92,7 +92,8 @@ public class Comment {
 
     public void post() throws Exception {
         Retriever retriever = new Retriever(new XmlHelper(AppHelper.getResource("for $x in /posts/post where $x/comments/comment/id=\""
-                + this.id + "\" return data($x/id)")).rawValue());
+                + this.id + "\" and $x/comments/comment/created=\"" + this.created + "\" and $x/comments/comment/owner=\""
+                + this.owner + "\" return data($x/id)")).rawValue());
         this.post = retriever.post();
     }
 

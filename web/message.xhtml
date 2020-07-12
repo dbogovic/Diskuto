@@ -37,10 +37,10 @@
                             </c:forEach>
                         </h:panelGroup>
                         <h:panelGroup class="messageInput">
-                            <h:inputTextarea disabled="#{message.me || message.ignored}" id="reply" value="#{message.reply}" 
+                            <h:inputTextarea disabled="#{message.me || message.ignored || message.chosen.disabled}" id="reply" value="#{message.reply}" 
                                              a:placeholder="#{message.ignored ? output['message.ignored'] : output['message.placeholder']}" >
                             </h:inputTextarea>
-                            <h:commandButton disabled="#{message.me || message.ignored}" class="button" id="send" value="#{output['message.button']}" action="#{message.send()}">
+                            <h:commandButton disabled="#{message.me || message.ignored || message.chosen.disabled}" class="button" id="send" value="#{output['message.button']}" action="#{message.send()}">
                                 <f:ajax event="action" execute="reply" render="@form" />
                             </h:commandButton>
                         </h:panelGroup>
