@@ -1,0 +1,51 @@
+<users>
+
+<user>
+        <email>toni@gmail.com</email>
+        <name>T_0ni</name>
+        <password>12345678</password>
+        <code>-1</code>
+        <created>1589026585</created>
+        <subscriptions>
+        </subscriptions>
+        <ignore>
+        </ignore>
+        <disabled>0</disabled>
+        <language>en</language>
+    </user>
+    <user>
+        <email>sgjskdgs@gmail.com</email>
+        <name>powrtothemoon</name>
+        <code>-1</code>
+        <created>1589030828</created>
+        <subscriptions>
+        </subscriptions>
+        <ignore/>
+        <disabled>0</disabled>
+        <language>hr</language>
+    <password>12345678</password>
+    </user>
+<user>
+        <email>admin@foi.hr</email>
+        <name>admin</name>
+        <password>12345678</password>
+        <code>-1</code>
+        <created>1589922848</created>
+        <subscriptions>
+        </subscriptions>
+        <ignore/>
+        <disabled>0</disabled>
+        <language>hr</language>
+    </user>
+<user>
+        <email>phycjc@senduvu.com</email>
+        <name>DaftFunk11</name>
+        
+        <code>-1</code>
+        <created>1594244698</created>
+        <subscriptions><forum>Hrvatska</forum><forum>Europe</forum></subscriptions>
+        <ignore/>
+        <disabled>0</disabled>
+        <language>hr</language>
+    <password>87654321</password></user>
+<user><email>dbogovic@foi.hr</email><name>dbogovic</name><code>-1</code><created>1594394225</created><subscriptions><forum>Hrvatska</forum></subscriptions><ignore><user>T_0ni</user></ignore><disabled>1</disabled><language>hr</language><password>12345678</password></user></users>
