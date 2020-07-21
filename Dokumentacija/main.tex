@@ -37,23 +37,73 @@ Načelna napomena o strukturi rada jest da se nazivi i struktura poglavlja obave
 
 \chapter{Podaci}
 
-\lipsum[1]
+Podatak je skup prepoznatljivih znakova zapisanih na mediju koji može biti analogni (papira, ploče, fotografije i sl.)  i/ili digitalni (magnetski disk, SSD, USB disk, CD-ROM i sl.). Sa njime zapisujemo određenu činjenicu ili dio činjenice o stanju u realnom sustavu (stvarnom svijetu). Također, podatak možemo promatrati kao simbol sa kojim pokušavamo “uhvatiti” pravu sliku o stvarnom događaju. Podaci se bilježe i zapisuju na onaj način koji im je primjeren i koji im odgovara jer ga moramo znati pročitati i intrepretirati. Možemo ga zabilježiti tekstom, brojevima, bojom ili zvukom. Nakon što ga radi neke svrhe interpretiramo dobivamo informaciju, odnosno obavijest. Obrnuto, informacija se može zapisati u obliku podatka. Osnovna obilježja podatka koja ga čine korisnim su: relevantnost za određenu svrhu, potpunost, točnost, pravovremenost, odgovarajući oblik (format) i dostupnost za prihvatljivu cijenu. \cite{poslovnoRacunarstvo}
+
+Prema obliku u kojem pohranjujemo podatke, možemo ih podijeliti u tri kategorije: strukturirani, polustrukturirani i nestrukturirani podaci. Važno je znati oblik podatka kojeg pohranjujemo kako bi znali koja baza podataka je potrebna za pohranu podataka. \cite{dataEngineerStudyGuide}  U nastavku ovoga poglavlja će se objasniti svaka od nabrojanih kategorija.
 
 \section{Strukturirani podaci}
 
-\lipsum[1]
+Strukturirani podaci su podaci koji imaju određeni strukturu, odnosno podaci se spremaju prema unaprijed definiranoj shemi. Prije nego se podatak kreira, potrebno je dizajnirati bazu podataka i odrediti shemu kako bi se prema njoj mogli zapisivati podaci. Glavni nedostatak ovakvog tipa podataka je loša fleksibilnost u zapisu informacija. Primjerice, kada bi htjeli jednom redu u relaciji pridružiti još jedan atribut morali bi promijeniti shemu i dodati novi stupac. To može biti izrazito neefikasno za tablice koje sadrže više tisuće redova kojima uopće ni ne treba taj atribut. Glavna prednost ovakvog tipa podataka je što je, sa vrlo dobrim performansama, lako moguće raditi strukturirane upite i vršiti spajanja nad podacima. Najlakši je za pretragu i organizaciju jer se sastoji od redova i stupaca u kojima su pohranjeni podaci. Poslovni korisnici ga lako koriste jer ne treba detaljno razumijeti različite vrste podataka i odnose među njima. Ranjivosti su vrlo rijetke zbog toga što su uslijed niza godina istraživanja, razvoja i poboljšanja one eliminirane. Zbog toga je ovakav tip pohranjivanja podataka danas široko korišten. \cite{unstructuredStructuredSemiStructured}
+
+Klasičan primjer sustava koji zapisuje strukturirane podatke je relacijska baza podataka., najkorišteniji tip baze podataka. Podaci se nalaze strukturirani u relacijama, odnosno tablicama od koje se baza podataka sastoji. Relacijska shema baze podataka se sastoji od naziva relacija i popisa atributa (obilježja) koji ulaze u sastav relacija. Relacija ili tablica se sastoji od redaka i stupaca (atributa). Atribut, odnosno skup atributa čijim se podacima može jednoznačno identificirati svaki redak naziva se primarnim ključem. \cite{informacijskaTehnologijauPoslovanju} Na slici \ref{strukturirani} je prikazan primjer modela relacijske baze podataka koja koristi strukturirane podatke. Na slici je prikazan ERA model baze podataka za aplikaciju koja je podrška u poslovanju kina. Baza se sastoji od 14 relacija u kojima se podaci spremaju strukturirano prema zadanim atributima.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/strukturirani.png}
+    \caption{Primjer modela baze koja koristi strukturirane podatke}
+    \label{strukturirani}
+\end{figure}
 
 \section{Nestrukturirani podaci}
 
-\lipsum[1]
+Nestrukturirani podaci su podaci koji nemaju određenu strukturu, odnosno nije ih moguće spremiti u obliku redova i stupaca u relacijskim bazama. Čine najveći udio od svih podataka u svijetu. Primjer nestrukturiranih podataka su: binarni podaci, tekstualne datoteke, video datoteke, slikovne datoteke i slično. Njihova glavna prednost je što ih nije potrebno klasificirati, ali to ponekada može biti problem u upravljanju sa njima. Kako bi se iskoristili, potrebni su specijalizirani alati i doza stručnosti u znabistu i oidacuna, Korištenje nestrukturiranih podataka zahtijeva njihovo razumijevanje i razumijevanje kako se podaci mogu povezati kako bi bili korisni. \cite{unstructuredStructuredSemiStructured}
+
+Treba napomenuti da se podaci smatraju nestrukturiranim ako nemaju shemu koja utječe na to kako se podaci pohranjuju ili im pristupaju. Nestrukturirani podaci mogu imati strukturu koja nije relevantna za način pohrane. Na primjer, prirodni je jezik visoko strukturiran prema sintaksičkim pravilima jezika. Audio i video datoteke mogu imati unutarnji format koji uključuje metapodatke kao i sadržaj. Ovdje opet postoji struktura unutar datoteke, ali sustavi za pohranu ne koriste tu strukturu i to je razlog zašto ova vrsta podataka klasificira se kao nestrukturirana. \cite{dataEngineerStudyGuide} 
 
 \section{Polustruktirani podaci}
 
-\lipsum[1]
+Polustrukturirani podaci ne zahtijevaju imati strukturu i predefiniranu shemu, što ne znači da ona nije moguća, već je samo opcionalna. Drugi podaci će i dalje neometano postojati ako se shema promijeni ili ako se unese podatak sa novim atributima ili tipom podatka. Podaci se ne mogu pohraniti u obliku redaka i stupaca kao kod strukturiranih podataka. Polustrukturirani podaci sadrže oznake i elemente (metapodatke) koji se mogu koristiti za grupiranje podataka i opisivanje kako se pohranjuju. Na taj način se slični entiteti grupiraju i organiziraju u hijerarhiji. Entiteti u istoj grupi mogu ili ne moraju imati iste atribute i svojstva. Veličina i vrsta istih atributa u grupi se može razlikovati.
+
+Najveća prednost polustrukturiranih podataka je laka prilagodba promjenama u strukturi i fleksibilnost u pogledu razmjene podataka. Podaci su prenosivi i nisu ograničeni fiksnom shemom. Nedostaci su to što je relativno nova tehnologija i zbog toga ovakav tip pohranjivanja podataka nije pretjerano raširen \cite{unstructuredStructuredSemiStructured}. Podaci zbog nepravilne i djelomične strukture mogu otežavati interpretaciju odnosa između podataka. Razlika između sheme i podataka je vrlo nejasna što komplicira oblikovanje strukture podataka. Postoji i izrazita neefikasnost u izvršavanju upita u usporedbi sa strukturiranim modelima podataka zbog specifične strukture zapisa podataka. Još jedan nedostatak je što je i cijena skladištenja viša u odnosu na strukturirane podatke. \cite{tbpknjiga}
+
+Najpoznatiji modeli podataka koji koriste polustrukturirane podatke su Extensible Markup Language (XML) i JavaScript Object Notation (JSON). XML omogućava definiranje XML sheme koju mogu obraditi i komercijalni i prilagođeni softverski programi bez smanjenja njihove upotrebljivosti za ljudske čitatelje. Omogućuje korisniku definiranje oznaka i atributa za pohranjivanje u hijerarhijskom obliku. JSON je otvoreni standardni format koji koristi ljudski čitljiv tekst za prijenos podatkovnih objekata koje se sastoji od parova atribut i vrijednost. Koristi se prvenstveno za prijenos podataka između poslužitelja i web aplikacije kao alternativa XML-u. JSON i XML upravo najviše koriste web servisi. \cite{cros} U nastavku slijedi primjer jednog JSON podatka:
+
+\begin{lstlisting}
+{
+   "rezervacija": {
+      "broj": 43,
+      "timestamp": "2020-07-21T14:26:59.125",
+      "potvrdjeno": true
+   },
+   "vlak": {
+      "datum": "25/07/2020",
+      "vrijeme": "09:30",
+      "od": "Rijeka",
+      "do": "Zagreb",
+      "sjedalo": "54A"
+   }
+   "putnik": {
+      "name": "Ivan Horvat",
+      "status": "Umirovljenik",
+   },
+   "cijena": 60
+}
+\end{lstlisting}
+
+Može se vidjeti kako u ovom tipu podatka postoji određena struktura, ali ona nije toliko striktna kao kod strukturiranih podataka. Konkretno kod JSON-a je važno da svaka vrijednost ima svoj naziv, da se podaci razdvajaju zarezom i da vitičaste zagrade moraju sadržavati jedan objekt. Tipovi podataka koje može poprimiti neka vrijednost su: tekst, broj, logička vrijednost, null,  polje ili drugi objekt. 
+
+Za ovaj primjer jedne rezervacije karte za vlak se jasno vidi da ovaj objekt ima četiri vrijednosti:
+
+\begin{itemize}
+\item "rezervacija" - tip je objekt koji u sebi sadrži podatke o rezervaciji: broj rezervacije, datum i vrijeme obavljene rezervacije u tekstualnom formatu i logička vrijednost potvrda rezervacije.
+\item "vlak" - tip je objekt koji u sebi sadrži podatke o vožnji vlaka: datum polaska, vrijeme polaska, polazište, ishodište i naziv sjedala. Svi podaci su u tekstualnom formatu.
+\item "putnik" - tip je objekt koji u sebi sadrži podatke o putniku: ime i prezime i njegov status.
+\item "cijena" -  cijena karte u brojčanom formatu
+\end{itemize}
 
 \chapter{XML}
 
-\lipsum[1-2]
+XML je primjer zapisa polustrukturiranih podataka, koji je jezik za prikaz i razmjenu podataka preko Interneta.
 
 \chapter{XML baza podataka}
 
