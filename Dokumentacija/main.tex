@@ -103,15 +103,123 @@ Za ovaj primjer jedne rezervacije karte za vlak se jasno vidi da ovaj objekt ima
 
 \chapter{XML}
 
-XML je primjer zapisa polustrukturiranih podataka, koji je jezik za prikaz i razmjenu podataka preko Interneta.
+XML je primjer zapisa polustrukturiranih podataka koji se koristi za prikaz i razmjenu podataka preko Interneta. Najčešće se koristi još i kao baza podataka, zapisivanje metapodataka, upravljanje informaciju i e-commerce. 
+
+XML dokument ima tri komponente: opcionalni prolog, obavezni korijenski element i neobavezni epilog koji dolaze poslije korijenskog dokumenta. Prolog sadrži XML deklaracije i reference na vanjski dokument za strukturiranje. Korijenski element je tijelo XML dokumenta i sadrži elemente i atribute. Ispod njega se može nalaziti epilog koji govore o tome kako treba postupati sa dokumentom. \cite{xmlDatabase}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.55\textwidth]{slike/XMLkomponente.png}
+    \caption{Komponente XML dokumenta}
+\end{figure}
+
+Sintaksa XML-a je prilično jednostavna i sadrži samo nekoliko jednostavnih pravila koja treba slijediti. XML dokument može biti dobro oblikovan ili valjan. Dobro oblikovan dokument pridržava se brojnih ograničenja dobrog oblikovanja koja su detaljno opisana u XML specifikaciji. A XML dokument je valjan ako prema XML specifikaciji ima pridruženu deklaraciju vrste dokumenta i ako je dokument u skladu s ograničenjima izraženima u njoj. Dobro oblikovan XML dokument započinje XML deklaracijom koja mora biti na početku dokumenta i može izgledati ovako:
+
+\begin{lstlisting}[language=XML]
+<?xml version="1.0" encoding="EBCDIC" standalone="no" ?>
+\end{lstlisting}
+
+Postoje 2 verzije XML-a: 1.0 i 1.1. Prva XML verzija je kreirana 1998. godine., te i dalje je prihvaćena i preporučuje se za korištenje. Bazirana je na filozofiji da je zabranjeno sve što nije dozvoljeno. Druga verzija XML 1.1 je objavljena 2004. godine i sadrži svojstva koja olakšavaju rad programima na velikim računalima. Njezin pristup je da je dozvoljeno sve što nije zabranjeno. Potreba za novom verzijom XML-a se javila zbog razvoja drugih standarda na koje se XML oslanja. Prvenstveno je bio problem sa novim Unicode znakovima koje do tada XML 1.0 nije podržavao. Sa novom verzijom se omogućuje korištenje svih budućih Unicode znakova koji će se bilo kada u budućnosti definirati. Stoga u XML deklaraciji je potrebno u navodnicima navesti verziju u kojoj je dokument napisan. Nakon deklaracije verzije slijedi deklaracija kodiranja koja označava skup znakova koji se koristi za stvaranje dokumenta. Kao zadano, XML dokumenti kodirani su u Unicode-u, bilo 8-bitnom (UTF-8) ili 16-bitnom (UTF-16). Atribut kodiranja je neobavezan ako se koristi bilo koji od ovih kodiranja, ali se smatra dobrom praksom navesti je.  Atribut "standalone" obavještava XML parser o tome oslanja li se dokument na podatke iz vanjskog izvora kao što je npr. DTD (document type definition). Zadana vrijednost je "no", a ako se postavi na "yes" XML parseru se poručuje da nema dokumenata sa vanjskih izvora.
+
+XML dokument se sastoji od teksta (samih podataka) i oznaka (koje označavaju strukturu dokumenta u aplikaciji koja dokument obrađuje).  Oznaka je konstrukcija koja sadržaje dokumenta odvaja lijevim i desnim kutnim zagradama (<>). Parovi oznaka koriste se za ograničavanje podataka. Element je podatkovni objekt kojeg je potrebno identificirati. Naziv elementa je obično opisno ime za podatkovni objekt kojeg element predstavlja. Svaki element u XML dokumentu mora početi s početnom oznakom i završiti sa komplementarnom završnom oznakom. Završna oznaka izgleda kao početna oznaka, osim što završna oznaka uključuje kosu crtu "/" prije naziva elementa. Podaci između početne i završne oznake su sadržaj elementa. Sadržaj može biti tekst ili čak i drugi element sa svojom vlastitom oznakom. U nastavku je prikazan primjer zadavanja elementa:
+
+\begin{lstlisting}[language=XML]
+<element> information </element>
+\end{lstlisting}
+
+Početna oznaka je <element>. Sadržaj je "information" Završna oznaka je </element>. Sva tri dijela uzeta zajedno čine element. Nazivi elemenata moraju početi slovom ili podvlakom. Nakon prvog znaka slijedi nula ili više slova, brojeva, podvlaka ili crtica. \cite{xmlSoapProgramming} U nastavku je prikazan primjer kako bismo zapisali informacije o nekoj osobi:
+
+\begin{lstlisting}[language=XML]
+<label>
+<name> Jane Smith </name>
+<address>
+   <street> 270 Burlington Road </street>
+   <city> Bedford </city>
+   <state> MA 01730 </state>
+</address>
+</label>
+\end{lstlisting}
+
+U ovom primjeru može se vidjeti kako je informacija o nekoj osobi zapisana u elementu  "label" koji sadrži oznaku "name" gdje je opisano ime osobe, te element "address" koji sadrži tri ugniježđena elementa: "street" koji opisuje ulicu, "city" koji opisuje grad i "state" koji opisuje državu. Kod ugniježđenih elemenata je važno da dobro formirani dokumenti ima pravilnu strukturu stabla. Ona se postiže na načinda završna oznaka elementa koja se nalazi unutar drugog elementa mora doći prije završne oznake roditelja.
+
+U primjeru su korištene oznake za prikaz informacija. Umjesto oznaka i atributi mogu prikazivati informacije. Ponekad samo imenovanje elemenata nije dovoljno, pa atributi mogu pomoći sa dodatnim opisivanjem. Znak jednakosti razdvaja atribut od njegove vrijednosti i može i ne mora sadržavati razmak s jedne ili obje strane vrijednosti. Vrijednost atributa se obavezno mora navesti unutar navodnika, bilo jednostrukih ili dvostrukih. Ako vrijednost atributa mora sadržavati navodnike, moguće je vrijednost atributa navesti sa jednom vrstom navodnika, a podatak unutar atributa sa drugom vrstom. Iznimno, ako je potrebno imati istu vrstu navodnika u oba slučaja to se može postići sa specijalnim znakovima. Atribut se ne smije staviti na završnu oznaku elementa. Stoga, prema objašnjenim pravilima element "address" iz prošlog primjera može se prikazati kao element koji sadrži atribute "street", "city" i "state": \cite{xmlDatabase}
+
+\begin{lstlisting}[language=XML]
+<address
+street = “270 Burlington Road”
+city = “Bedford”
+state = “MA 01730”
+/>
+\end{lstlisting}
+
+XML dokument mora imati jedinstveni korijenski element: element koji ima početnu oznaku na vrhu dokumenta, a krajnju oznaku na dnu dokumenta. Prva početna oznaka koja se napiše u dokumentu smatra se korijenskim elementom. Čim se nađe krajnja oznaka za element, dokument je završio. Nakon završetka korijenskog elementa ne smije se započeti sa pisanjem nekog drugog elementa jer je samo jedan element dopušten na razini korijena.
+
+Svi XML elementi i nazivi atributa su osjetljivi na veliko i malo slovo, što znači da ako se element započne sa oznakom <element>, on se mora završiti sa oznakom </element>. Ispravan završetak elementa neće biti oznaka </ELEMENT>, </Element> ili neki drugi oblik jer je važno poštivati veliko/malo slovo. U XML-u je moguće zadati i prazne elemente koji se razlikuju od običnih elemenata u tome što nemaju nikakav sadržaj. Oznaka praznog elementa počinje sa nazivom oznake, a završava sa znakovima "/>" koji moraju biti zajedno napisani bez razmaka. Prazan element može imati i atribute kao i običan element. U XML-u je moguće pisati i komentare koji mogu davati neke korisne informacije o dokumentu. Početak komentara se označava sa znakovima "<!--", a komentar završava sa znakovima "-->". Unutar komentara može se proizvoljno pisati jer će XML parser ignorirati sve unutar navedenih znakova. \cite{xmlSoapProgramming}
+
+Ako netko želi stvoriti svoj jezik temeljen na XML-u može to učiniti na način da sam kreira sve oznake ili da kreira jedan dio oznaka, a ostale uzme iz nečijeg XML dokumenta. Kako bi se razlikovali elementi uzeti od tuđeg XML dokumenta stvoren je mehanizam dodijele jedinstvenih imena strukturama dokumenta, a naziva se XML-ovim imenicima (XML Namespaces). Imenici pružaju uslugu pridjeljivanja konteksta elementima, što omogućuje elementima da budu jedinstveni. Imenik je obavezno deklarirati u dokumentu prije nego se koristi.
+
+\section{XPath}
+
+XPath (XML Path Language) je upitni jezik za odabir čvorova iz XML dokumenta. Zasnovan je na stablastoj strukturi XML dokumenta i omogućuje kretanje po stablu odabirom čvorova prema raznim kriterijima. Stvoren je od strane World Wide Web Consortium (W3C), iste grupacije koja je kreirala XML i standardizirani HTML. U uporabi je nekoliko verzija XPath-a: XPath 1.0 (objavljen 1999. godine i još uvijek najkorištenija verzija), XPath 2.0 (objavljen 2007. godine  i omogućuje veći izbor tipova sustava), XPath 3.0 (objavljen 2014. godine i omogućuje implementaciju funkcija) i XPath 3.1. (objavljen 2017. godine i omogućuje nove tipove podataka i bolju podršku za JSON).
+
+Svaki XPath se piše u obliku: "axis :: node-test [predicate]*" gdje axis predstavlja smjer navigacije unutar stabla XML dokumenta, node-test predstavlja putanju čvorova, a predikati (koji se nalaze u kvadratnim zagradama) služe za filtriranje čvorova prema određenom uvjetu. Kako bi se moglo raditi sa podacima u XML dokumentu, XPath omogućuje nekoliko tipova podataka koje se mogu proslijediti u XPath izraz:
+\begin{itemize}
+\item Brojčani tip podatka - u XPath izraz se može proslijediti broj, npr. izraz "//planet[position()=7]" će vratiti sedmi element <planet> u XML dokumentu. Postoje i brojčani operatori preko kojih se može dobiti brojčana vrijednost: +, -, *, div i mod. Postoji i nekoliko funkcija koje izraz vraćaju u brojčanu vrijednost: funkcija "ceiling" zaokružuje broj na prvi veći cijeli broj, funkcija "floor" zaokružuje broj na prvi manji cijelu broj, funkcija "round" zaokružuje broj na najbliži cijeli broj i funkcija "sum" vraća zbroj proslijeđenih brojeva.
+\item Tekstualni izraz - u XPath izraz se može proslijediti niz od nula ili više znakova gdje su znakovi prema zadanom u Unicode-u, npr. izraz "//planet[name="Mars"]" će vratiti sve elemente <planet> koji imaju dijete <name> čija je tekstualna vrijednost jednaka "Mars". Postoji i nekoliko funkcija preko kojih se može manipulirati sa tekstualnim izrazom: funkcija "concat" spaja sve proslijeđene tekstualne izraze, funkcija "contains" vraća istinitu logičku vrijednost ako je tekstualni izraz jednak onome proslijeđenom, funkcija "normalize-space" briše razmake na početku i kraju izraza i pretvara više razmaka unutar izraza u jedan razmak, funkcija "starts-with" vraća istinitu logičku vrijednost ako tekstualni izraz započinje sa proslijeđenim izrazom, funkcija "string-length" vraća broj znakova u izrazu, funkcija "substring" vraća podniz nekog izraza, funkcija "substring-after" vraća podniz nakon proslijeđenog izraza, funkcija "substring-before" vraća podniz prije proslijeđenog izraza i funkcija "translate" vraća izraz sa svim pojavama znakova u drugom izrazu zamijenjenom odgovarajućim znakovima u trećem tekstualnom izrazu.
+\item Logička vrijednost - XPath izraz može biti logička vrijednost true/false, npr. izraz "position()=3" će vratiti true ako je pozicija jednaka trećem čvoru u elementu ili će vratiti false ako tvrdnja ne vrijedi.  Logičkih operatori preko kojih se može dobiti logička vrijednost su: !=, <, > i >=. Postoji i nekoliko funkcija koje izraz vraćaju u logičku vrijednost: funkcija "boolean" pretvara argument u logičku vrijednost, funkcija "false" vraća lažnu vrijednost, funkcija "true" vraća istinitu vrijednost, funkcija "lang" ispituje je li jezik čvora isti jeziku proslijeđenom u funkciju, funkcija "not" mijenja logičku vrijednost njenog argumenta.
+\item Set čvorova - XPath izraz može filtrirati čvorove na način da vrati set od nula ili više čvorova prema zadanom izrazu, npr. izraz "//planet[position() > 3]" će vratiti sve elemente <planet> nakon prva tri elementa. Postoje i funkcije koje mogu raditi nad setom čvorova. Funkcija "position" vraća broj koji predstavlja poziciju čvoru u sekvenci čvorova koje se obrađuju i funkcija "count" vraća broj čvorova u danom setu čvorova.
+\end{itemize}
+
+Axis ili os se piše na početku XPath izraza i predstavlja smjer navigacije unutar stabla XML dokumenta. Predstavlja vezu između trenutnog čvora sa drugim čvorovima u dokumentu i koristi se za lociranje čvorova u odnosu na taj čvor u stablu. Postoji 13 osi koji se mogu zadavati u XPath izrazu:
+\begin{itemize}
+\item ancestor : odabire sve pretke (roditelje, roditelje roditelja, itd.) od trenutnog čvora
+\item ancestor-or-self : odabire trenutni čvor i sve pretke (roditelje, roditelje roditelja, itd.) od trenutnog čvora
+\item attribute : odabire se atribute od trenutnog čvora
+\item child : odabire svu djecu od trenutnog čvora
+\item descendant : odabire sve potomke (djecu, unuke, itd.) od trenutnog čvora
+\item descendant-or-self : odabire trenutni čvor i sve potomke (djecu, unuke, itd.) od trenutnog čvora
+\item following : odabire sve u XML dokumentu nakon završne oznake od trenutnog čvora
+\item following-sibling : odabire svu braću od trenutnog čvora
+\item namespace : odabire sve čvorove prostora imena trenutnog čvora
+\item parent : odabire roditelja trenutnog čvora
+\item preceding : odabire sve čvorove koji se pojavljuju prije trenutnog čvora u dokumentu osim predaka i čvorova prostora imena
+\item preceding-sibling : odabire svu braću koji se pojavljuju prije trenutnog čvora
+\item self : odabire trenutni čvor
+\end{itemize}
+
+XPath koristi izraze puta za odabir čvorova u XML dokumentu. Čvor se bira slijedeći putanju ili korake. Sve čvorove sa određenim imenom može se odabrati tako da se upiše naziv tog čvora. Odabir korijenskog čvora se postiže sa izrazom "/". Odabir svih čvorova koji odgovaraju selekciji gdje god u dokumentu oni bili se postiže sa izrazom "//". Trenutni čvor se može odabrati sa izrazom ".", a roditelja trenutnog čvora se odabire sa "..". Atributi u čvoru se mogu odabrati sa izrazom "@". Bilo koji element čvora se označava sa oznakom "*", bilo koji atribut čvora se označava sa oznakom "@*", a bilo koji čvor bilo koje vrste se dobije sa izrazom "node()". Korištenjem "|" operatora u izrazu XPath može se odabrati nekoliko različitih staza. \cite{XPath}
+
+\section{XQuery}
+
+XQuery je funkcionalan upitni jezik koji se koristi za pronalaženje podataka pohranjenih u XML formatu. Smatra se da je XQuery za XML isto ono što je SQL za baze podataka. Dizajniran je za pronalaženje i vraćanje elemenata i atributa iz XML dokumenta, a izgrađen je na XPath izrazima koje koristi za kretanje kroz XML dokument. Može se koristiti još za izdvajanje podataka web servisu, generiranje sažetka izvještaja, pretvorbu XML podataka u XHTML dokument i pretragu Web dokumenta. Općenito se može koristiti za dohvaćanje hijerarhijskih i tabličnih podataka, te za ispitivanje stabla i grafičkih struktura. Najbolji je za baze podataka temeljene na XML-u i objektne baze podataka. Stvoren je od strane World Wide Web Consortium (W3C) 2007. godine, a najnovija verzija XQuery 3.1 je W3C preporuka od 21. ožujka 2017. godine.
+
+Elementi, atributi i varijable koje se koriste u XQuery moraju biti valjani XML nazivi u dokumentu. Važno je i obratiti pozornost na velika i mala slova jer XQuery je osjetljiv na tu razliku. Varijabla je definirana sa oznakom "\textdollar " praćena nazivom varijable, npr. "\textdollar bookstore". Tekstualni izraz mora biti unutar jednostrukih ili dvostrukih navodnika. Komentari se navode tako da se početak označi sa "(:", a kraj sa ":)". Upiti se tvore pomoću izraza FLWOR nastalih po prvim slovima klauzula koje se koriste:
+
+\begin{itemize}
+\item \textbf{F}or - koristi se za označavanje čvora
+\item \textbf{L}et - koristi se za postavljanje vrijednosti varijable
+\item \textbf{W}here - koristi se za filtriranje čvorova
+\item \textbf{O}rder by - koristi se za sortiranje čvorova
+\item \textbf{R}eturn - koristi se za određivanje odgovora koji će se vratiti
+\end{itemize}
+
+U jednom XQuery izrazu moguće je koristiti više upita sa ključnim riječima for i let, a obavezna je barem jedan izraz sa klauzulom for ili let. Klauzule where i order by su opcionalne prilikom korištenja klauzule for. Na kraju je obavezna klauzula return koja određuje izraz koji se vraća kao odgovor. Slično kao i kod XPath-a, ovdje se prema XML dokumentu odnosi kao prema stablu sa čvorovima gdje je korijen stabla korijenski čvor i njemu se pristupa preko funkcije doc().
+
+XQuery, XPath i XSLT dijele istu biblioteku funkcija. Postoji još nekoliko vrsta funkcija koje nudi XQuery za rad sa podacima  \cite{javatpoint}:
+\begin{itemize}
+\item Funkcije pristupa - node-name (vraća naziv čvora), nilled (vraća true ako je čvor u argumentu nil, odnosno ne sadrži ništa), data (vraća atomarnu vrijednost čvora), base-uri (vraća svojstvo base-uri od trenutnog ili određenog čvora), document-uri (vraća svojstvo document-uri od određenog čvora)
+\item Funkcije pogrešaka i praćenja - error (ispisuje grešku), trace (za otklanjanje neispravnosti upita)
+\item Numeričke funkcije - abs (vraća apsolutnu vrijednost broja), ceiling (zaokružuje broj na prvi veći cijeli broj), floor (zaokružuje broj na prvi manji cijeli broj), round (zaokružuje broj na najbliži cijeli broj)
+\item Tekstualne funkcije - string-length (vraća duljinu teksta), concat (spaja tekstove zadane u argumentu u jedinstveni tekstualni izraz), string-join (spaja tekstove zadane u argumentu sa zadnim delimiterom u jedinstveni tekstualni izraz)
+\item Logičke funkcije - boolean (vraća logičku vrijednost argumenta), not (negacija logičke vrijednosti), true (vraća istinitu logičku vrijednost), false (vraća lažnu logičku vrijednost)
+\item Vremenske funkcije - current-date (vraća trenutni datum), current-time (vraća trenutno vrijeme), current-datetime (vraća trenutni datum i vrijeme)
+\item Funkcije čvora - node-kind (provjerava je li argument proslijeđen u funkciju čvor), node-name (vraća prošireni QName naziv čvora proslijeđenog kao argument), local-name (vraća lokalni naziv proslijeđenog čvora)
+\item Funkcije sekvence - count (daje broj elemenata u sekvenci), sum (zbraja elemente iz sekvenci), avg (računa prosječnu vrijednost elemenata u sekvenci), min (vraća najmanju vrijednost iz sekvence), max (vraća najveću vrijednost iz sekvence), distinct-values (vraća sekvencu bez dupliciranih elemenata), subsequence (vraća podniz iz dobivenog niza), insert-before (unosi element u sekvencu), remove (briše element iz sekvence), reverse (vraća preokrenutu sekvencu), index-of (vraća indeks nekog elementa iz sekvence), last (vraća zadnji element iz sekvence), position (vraća broj koji predstavlja poziciju čvora u sekvenci čvora koji se obrađuje)
+\item Kontekstualne funkcije - omogućuju kreiranje novog konteksta upita, upravljati sa trenutnim kontekstom ili dohvatiti informacije o trenutačnom kontekstu
+\end{itemize}
 
 \chapter{XML baza podataka}
-
-\lipsum[1]
-
 \section{eXist-db}
-
-\lipsum[1]
 
 \chapter{Opis aplikacijske domene}
 
@@ -163,7 +271,7 @@ Registracija se obavlja na način da korisnik unosi željeno korisničko ime i l
 
 \chapter{Model baze podataka}
 
-Baza podataka se sastoji od kolekcije u kojoj se nalazi 4 XML dokumenta: forumi (forums.xml), poruke (messages.xml), objave (posts .xml) i korisnici (users.xml). To su ujedno i osnovni koncepti prepoznati iz aplikacijske domene. U nastavku je prikazana XML schema svih XML dokumenata u kolekciji "db/diskuto", te njihov opis.
+Baza podataka se sastoji od kolekcije u kojoj se nalazi 4 XML dokumenta: forumi (forums.xml), poruke (messages.xml), objave (posts .xml) i korisnici (users.xml). To su ujedno i osnovni koncepti prepoznati iz aplikacijske domene. Dva su načina definiranja strukture XML dokumenta: stariji i stroži način je DTD (Document Type Definitions), a noviji s većim mogućnostima je XML Schema. U nastavku je prikazana XML Schema svih XML dokumenata u kolekciji "db/diskuto", te njihov opis.
 
 \section{Korisnici (users.xml)}
 
