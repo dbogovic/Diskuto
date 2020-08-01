@@ -1,6 +1,5 @@
 \documentclass{foi}
 \usepackage[utf8]{inputenc}
-\usepackage{lipsum}
 
 \vrstaRada{\diplomski}
 \title{Razvoj polustrukturirane baze podataka za potrebe internetskog foruma kao web-aplikacije}
@@ -66,7 +65,7 @@ Polustrukturirani podaci ne zahtijevaju imati strukturu i predefiniranu shemu, �
 
 Najveća prednost polustrukturiranih podataka je laka prilagodba promjenama u strukturi i fleksibilnost u pogledu razmjene podataka. Podaci su prenosivi i nisu ograničeni fiksnom shemom. Nedostaci su to što je relativno nova tehnologija i zbog toga ovakav tip pohranjivanja podataka nije pretjerano raširen \cite{unstructuredStructuredSemiStructured}. Podaci zbog nepravilne i djelomične strukture mogu otežavati interpretaciju odnosa između podataka. Razlika između sheme i podataka je vrlo nejasna što komplicira oblikovanje strukture podataka. Postoji i izrazita neefikasnost u izvršavanju upita u usporedbi sa strukturiranim modelima podataka zbog specifične strukture zapisa podataka. Još jedan nedostatak je što je i cijena skladištenja viša u odnosu na strukturirane podatke. \cite{tbpknjiga}
 
-Najpoznatiji modeli podataka koji koriste polustrukturirane podatke su Extensible Markup Language (XML) i JavaScript Object Notation (JSON). XML omogućava definiranje XML sheme koju mogu obraditi i komercijalni i prilagođeni softverski programi bez smanjenja njihove upotrebljivosti za ljudske čitatelje. Omogućuje korisniku definiranje oznaka i atributa za pohranjivanje u hijerarhijskom obliku. JSON je otvoreni standardni format koji koristi ljudski čitljiv tekst za prijenos podatkovnih objekata koje se sastoji od parova atribut i vrijednost. Koristi se prvenstveno za prijenos podataka između poslužitelja i web aplikacije kao alternativa XML-u. JSON i XML upravo najviše koriste web servisi. \cite{cros} U nastavku slijedi primjer jednog JSON podatka:
+Najpoznatiji modeli podataka koji koriste polustrukturirane podatke su Extensible Markup Language (XML) i JavaScript Object Notation (JSON). XML omogućava definiranje XML sheme koju mogu obraditi i komercijalni i prilagođeni softverski programi bez smanjenja njihove upotrebljivosti za ljudske čitatelje. Omogućuje korisniku definiranje oznaka i atributa za pohranjivanje u hijerarhijskom obliku. JSON je otvoreni standardni format koji koristi ljudski čitljiv tekst za prijenos podatkovnih objekata koje se sastoji od parova atribut i vrijednost. Koristi se prvenstveno za prijenos podataka između poslužitelja i web aplikacije kao alternativa XML-u. JSON i XML upravo najviše koriste web servisi. \cite{cros} U nastavku slijedi primjer JSON podatka:
 
 \begin{lstlisting}
 {
@@ -109,7 +108,7 @@ XML dokument ima tri komponente: opcionalni prolog, obavezni korijenski element 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.55\textwidth]{slike/XMLkomponente.png}
+    \includegraphics[width=0.4\textwidth]{slike/XMLkomponente.png}
     \caption{Komponente XML dokumenta}
 \end{figure}
 
@@ -191,7 +190,7 @@ XPath koristi izraze puta za odabir čvorova u XML dokumentu. Čvor se bira slij
 
 \section{XQuery}
 
-XQuery je funkcionalan upitni jezik koji se koristi za pronalaženje podataka pohranjenih u XML formatu. Smatra se da je XQuery za XML isto ono što je SQL za baze podataka. Dizajniran je za pronalaženje i vraćanje elemenata i atributa iz XML dokumenta, a izgrađen je na XPath izrazima koje koristi za kretanje kroz XML dokument. Može se koristiti još za izdvajanje podataka web servisu, generiranje sažetka izvještaja, pretvorbu XML podataka u XHTML dokument i pretragu Web dokumenta. Općenito se može koristiti za dohvaćanje hijerarhijskih i tabličnih podataka, te za ispitivanje stabla i grafičkih struktura. Najbolji je za baze podataka temeljene na XML-u i objektne baze podataka. Stvoren je od strane World Wide Web Consortium (W3C) 2007. godine, a najnovija verzija XQuery 3.1 je W3C preporuka od 21. ožujka 2017. godine.
+XQuery je funkcionalan upitni jezik koji se koristi za pronalaženje podataka pohranjenih u XML formatu. Smatra se da je XQuery za XML isto ono što je SQL za relacijsku bazu podataka. Dizajniran je za pronalaženje i vraćanje elemenata i atributa iz XML dokumenta, a izgrađen je na XPath izrazima koje koristi za kretanje kroz XML dokument. Može se koristiti još za izdvajanje podataka web servisu, generiranje sažetka izvještaja, pretvorbu XML podataka u XHTML dokument i pretragu Web dokumenta. Općenito se može koristiti za dohvaćanje hijerarhijskih i tabličnih podataka, te za ispitivanje stabla i grafičkih struktura. Najbolji je za baze podataka temeljene na XML-u i objektne baze podataka. Stvoren je od strane World Wide Web Consortium (W3C) 2007. godine, a najnovija verzija XQuery 3.1 je W3C preporuka od 21. ožujka 2017. godine.
 
 Elementi, atributi i varijable koje se koriste u XQuery moraju biti valjani XML nazivi u dokumentu. Važno je i obratiti pozornost na velika i mala slova jer XQuery je osjetljiv na tu razliku. Varijabla je definirana sa oznakom "\textdollar " praćena nazivom varijable, npr. "\textdollar bookstore". Tekstualni izraz mora biti unutar jednostrukih ili dvostrukih navodnika. Komentari se navode tako da se početak označi sa "(:", a kraj sa ":)". Upiti se tvore pomoću izraza FLWOR nastalih po prvim slovima klauzula koje se koriste:
 
@@ -218,8 +217,53 @@ XQuery, XPath i XSLT dijele istu biblioteku funkcija. Postoji još nekoliko vrst
 \item Kontekstualne funkcije - omogućuju kreiranje novog konteksta upita, upravljati sa trenutnim kontekstom ili dohvatiti informacije o trenutačnom kontekstu
 \end{itemize}
 
+Od verzije 3.0, XQuery nudi dodatne korisne značajke. Kako bi se omogućio rad sa najnovijom verzijom XQuery, potrebno je upit započeti sa naredbom "xquery version 3.1;". Nova verzija donosi try/catch mehanizam kako bi se mogle uhvatiti eventualne greške prilikom izvršavanja upita, switch izraz koji omogućuje izvršavanje samo jednog dijela koda, funkcije, jednostavniji operatori mapiranja, jednostavnije spajanja tekstualnih izraza pomoću operatora "||", anotacije za funkcije i varijable koje se mogu odrediti kao privatne ili javne. Možda najzanimljivija novost koja je došla od verzije 3.0 je dodavanje Group by klauzule u FLWOR izraz koji time omogućuje grupiranje podataka dobivenih prilikom upita. \cite{exist}
+
 \chapter{XML baza podataka}
+
+XML baza podataka je sustav za održavanje podataka koji omogućuje njihovu uporabu i pohranjivanje u XML formatu. Postoje dvije vrste XML baza podataka:
+\begin{itemize}
+\item XML-enabled baze podataka (XED) - ovaj tip baze podataka radi slično kao relacijska baza podataka, odnosno podaci se pohranjuju u tablici u obliku redova i stupaca. Obično su implementirane kao dodatak u drugim sustavima za upravljanje bazom podataka gdje je moguće preslikavanje XML dokumenta u određenu bazu. Podaci koji se pritom preslikaju mogu izgubiti metapodatke i strukturu zadanu u dokumentu. Najpoznatije realizacije XML-enabled baze podataka su: Oracle 9i, Oracle 10g, Microsoft SQL Server, IBM DB2 itd.
+\item Native XML baze podataka (NXD) - koristi se za pohranu velike količine podataka i umjesto tabličnog formata on slijedi XML model za pohranjivanje podataka. Ova vrsta baze podataka ima potpunu kontrolu nad XML-om i time je poželjniji jer omogućuje visoku sposobnost pohrane, održavanja i pregledavanja XML dokumenta, te dohvat podataka pomoću XQuery ili XPath izraza.
+\end{itemize}
+
+Odlučivanje o vrsti baze podataka koja će se koristiti ovisi o specifičnim zahtjevima aplikacije i formatu XML dokumenta. Potrebno je odrediti je li XML dokument usmjeren na podatke ili na dokument kao cjelinu. XML dokument usmjeren na podatke se koristi prilikom interoperabilnosti, te ima čvrstu strukturu, sitnozrnate podatke i ne sadrži miješani sadržaj. Za rad sa njima preporučuje se XML-enabled baze podataka. XML dokumenti usmjereni na dokument kao cjelinu su uglavnom izrađeni za ljude, te nemaju čvrstu strukturu i imaju grubo-zrnate podatke do te mjere da najmanja neovisna podatkovna jedinica može biti cijeli dokument. Ključni elementi ovog tipa XML dokumenta su polustrukturirani podaci, te za rad sa njima se preporučuju Native XML baze podataka. \cite{xmlDatabase} Zbog specifičnosti aplikacijske domene objašnjene u idućem poglavlju, za potrebe ovoga rada koristit će se Native XML baza podataka, sustav eXist-db. Ostale popularne realizacije NXD baze podataka su: BaseX, Sedna, 28.io, MarkLogic Server. 
+
+BaseX je lightweight sustav za NXD bazu podataka sa dodatnim aplikacijskim poslužiteljima napisanim na Javi. Objavljen je kao open-source aplikacija 2007. godine. BaseX pruža jednostavno GUI sučelje za korištenje napisano u programskom jeziku Java. U odnosu na eXist, BaseX se postiže 99,9\% usklađenosti s W3C XQuery 1.0 specifikacijom (eXist ima 99,4\%) i implementira specifikacije za XQuery Update 1.0 i XQuery Full-Text. eXist ima stariju verziju implementacije XQuery Update i vlastito pretraživanje teksta. eXist je, međutim, dostupan znatno dulje, pa stoga ima pruža mnoge druge značajke, poput XSLT-a.
+
+Sedna je lightweight sustav za NXD bazu podataka napisan u programskim jezicima C i C++. Podrijetlo Sedne nije dobro dokumentirano, ali čini se da je započelo oko 2003. kao projekt Instituta za sistemsko programiranje Ruske akademije znanosti. U usporedbi s eXistom, Sedna izravno podržava više API-ja za različite programske jezike. Iako nema vlastiti REST poslužitelj, može se konfigurirati da radi kao modul unutar Apache HTTP poslužitelja. Sedna postiže 98,8\% usklađenosti s W3C XQuery 1.0 specifikacijom što je manje od onoga što postiže eXist. Sedna, kao i eXist, provodi vlastito pretraživanje tekstom.
+
+28.io je PaaS (platforma kao usluga) za Zorba open source i integrira Zorbu s MongoDB, podupirući pohranu i indeksiranje XML-a u MongoDB kao glavnu bazu podataka. U usporedbi s eXistom, 28.io nudi uslugu na oblaku i upravlja svojom bazom podataka u potpunosti koristeći XQuery, dok eXist nudi administrativne GUI alate i dodatne API-je. 28.io, slično kao eXist, pruža aplikacijsku platformu poslužitelja koja omogućuje izgradnju čitavih aplikacija pomoću XQueryja. 28.io (preko Zorba) ima sličnu kompatibilnost s W3C XQuery 1.0 specifikacijom kao eXist, te također podržava XQuery Update, XQuery Full-Text i XQuery Scripting. 28.io je razvila 28msec, tvrtka sa sjedištem u Zürichu u Švicarskoj.
+
+MarkLogic Server je sustav za NXD bazu podataka napisan u C++ koji omogućuje rad sa XQuery upitima i XSLT transformacijom podataka. Razvila ga je MarkLogic Corporation iz SAD, Kalifornije. MarkLogic nudi mogućnost upravljanja velikim količinama podataka (više od petabajt XML podataka), dok eXist može raditi puno skromnije (nekoliko stotina gigabajta, ali to uvelike ovisi o skupu podataka i upitima). Najveća prednost MarkLogica što u odnosu na druge slične sustave ima bolje skaliranje velikog skupa podataka. \cite{exist}
+
 \section{eXist-db}
+
+eXist-db (ili skraćeno eXist) je besplatan i otvoreni sustav za native XML bazu podataka (NXD) napisan u programskom jeziku Java. Kreiran je 2000. godine, a trenutna verzija (5.0) izašla je u rujnu 2019. godine. Dobitnik je nagrade za najboljeg pružatelja XML baze podataka 2006. godine od strane InfoWorld-a. Baza podataka je sastavljena od XML dokumenata povezanih u direktorije koje se zovu kolekcije. Glavna prednost eXist-a u odnosu na druge NoSQL sustave je mogućnost korištenja standardiziranog XQuery upitnog jezika za rad sa dokumentima. eXist-db osim XQuery-a pruža i još neke dodatne standarde i tehnologije: XPath, XSLT, XSL-FO, WebDAV, REST, RESTXQ, XInclude, XML-RPC, XProc. \cite{exist-definition}
+
+eXist se može instalirati na gotovo svim verzijama operacijskih sustava Linux, Windows i Mac OS X. Najvažniji faktor je da operacijski sustav ima predinstaliran JRE (Java Runtime Environment) ili JDK (Java Delevopment Kit) verzije 1.6 ili novije. Proces instalacije je jednostavan: potrebno je sa službene stranice (http://www.exist-db.org) preuzeti željenu verziju i pratiti korake instalacije. eXist prema zadanome koristi dva TCP porta: port 8080 koji služi za običnu HTTP komunikaciju i port 8443 koji služi za sigurnu HTTPS komunikaciju. Nužno je osloboditi ova dva porta kako bi eXist mogao pravilno raditi, a eventualno se u postavkama mogu promijeniti brojevi portova. Poslužitelj se pokreće desnim klikom na ikonu u traci sustava i odabirom opcije "Start server". Moguće je i pokrenuti poslužitelj preko upravljačke konzole tako da se pozicionira u direktorij gdje je eXist instaliran i pozove naredba "java -jar start.jar". Nakon uspješnog pokretanja, preko Web preglednika se može pristupiti upravljačkoj ploči eXista da se kao adresa upiše "http://localhost:8080". Kako bi se bez ograničenja mogle koristiti sve opcije potrebno se prijaviti sa korisničkim imenom i lozinkom zadanom prilikom instalacije. Na slici \ref{exist-dashboard} je prikazan izgled upravljačke ploče programa eXist.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/exist-dashboard.png}
+    \caption{eXist upravljačka ploča}
+    \label{exist-dashboard}
+\end{figure}
+
+U upravljačkoj ploči moguće je odabrati nekoliko alata i dodatnih paketa koje će u nastavku biti objašnjene. eXide je razvojno okruženje koje može raditi sa XQuery, XML i ostalim resursima pohranjenim u eXide. Sa njim je moguće kreirati nove dokumente ili održavati postojeće. Podržava nekoliko popularnih mogućnosti koje postoje u popularnim i modernim razvojnim okruženjima poput refaktoriranja, automatskog nadopunjavanja i slično. eXist-db Documentation omogućava pristup dokumentaciji što može olakšati rad sa programom. Pomoć sa radom mogu pružiti i opcije Markdown Parser in XQuery i XQuery Function Documentation koji mogu olakšati shvaćanje rada sa XQuery-em. U upravljačkoj ploči je moguće odabrati opciju Monex koja prikazuje statistiku rada sa bazom podataka. U realnom vremenu je moguće promatrati zauzeće resursa na bazi, pratiti rad upita i indeksa, povezati bazu na udaljeni poslužitelj i omogućiti rad sa bazom na tom poslužitelju i slično. S lijeve strane glavnog upravljače ploče pod izbornikom Package Manager moguće je upravljati, instalirati i deinstalirati pakete. Izbornik User Manager omogućava dodavanje i brisanje korisnika i grupa korisnika. Pod izbornikom Backups moguće je napraviti sigurnosnu pohranu ili odrediti vremenski intervala kada bi se ta sigurnosna pohrana događala. Pod izbornikom Settings moguće je izmijeniti postavke programa. Zadnja mogućnost u izborniku s lijeve strane odjavljuje trenutno aktivnog korisnika iz upravljačke ploče.
+
+Java Admin Client je jednostavna kontrolna aplikacija eXist-a koja se može pristupiti odabirom opcije na ikoni u traci sustava. Aplikacija omogućuje rad sa bazom podataka, kreiranje novih kolekcija, kreiranje i vraćanje sigurnosnih pohrana, izvoz i uvoz podataka, postavljanje baze podataka i slično. Na slici \ref{javaAdminClient} prikazan je izgled navedene aplikacije. Nakon uspješne autorizacije korisniku se prikazuje popis kolekcija u bazi podataka. Korijenska kolekcija u bazi podataka je "/db" i njen naziv nije moguće promijeniti. U njoj je moguće dodavati vlastite kolekcije po želji kao što je za potrebe ovog diplomskog rada izrađena kolekcija "diskuto". Prema zadanome u korijenskoj kolekciji postoje još neke važne kolekcije poput "/db/system" gdje eXist sprema konfiguracijske informacije i "/db/apps/*" gdje se nalaze svi paketi instalirani tijekom instalacije ili ručno poslije.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.66\textwidth]{slike/javaAdminClient.png}
+    \caption{Java Admin Client}
+    \label{javaAdminClient}
+\end{figure}
+
+Mnogo je načina kako se može pristupiti i upravljati sa podacima u eXist-u. Već je objašnjeno kako se preko aplikacije Java Admin Client ili razvojnog okruženja eXide, ali osim toga bazi je moguće pristupiti preko  eXist's WebDAV sučelja preko adrese "http://localhost:8080/exist/webdav/db/", preko vanjskih razvojnih okruženja koje imaju opciju za rad sa eXist-om (poput oXygen) ili preko ugrađenih biblioteka za rad sa Ant poslužiteljom na kojem će biti izrađen i projektni dio ovog diplomskog rada.
+
+eXist-db nudi brojne prednosti u odnosu na sustave za upravljanje relacijskim bazama podataka (RDBMS) ili druge NoSQL baze podataka. Zbog korištenja XML-a i orijentacije na dokument, eXist rješava probleme sa kojima se suočavaju drugi sustavi. RDBMS, ali i neke NoSQL baze podataka zahtijevaju da se prema definiranoj shemi zapisuju podaci, dok za eXist ona nije nužna što donosi fleksibilnost u radu sa podacima. eXist koristi XML dokumente za pohranu podataka, dok mnoge druge NoSQL baze (poput MongoDB i Apache Cassandra) umjesto XML, spremaju dokumente u JSON formatu. XML ima znatno više pozitivnih značajki u odnosu na JSON, što je već i objašnjeno u ovom radu, ali jedna od ključnih prednosti XML-a u odnosu na JSON je što omogućuje rad sa kompleksnijim strukturama dokumenta. eXist omogućuje W3C standardizirani upitni i transformacijski jezik XQuery i XSLT, što znači da na svim drugim sustavima koji ih podržavaju oni će raditi identično kao i na eXistu. RDBMS obično koriste također standardizirani SQL upitni jezik, no u praksi neki složeniji upiti neće raditi na različitim proizvodima RDBMS. Sa druge strane, većina NoSQL baza podataka nemaju standardiziran upitni jezik već je on za svaki zasebni proizvod jedinstven. Kao i mnogi drugi sustavi za upravljanje bazom podataka, eXist omogućuje definiranje indeksa za pretragu što, uz orijentiranje na dokument kao cjelinu, dovodi do toga da su rezultati pretrage preciznije od nekih drugih sustava poput TEI, DocBook i DITA. eXist podržava i XForms koji je još jedan W3C standard. Sa njime je moguće korisnički unos jednostavno zabilježiti u XML dokument u bazi podataka. Većina RDBMS i NoSQL baza podataka omogućuju kontroliranje transakcija prema bazi podataka. Nažalost, eXist trenutno ne podržava transakcije na razini baze podataka, ali korištenje baze podataka se sprema u dnevnik baze podataka što osigurava trajnost i konzistenciju podataka. \cite{exist}
 
 \chapter{Opis aplikacijske domene}
 
@@ -280,7 +324,6 @@ XML dokument "users.xml" sadrži popis svih korisnika u aplikaciji. Registracijo
 \begin{lstlisting}[language=XML]
  <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
 <xs:element name="users">
    <xs:complexType>
       <xs:element name="user">
@@ -318,7 +361,6 @@ XML dokument "users.xml" sadrži popis svih korisnika u aplikaciji. Registracijo
       </xs:element>
    </xs:complexType>
 </xs:element>
-
 </xs:schema> 
 \end{lstlisting}
 
@@ -329,7 +371,6 @@ XML dokument "forums.xml" sadrži popis svih foruma u aplikaciji. Nakon što kor
 \begin{lstlisting}[language=XML]
  <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
 <xs:element name="forums">
    <xs:complexType>
       <xs:element name="forum">
@@ -360,7 +401,6 @@ XML dokument "forums.xml" sadrži popis svih foruma u aplikaciji. Nakon što kor
       </xs:element>
    </xs:complexType>
 </xs:element>
-
 </xs:schema> 
 \end{lstlisting}
 
@@ -371,7 +411,6 @@ XML dokument "posts.xml" sadrži popis svih objava na svim forumima u aplikaciji
 \begin{lstlisting}[language=XML]
  <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
 <xs:element name="posts">
    <xs:complexType>
       <xs:element name="post">
@@ -439,7 +478,6 @@ XML dokument "posts.xml" sadrži popis svih objava na svim forumima u aplikaciji
       </xs:element>
    </xs:complexType>
 </xs:element>
-
 </xs:schema> 
 \end{lstlisting}
 
@@ -450,7 +488,6 @@ Sve poruke koje si korisnici međusobno šalju su sadržane u XML dokumentu "mes
 \begin{lstlisting}[language=XML]
  <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
 <xs:element name="messages">
    <xs:complexType>
       <xs:element name="message">
@@ -466,7 +503,6 @@ Sve poruke koje si korisnici međusobno šalju su sadržane u XML dokumentu "mes
       </xs:element>
    </xs:complexType>
 </xs:element>
-
 </xs:schema> 
 \end{lstlisting}
 
@@ -697,9 +733,6 @@ Korisničkim postavkama se može pristupiti odabirom opcije "Postavke" (eng. "Se
 \addcontentsline{toc}{chapter}{Popis literature}
 
 \listoffigures
-\addcontentsline{toc}{chapter}{Popis slika} 
-
-\listoftables
-\addcontentsline{toc}{chapter}{Popis tablica}
+\addcontentsline{toc}{chapter}{Popis slika}
 
 \end{document}
