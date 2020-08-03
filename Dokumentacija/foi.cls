@@ -103,17 +103,7 @@ unicode
 \def \numberline#1{\savenumberline{#1.}}
 
 % Redefinicija sadržaja
-\renewcommand\tableofcontents{%
-%\setcounter{page}{2}
-\setcounter{secnumdepth}{3} % dubina do subsubsekcije
-\setcounter{tocdepth}{3} % dubina do subsubsekcije
-\chapter*{ \vspace{-7.5mm}\sffamily\fontsize{18pt}{0pt}\bfseries{Sadr\v zaj}
-\vspace{-10pt}
-  \@mkboth{\MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
-\begin{spacing}{0.6}
-\@starttoc{toc}%
-\end{spacing}
-}
+
 
 \def\musko{M}
 \def\zensko{Z}
