@@ -96,11 +96,11 @@ public class Retriever {
         return messages;
     }
 
-    public List<User> searchUsers(String term) throws Exception {
+    public List<User> searchUsers() throws Exception {
         List<User> users = new ArrayList();
 
         ResourceIterator iterator = AppHelper.getResourceSet("for $x in /users/user where contains(lower-case($x/name), \""
-                + term.toLowerCase() + "\") return $x/name").getIterator();
+                + key.toLowerCase() + "\") return $x/name").getIterator();
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/name")) {
                 Retriever retriever = new Retriever(name);
@@ -114,11 +114,11 @@ public class Retriever {
         return users;
     }
 
-    public List<Forum> searchForum(String term) throws Exception {
+    public List<Forum> searchForum() throws Exception {
         List<Forum> forums = new ArrayList();
 
         ResourceIterator iterator = AppHelper.getResourceSet("for $x in /forums/forum where contains(lower-case($x/name), \""
-                + term.toLowerCase() + "\") return $x/name").getIterator();
+                + key.toLowerCase() + "\") return $x/name").getIterator();
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/name")) {
                 Retriever retriever = new Retriever(name);
@@ -129,11 +129,11 @@ public class Retriever {
         return forums;
     }
 
-    public List<Post> searchPosts(String term) throws Exception {
+    public List<Post> searchPosts() throws Exception {
         List<Post> posts = new ArrayList();
 
         ResourceIterator iterator = AppHelper.getResourceSet("for $x in /posts/post where contains(lower-case($x/headline), \""
-                + term.toLowerCase() + "\") return $x/id").getIterator();
+                + key.toLowerCase() + "\") return $x/id").getIterator();
         while (iterator.hasMoreResources()) {
             for (String name : new XmlHelper(iterator.nextResource()).makeListValue("/id")) {
                 Retriever retriever = new Retriever(name);

@@ -2,7 +2,6 @@
 \usepackage[utf8]{inputenc}
 
 \AtBeginDocument{
-   \renewcommand\thelstlisting{\arabic{lstlisting}}
    \renewcommand\lstlistingname{Programski isječak}
    \renewcommand{\lstlistlistingname}{Popis programskih isječaka}
 }
@@ -25,19 +24,13 @@
 
 \kljucneRijeci{xml; polustrukturirani podaci; XML baza podataka; eXist-db}
 \begin{document}
-
+\counterwithout{lstlisting}{chapter}
 \maketitle
 
 \tableofcontents
 
 \pagestyle{plain}
 \chapter{Uvod}
-
-Obavezno napiši zašto? Zašto je ovo dobro koristiti? Zašto baš s time itd.?
-
-Završni ili diplomski rad studenta/studentice je konačni rezultat uloženog napora u završetak studija. Obranom završnog ili diplomskog rada student/studentica stječe prava i obveze koje proizlaze iz završetka akademskog obrazovanja. S ciljem osiguranja potpore studentima pri pisanju završnog/diplomskog rada, izrađen je ovaj predložak oblikovanja samog rada.
-
-Načelna napomena o strukturi rada jest da se nazivi i struktura poglavlja obavezno definiraju u dogovoru s mentorom/mentoricom. Sadržajna preporuka je da u uvodu treba opisati što je tema završnog/diplomskog rada, zašto je tema značajna te koja je motivacija studenta/ studentice za odabir teme. 
 
 \chapter{Podaci}
 
@@ -525,13 +518,192 @@ Sve poruke koje si korisnici međusobno šalju su sadržane u XML dokumentu "mes
 
 \chapter{Implementacija}
 
-\section{Kreiranje baze podataka}
-\section{Rad s bazom podataka}
+U ovom poglavlju će biti opisan način izrade projektnog dijela diplomskog rada. Cilj je izraditi mrežnu aplikaciju pod nazivom "Diskuto" koja bi radila kao internetski forum. 
+
+Zamišljeno je da podaci koji se pohranjuju budu u polustrukturiranom obliku zbog specifičnosti aplikacijske domene. Predviđeno je da postoji shema po kojoj će se podaci zapisivati, što isključuje korištenje nestrukturirane vrste podataka. Predviđeno je i da se podaci grade u stablastoj strukturi u kojoj neki elementi nisu obavezni, što isključuje strukturiranu vrstu podataka. Primjerice, u aplikaciji može biti više foruma koji mogu i ne moraju imati više objava koje mogu i ne moraju imati više komentara nad kojima se mogu dodavati kompleksniji objekti. Slično se u obliku stabla granaju elementi kod korisnika. Stoga se zbog fleksibilnosti u zapisu, dohvaćanju i prikazu podataka koriste polustrukturirani podaci. Kao model u kojem će biti zapisani podaci koristit će se Extensible Markup Language (XML) zbog jednostavnog definiranja sheme, mogućnosti rada sa kompleksnijim strukturama i lakoćom dohvaćanja i transformacije podataka. 
+
+Predviđeno je da se koristi Native XML baza podataka zbog usmjeravanja na dokument kao cjelinu i izvrsnih performansi u radu sa velikim količinama podataka. Kao sustav za upravljanje NXD bazom podataka koristit će eXist-db zbog podržavanja W3C standarda XQuery i XPath za manipulaciju s podacima, jednostavnosti korištenja i širokog spektra načina pristupa bazi podataka.
+
+Web aplikacija će biti implementirana u programskom jeziku Java iz razloga što eXist pruža biblioteke za jednostavan pristup bazi podataka, a sa mnogim razvojnim okvirima koje nudi Java moguće je vrlo jednostavno implementirati funkcionalnosti aplikacije. Stoga, kao razvojni okvir će se koristiti JSF (eng. Jakarta Server Faces) verzije 2.3. koji će olakšati izradu korisničkog sučelja i omogućiti ponovno korištenje komponenata na različitim dijelovima aplikacije. JSF olakšava realizaciju aplikacije prema MVC (eng. Model-View-Controller) uzorku dizajna prema kojem se aplikacije razvijaju brže i jednostavnije, lakše se nadograđuju i lakše se otkrivaju eventualne greške u radu. JSF se zajedno koristi sa Ajax-om koji će omogućiti dinamičko mijenjanje sadržaja web stranice bez potrebe za njeno osvježavanje što će doprinijeti uglađenom radu. Dizajn pojedinih web stranica će se izraditi pomoću CSS (eng. Cascading Style Sheets). Poslužitelj na kojem će se odvijati aplikacija je GlassFish 5.1. zbog podrške u radu sa JSF razvojnim okvirom i integracijom sa NetBeans razvojnim okruženjem u kojem se projektni dio rješava. Od dodatnih biblioteka koristit će se "javax-mail" koja omogućava slanje elektroničke pošte.
+
+U nastavku će biti opisano kreiranje baze podataka i služenje sa eXist-db, kreiranje i razvijanje Java web-aplikacije, rad sa bazom podataka, pohrana i pristup podacima u bazi i implementacija pojedinih komponenti aplikacije od početka do konačnog izgleda.
+
+\section{Kreiranje i rad s bazom podataka}
+
+Nakon pokretanja eXist-db i uspješne prijave potrebno je, bilo preko eXide ili Java Admin Clienta, pristupiti bazi podataka. U nastavku će biti objašnjeno kreiranje baze podataka i potrebnih XML dokumenata preko Java Admin Clienta. Prvo je potrebno kreirati kolekciju u kojoj će biti pohranjeni svi definirani XML dokumenti. Nova kolekcija se kreira odabirom u izborniku "File -> Create collection" ili pritiskom na "Ctrl + N". Potrebno je zadati naziv kolekcije pri čemu treba pripaziti da naziv ne smije biti već postojeća kolekcija u bazi podataka. Pritiskom gumba "OK" kolekcija se sprema u bazu podataka. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/kreiranje-kolekcije.png}
+    \caption{Kreiranje nove kolekcije u bazi podataka}
+\end{figure}
+
+Dvostrukim klikom na nju otvara se sadržaj odabrane kolekcije. Inicijalno nema ništa u njoj, pa je potrebno definirati XML dokumente kojima će aplikacija pristupati. U kolekciji je moguće, osim dokumenata i novih kolekcija, dodavati bilo koje druge direktorije ili datoteke različitih formata koji su pohranjeni na računalu na kojem se nalazi baza podataka. Novi direktoriji ili datoteke se dodaju odabirom u izborniku "File -> Store files/directories" ili pritiskom na "Ctrl + S". Za potrebe projektnog dijela diplomskog rada u bazu podataka će biti samo pohranjeni XML dokumenti. Novi XML dokument se može uvesti na prethodno objašnjeni način ili se izravno kreirati u Java Admin Clientu odabirom u izborniku "File -> Create blank document" ili pritiskom na "Ctrl + B". Kao novi resurs može se kreirati XML dokument ili XQuery Module. Nakon što se zada naziv dokumenta (bez ekstenzije .xml), potrebno je pritisnuti gumb "Create Resource" i dokument se sprema u bazu. Na ovaj način kreirat će se svi potrebni XML dokumenti za rad aplikacije: forums.xml, messages.xml, posts.xml i users.xml.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/kreiranje-dokumenta.png}
+    \caption{Kreiranje novog dokumenta u bazi podataka}
+\end{figure}
+
+Da bi vanjske aplikacije mogle pristupati pojedinim kolekcijama, dokumentima i drugim datotekama u bazi podataka, potrebno je postaviti dozvole za čitanje, pisanje i izvršavanje sadržaja. Promjena dozvola se vrši na način da se u alatnoj traci eXist-db odabere u glavnom izborniku "File -> Resource properties" ili pritiskom na "Ctrl + P", pri čemu se otvara prozor prikazan kao na slici \ref{properties}. Moguće je vidjeti detalje o odabranom sadržaju: naziv resursa, tip podatka, datum i vrijeme kreiranja, datum i vrijeme zadnje promjene, veličinu i sažetak sadržaja. Moguće je promijeniti vlasnika i grupu sadržaja, te mijenjati prava pristupa za vlasnika, grupu i sve druge korisnike.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{slike/postavke-dokumenta.png}
+    \caption{Promjena postavki XML dokumenta}
+    \label{properties}
+\end{figure}
+
+Dvostrukim klikom na dokument otvara se uređivač XML dokumenta. Nad svakim dokumentom je potrebno zadati korijenski element; u dokumentu "forums.xml" će to biti "<forums/>", u "messages.xml" će to biti "<messages/>", u "posts.xml" će to biti "<posts/>" i u "users.xml" će to biti "<users/>". Od ostalih opcija koje se nalaze u Java Admin Clientu moguće je brisati dokumente ili kolekcije (preko glavnog izbornika "FIle -> Remove" ili "Ctrl + D"), kopirati dokumente ili kolekcije (preko glavnog izbornika "File -> Copy" ili "Ctrl + C"), premještati dokumente ili kolekcije na drugu lokaciju unutar baze podataka (preko glavnog izbornika "File -> Move" ili "Ctrl + M"), preimenovati dokumente ili kolekcije (preko glavnog izbornika "File -> Rename" ili "Ctrl + R"), izvesti resurs iz baze na memoriju računala (preko glavnog izbornika "File -> Export a resource to file..." ili "Ctrl + E"), dodavati okidače u bazi (preko glavnog izbornika "Tools -> Edit Triggers" ili "Ctrl + T"), uređivati popis korisnika baze podataka (preko glavnog izbornika "Tools -> Edit Users" ili "Ctrl + U"), te gasiti ili pokretati vezu prema bazi podataka (preko glavnog izbornika "Connection").  \cite{exist}
+
+Nakon kreiranja baze podataka, potrebno je kreirati projekt kao Java web-aplikacija na kojem će se izraditi programsko rješenje koje će koristiti kreiranu bazu podataka. Potrebno je kreirati i pomoćne klase preko kojih će ostali dijelovi aplikacije pristupati bazi podataka i preko kojih će dohvaćeni podaci iz XML formata moći biti vraćeni kao čisti podaci bez XML obilježja. Kao programski isječak \ref{Database.java} prikazan je sadržaj pomoćne klase "Database.java" za rad sa bazom podataka, a kao programski isječak \ref{XmlHelper.java} prikazan je sadržaj pomoćne klase "XmlHelper.java" za rad sa podacima u XML formatu.
+
+\begin{lstlisting}[language=Java, numbers=left, caption=Sadržaj pomoćne klase "Database.java", captionpos=b, label={Database.java}]
+package org.diskuto.helpers;
+
+import org.exist.xmldb.EXistXQueryService;
+import org.xmldb.api.DatabaseManager;
+import org.xmldb.api.base.Collection;
+import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.base.XMLDBException;
+
+public class Database {
+
+    private final String URI = "xmldb:exist://localhost:8080/exist/xmlrpc";
+    private final String driver = "org.exist.xmldb.DatabaseImpl";
+    private final String collection = "/db/diskuto";
+    private final org.xmldb.api.base.Database database;
+    private final Collection col;
+
+    public Database() throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
+        Class c = Class.forName(driver);
+        database = (org.xmldb.api.base.Database) c.newInstance();
+        DatabaseManager.registerDatabase(database);
+        col = DatabaseManager.getCollection(URI + collection, "admin", "");
+    }
+
+    public void close() throws XMLDBException {
+        col.close();
+        DatabaseManager.deregisterDatabase(database);
+    }
+
+    public ResourceSet xquery(String upit) throws XMLDBException {
+        EXistXQueryService service = (EXistXQueryService) col.getService("XQueryService", "1.0");
+        service.setProperty("indent", "yes");
+        return service.query(upit);
+    }
+
+}
+\end{lstlisting}
+
+Preporučeni način za rad sa eXist-db prilikom razvijanja Java aplikacija je korištenje XML:DB API koji pruža zajedničko sučelje za rad s NXD i XED bazama podataka i podržava razvoj aplikaciju za višekratnu upotrebu. Na početku je potrebno uvesti biblioteke za rad sa bazom koje se mogu naći u direktoriju sa bibliotekama eXist-db (linije 3-7).  Klasa sadrži nekoliko finalnih varijabli koje su definirane linijama 11-15. U liniji 11 je definiran URI za pristup bazi podataka koji općenito mora biti u formatu "xmldb:exist//[HOST-ADDRESS]/db/kolekcija". Budući da više od jednog upravljačkog programa baze podataka se može registrirati u upravitelj baze podataka, potreban je dio URI-ja "xmldb:exist" da bi se utvrdilo koju klasu upravljačkih programa treba koristiti. Pod [HOST-ADDRESS] upisuje se adresa i port na kojem se nalazi baza podataka. Završni dio URI-ja definira kolekciju kojoj se pristupa. \cite{existdb-java} U liniji 12 je definiran naziv upravljača pomoću kojeg se može raditi sa bazom podataka. U liniji 13 definirana je kolekcija u kojoj se nalaze XML dokumenti sa kojima se radi u aplikaciji. Varijabla se kasnije povezuje sa URI-jem kako bi se dobila konačna putanja prema kolekciji u bazi podataka. U liniji 14 i 15 se definiraju objekti baze podataka i kolekcije.
+
+Klasa se sastoji od konstruktora i dvije metode: "close" i "xquery". Prilikom poziva konstruktora kada se inicijalizira novi objekt klase "Database", registrira se nova instanca klase upravljača (linije 18-20) i od upravitelja baze podataka se dohvaća kolekcija pozivanjem statičke metode "DatabaseManager.getCollection" (linija 21). Metoda kao argument prima URI do kolekcije, te korisničko ime i lozinku za prijavu u bazu podataka. Nakon uspješne inicijalizacije nad bazom podataka se mogu vršiti upiti pomoću metode "xquery" koja kao argument prima XQuery upit.  Za rad sa upitima koristi se XQueryService klasa eXista (linija 30) koja se može pozvati preko metode "getService" klase Collection. Metoda prima naziv usluge kao prvi argument i njegovu verziju kao drugi argument.  Za izvršenje upita poziva se metoda "query" nad inicijaliziranim servisom (linija 32). Metoda prima upit u formatu stringa, a vraća objekt ResourceSet. Nakon što se završi sa radom, poželjno je osloboditi zauzete resurse pozivom metode "close" koja zatvara kolekciju (linija 25) i deregistrira bazu podataka sa upravitelja baze podataka (linija 26).
+
+Nakon dohvaćanja XML-a preko upita iz klase "Database", potrebno je izvući dobivene podatke iz XML elemenata što se može učiniti pomoću metoda iz klase "XmlHelper". Klasa sadrži četiri metode za dohvaćanje podataka iz XML resursa koji se pri instanciranju klase proslijeđuje u konstruktor. U klasi se nalaze dvije varijable: "xml" u kojoj se pohranjuje XML zapis dobivenog resursa i "xp" pomoću kojeg se prolazi i dohvaćaju čvorovi XML resursa. U nastavku slijedi prikaz i pojašnjenje klase.
+
+\begin{lstlisting}[language=Java, numbers=left, caption=Sadržaj pomoćne klase "XmlHelper.java", captionpos=b, label={XmlHelper.java}]
+package org.diskuto.helpers;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xmldb.api.base.Resource;
+
+public class XmlHelper {
+
+    XPath xp;
+    String xml;
+
+    public XmlHelper(Resource resource) throws Exception {
+        this.xml = (String) resource.getContent();
+        this.xp = XPathFactory.newInstance().newXPath();
+    }
+
+    public Object makeObject(String object) throws XPathExpressionException {
+        return xp.evaluate("/" + object, new InputSource(new StringReader(xml)), XPathConstants.NODE);
+    }
+
+    public String makeValue(String attribute, Object object) throws XPathExpressionException {
+        return xp.evaluate(attribute, object);
+    }
+
+    public List<String> makeListValue(String expression) throws XPathExpressionException {
+        List<String> list = new ArrayList();
+        NodeList nodes = (NodeList) xp.evaluate(expression, new InputSource(new StringReader(xml)), XPathConstants.NODESET);
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            list.add(nodes.item(i).getTextContent());
+        }
+
+        return list;
+    }
+
+    public String rawValue() {
+        return xml;
+    }
+}
+\end{lstlisting}
+
+Na početku je potrebno uvesti nekoliko biblioteka koje su potrebne za pravilan rad klase (linije 3-12). Klasa StringReader (linija 3) sadrži metode i varijable za čitanje tekstualnog niza sinkrono ili asinkrono. Klase ArrayList (linija 4) i List (linija 5)  sadrže metode i varijable za pohranu podataka u listu. Klase iz paketa "javax.xml.xpath.*" (linije 6-9) sadrže metode i varijable za čitanje i navigaciju prema dijelovima XML dokumenta. Sučelje NodeList (linija 10) pruža apstrakciju kolekcije čvorova bez definiranja ili ograničavanja načina na koji se ova zbirka provodi. Klasa InputSource (linija 11) omogućuje aplikaciji da kapsulira informacije o ulaznom izvoru objekta, što može sadržavati razne identifikatore i znakovne tokove. Klasa Resource (linija 12) omogućuje pohranjivanje jednog resursa iz ResourceSet skupa resursa. 
+
+Klasa XmlHelper ima konstruktor koji prima objekt tipa Resource iz kojeg se dohvaća sadržaj i sprema u varijablu "xml" (linija 20). Nakon toga se u konstruktoru vrši stvaranje nove instance objekta XPath (linija 21). Metoda "makeObject" prima naziv elementa ili putanju prema elementu kojeg se želi dohvatiti, te vraća taj element kao objekt (linija 25). Pomoću metode "makeValue" se iz objekta dobivenog preko prošle metode mogu dohvatiti vrijednost elementa kojeg taj objekt sadrži (linija 29). Metodi se kao argument proslijeđuje naziv elementa i objekt. Metodom "makeListValue", prema putanji elementa zadanom kao argument, se u listu spremaju sve vrijednosti tog elementa (linije 32-41). Posljednja metoda je "rawValue" koja vraća u tekstualnom formatu zapis XML resursa proslijeđenom konstruktoru u istom obliku kojem postoji u bazi podataka (linija 44).
+
 \section{Java web-aplikacija}
+
+Web aplikacija je implementirana u programskom jeziku Java, verzije Java EE 8 Web i izvršava se na poslužitelju GlassFish 5.1., a razvojni okvir u kojem se radi aplikacija je JSF 2.3. Razvojno okruženje u kojem je aplikacija razvijana je Apache NetBeans 12.0. Projekt je podijeljen u pet izvornih paketa u kojima se nalaze klase koje služe kao poslovna logika aplikacije:
+
+\begin{itemize}
+\item \textbf{org.diskuto.beans} - sadrži komponente na strani poslužitelja zadužene za učahurenje dijela poslovne logike aplikacije.
+\begin{itemize}
+        \item BeanHelper - pomoćno zrno čije metode Facelets mogu koristiti. Metode koje sadrži zrno su: "getActiveUser" (dohvaća objekt trenutno prijavljenog korisnika u aplikaciji), "date" (pretvara UNIX vrijeme u format datuma), "fullDate" (pretvara UNIX vrijeme u format datum i vrijeme), "retrieveDiskuto" (vraća objekt foruma sa zadanim nazivom u argumentu), "subscribe" (pretplaćuje se ili ukida pretplatu na forum zadan kao argument).
+	\item ConfirmRegistration - zrno koje se koristi prilikom potvrde registracije. Sadrži varijable "insertedCode" u kojem se zapisuje kod za potvrdu registracije kojeg korisnik unese i "errorText" u kojem se zapisuje tekst pogreške koji se korisniku prikazuje. Metode koje sadrži zrno su: "validate" (provjerava ispravnost unesenog koda i potvrđuje registraciju ili ispisuje grešku u slučaju pogreške) i  "sendNewMail" (šalje elektroničku poštu sa kodom za potvrdu registracije).
+	\item Discover - zrno koje se koristi prilikom pretraživanja foruma u aplikaciji. Sadrži varijablu "diskutos" u kojoj u konstruktoru pohranjuje popis foruma iz baze podataka.
+	\item EditDiskuto - zrno za kreiranje i uređivanje foruma. Postoje varijable koje sadrže sve elemente iz XML Scheme za dokument "forums.xml". U konstruktoru se provjerava je li forum zadan kao parametar postoji već u bazi podataka, te ako postoji tada će varijablama pridružiti odgovarajuće vrijednosti iz baze podataka. Zrno sadrži metode "addCategory" koji dodaje kategoriju u listu, "dropCategory" koji briše kategoriju iz liste, "addModerator" koji dodaje moderatora u listu, "dropModerator" koji briše moderatora iz liste, "check" koji provjerava ispravnost unesenih podataka i "save" koji sprema podatke u bazu podataka.
+	\item Forum - zrno koje se koristi za ispis stranice foruma. Sadrži varijable "diskuto" i "category" koje u konstruktoru se provjeravaju postoje li kao parametri, te se dohvaćaju. Na kraju se provjerava ukupan broj objava u forumu i poziva metoda "loadItems" koja učitava objave. U zrnu još postoji metoda "freshPost" koja u argumentu proslijeđenu kategoriju vraća najnoviju objavu.
+	\item Home - zrno koje se koristi pri ispisu početne stranice aplikacije. Sadrži varijablu "messageUsers" koja ispisuje listu korisnika sa kojim korisnik ima nepročitane poruke, "unread" koja ispisuje broj nepročitanih poruka, te ostale varijable koje se koriste pri učitavanju objava pozivom metode "loadItems".
+	\item Language - pomoćno zrno koje se koristi pri dohvaćanju i promjeni jezika aplikacije.
+	\item Login - zrno koje se koristi prilikom korištenja stranice za prijavu korisnika u aplikaciju. Sadrži varijable "username" i "password" u koje se pohranjuju unešeni korisnički podaci prilikom prijave. U metodi "doLogin" provodi se provjera ispravnosti prijave i eventualno se ispisuju greške kroz varijablu "errorText". Metodom "logout" odjavljuje se trenutno prijavljeni korisnik.
+	\item Message - zrno koje se koristi prilikom korištenja stranice za slanje i primanje privatnih poruka od drugih korisnika. Sadrži atribute "me" koji poprima istinitu vrijednost ako je prijavljeni korisnik odabrani korisnik, "ignored" koji poprima istinitu vrijednost ako je odabrani korisnik na listi blokiranih korisnika, "messages" u kojoj se nalazi popis svih poruka sa odabranim korisnikom dohvaćenih u konstruktoru zrna, "chatting" u kojoj se nalazi popis svih korisnika sa kojima je prijavljeni korisnik u prošlosti komunicirao (puni se preko metode "fillIn"), "reply" u koji se pohranjuje poruka koja se šalje metodom "send".
+	\item MyDiskuto - zrno koje se koristi pri ispisu popisa vlastitih foruma. Sadrži varijable "owner" u kojoj se nalazi popis foruma kojih je korisnik vlasnik, te "moderator"u kojem se nalazi popis foruma kojih je korisnik moderator. Navedene varijable se pune pozivom u konstruktoru metode "fillIn".
+	\item NewPassword - zrno koje se koristi prilikom poništavanja korisničke lozinke. Sadrži varijable "state" koja definira u kojoj fazi se nalazi korisnik u poništavanju lozinke, "email" u kojoj se definira elektronička pošta korisnika kojeg se metodom "abolishPassword" poništava lozinka, "code" koji služi za autentikaciju korisnika, "password" i "rpassword" u kojima se pohranjuje nova lozinka korisnika metodom "addNewPassword" i "errorText" koji služi za ispis eventualnih grešaka. U zrnu se nalazi još metoda "check" koja provjerava ispravnost unesene nove lozinke.
+	\item NewPost - zrno koje se koristi kod kreiranja nove objave na određenom forumu. Postoje varijable koje sadrže sve elemente iz XML Scheme za dokument "posts.xml". U konstruktoru se dohvaća forum proslijeđen kao parametar, te ako on ne postoji korisnika se preusmjerava na stranicu koja obavještava o pogreški. Metodom "save" se provjerava ispravnost unešenih podataka, te ako je sve u redu objava se sprema u bazu podataka.
+	\item Post - zrno koje prikazuje objavu i komentare objave. Sadrži varijable "main" koja u konstruktoru dohvaća forum na kojem je objava objavljena, "thing" koja u konstruktoru dohvaća objavu prema zadanom parametru, "comments" u kojem se spremaju komentari objave i "myComment" u kojem se pohranjuje komentar korisnika koji se šalje metodom "sendComment". U zrnu postoje još metode "reportPost" pomoću koje se može prijaviti objava, "reportComment" pomoću koje se može prijaviti komentar, "deletePost" pomoću koje se može obrisati objava, "deleteComment" pomoću koje se može obrisati komentar, "lock" pomoću koje se može zaključati objava, "unlock" pomoću koje se može otključati objava, "upvotePost" pomoću koje se može objava označiti sa +, "downvotePost" pomoću koje se objava može označiti sa -, "upvoteComment" pomoću koje se komentar može označiti sa + i "downvoteComment" pomoću koje se komentar može označiti sa -.
+	\item Profile - zrno koje se koristi za ispis profila određenog korisnika. Sadrži varijable "user" u kojoj su zapisani svi podaci korisnika koji se dohvaćaju u konstruktoru, "me" koji poprima istinitu vrijednost ako je prijavljeni korisnik odabrani korisnik, "upvotes" broj + oznaka korisnika, "downvotes" broj - oznaka korisnika, "totalPosts" ukupan broj objava, "totalComments" ukupan broj komentara, "post" u kojem se spremaju objave, "comments" u kojem se spremaju komentari, "postsIteratorId" i "commentsIteratorId" koje služe za pomoć pri učitavanju objava i komentara preko metoda "loadPosts" i "loadComments". U zrnu postoji metoda "ignore" koja stavlja odabranog korisnika na listu za ignoriranje.
+	\item Registration - zrno koje se koristi prilikom registracije novog korisnika. Sadrži varijable "email", "username", "password" i "rpassword" koje korisnik unosi prilikom registracije. Varijablom "errorText" se ispisuje eventualna pogreška nastala provjerom unosa preko metode "check". Metodom "doRegistration" vrši se registracija i sprema se novi korisnik u bazu.
+	\item Reports - zrno koje se prikazuje prijavljene objave i komentare na određenom forumu. Sadrži varijable "diskuto" u kojem se pohranjuju podaci o odabranom forumu, "items" koja sadrži popis prijavljenih objava i "comments" koja sadrži popis prijavljenih komentara. Metodom "deletePost" se briše odabrana objava, "deleteComment" se briše odabrani komentar, "okPost" se označava da je objava primjerena i briše se sa popisa prijavljenih objava i metodom "okComment" se označava da je komentar primjeren i briše se sa popisa prijavljenih komentara.
+	\item Search - zrno koje se koristi prilikom pretrage. Sadrži varijable "term" u kojoj se zapisuje ključna riječ za pretragu, "userResults" u kojoj se zapisuju korisnici čije korisničko ime ima u sebi ključnu riječ, "diskutoResults" u kojoj se zapisuju forumi čiji nazivi imaju u sebi ključnu riječ, "postResults" u kojoj se zapisuju objave čiji nazivi imaju u sebi ključnu riječ. Metodom "showResults" se prikazuje pretraga po ključnoj riječi.
+	\item Settings - zrno koje se koristi kod promjene postavki korisnika. Sadrži varijable "username" u kojoj se pohranjuje korisničko ime prijavljenog korisnika, "email" u kojem se pohranjuje elektronička pošta korisnika, "wantEmail" koji se postavlja na istinitu vrijednost kada korisnik metodom "changeEmail" želi promijeniti svoj e-mail, "wantPassword" koji se postavlja na istinitu vrijednost kada korisnik metodom "changePassword" želi promijeniti svoju lozinku, "wantDisable" koji se postavlja na istinitu vrijednost kada korisnik metodom "disableAccount" želi obrisati svoj korisnički račun.
+\end{itemize}
+\item \textbf{org.diskuto.helpers} - sadrži pomoćne klase za rad koje koriste zrna i ostali dijelovi aplikacije. Osim već objašnjenih klasa "Database" i "XmlHelper", u paketu se nalaze sljedeće klase:
+\begin{itemize}
+	\item AppHelper - sadrži metode "getActiveUser" koja vraća trenutno prijavljenog korisnika u aplikaciji, "param" koja vraća vrijednost parametra iz Faces konteksta prema zadanom ključu, "getOutput" koja za zadani ključ vraća pripadajući tekstualni niz kod datoteka internacionalizacije, "checkLogged" koja provjerava postoji li prijavljeni korisnik u aplikaciji, "getAttachmentsPath" koja vraća putanju prema direktoriju "attachments" u aplikaciji, "generateId" koja generira jedinstveni identifikator u bilo kojem XML dokumentu, "date" koja pretvara UNIX vrijeme u format običnog datuma, "fullDate" koja pretvara UNIX vrijeme u format datum i vrijeme, "getResourceSet" koja poziva bazu podataka i vraća skup resursa za definirani upit, "getResource" koja poziva bazu podataka i vraća prvi resurs za definirani upit, "login" koja poziva bazu podataka i provjerava jesu li proslijeđeni podaci za prijavu ispravni, "usernameExist" koja poziva bazu podataka i provjerava postoji li korisnik sa proslijeđenim korisničkim imenom u bazi, "forumExist" koja poziva bazu podataka i provjerava postoji li forum sa zadanim nazivom u bazi, "regex" koji vrši provjeru regularnim izrazom.
+	\item MailHelper - pomoćna klasa za slanje e-mail poruka. Sadrži varijable "to" koja označava e-mail korisnika kojem se šalje mail, "subject" koja označava predmet i "text" koja označava sadržaj elektroničke pošte. Vrijednosti varijabli se postavljaju pri instanciranju novog objekta klase. Klasa sadrži metodu "sendMail" koja na navedeni mail šalje poruku sa definiranim predmetom i tijelom poruke.
+	\item Retriever - pomoćna klasa koja služi za dohvaćanje objekata iz baze podataka. Sadrži varijablu "key" koja predstavlja ključ za dohvaćanje pojedinog podatka, a vrijednost varijable se postavlja pri instanciranju novog objekta klase. U klasi se nalaze metode: "user" koja dohvaća korisnika iz baze podataka sa određenim korisničkim imenom, "forum" koja dohvaća forum iz baze podataka sa određenim nazivom foruma, "post" koja dohvaća objavu iz baze podataka sa određenim nazivom objave, "messages" koja dohvaća listu poruka koje trenutno prijavljeni korisnik ima sa određenim korisnikom, "searchUsers" koja dohvaća sve korisnike koji u svom korisničkom imenu sadrže određenu ključnu riječ, "searchForum" koja dohvaća sve forume koji u svom nazivu sadrže određenu ključnu riječ, "searchPosts" koja dohvaća sve objave koje u svom nazivu sadrže određenu ključnu riječ.
+\end{itemize}
+\item \textbf{org.diskuto.listeners} - paket koji sadrži klasu "Listener" u kojoj se sluša životni ciklus web aplikacije. Sadrži jednu javnu statičku varijablu "sc" u kojoj se prilikom inicijalizacije sprema kontekst servleta. Pomoću konteksta se može komunicirati sa servlet containerom. Klasa sadrži metode za zapisivanje, brisanje i dohvaćanje varijabli iz sesije: "addToSession" upisuje u sesiju objekt pod zadanim atributom, "deleteFromSession" briše iz sesije objekt pod zadanim atributom, "getFromSession" dohvaća objekt iz sesije pod zadanim atributom.
+\item \textbf{org.diskuto.models} - paket koji preslikava modele dokumenata iz baze podataka. Svaka klasa sadrži atribute definirane u XML Schemi kojima se dodijeljuju vrijednosti pozivom metode "retrieve" proslijeđivanjem objekta klase XmlHelper u kojem se nalazi XML zapis dohvaćen iz baze podataka. Svaka klasa ima metode za pridruživanje i postavljanje vrijednosti varijablama klase. Od ostalih metoda, klasa Comment sadrži: "save" pomoću kojeg se sprema komentar u bazu podataka, "addVote" pomoću kojeg se postavlja + ili - za komentar, "dropVote" pomoću kojeg se briše + ili - sa komentara, "post" pomoću kojeg se dohvaća objekt Post za komentar, "report" pomoću kojeg se prijavljuje komentar, "itsOk" pomoću kojeg se briše komentar sa liste prijava, "delete" pomoću kojeg se briše komentar. Klasa Forum još sadrži metode "save" kojom se sprema novi forum u bazu podataka i "update" kojom se ažurira forum u bazi podataka. Klasa Message sadrži metodu "send" pomoću koje se šalje privatna poruka od određenog pošiljatelja prema određenom primatelju uz određeni tekst poruke. Klasa Post sadrži metode "save" kojom se objava sprema u bazu podataka, "addVote" pomoću kojeg se postavlja + ili - za objavu, "dropVote" pomoću kojeg se briše + ili - sa objave, "report" pomoću kojeg se prijavljuje objava, "itsOk" pomoću kojeg se briše objava sa liste prijava, "delete" pomoću kojeg se briše objava, "lock" kojom se zaključava objava i "unlock" kojom se otključava objava. Klasa User još sadrži metode "register" kojom se sprema novi korisnik u bazu podataka, "login" kojom se prijavljuje korisnik u aplikaciju, "logout" kojom se odjavljuje korisnik iz aplikacije, "disable" kojom se briše korisnički račun, "sendConfirmMail" kojom se šalje e-mail za potvrdu korisničkom računa, "confirmUser" kojom se potvrđuje korisnički račun, "changeLanguage" kojom se zapisuje promjena jezika u bazi podataka, "subscribe" kojom se korisnik pretplaćuje na određeni forum, "unsubscribe" kojom korisnik ukida pretplatu sa određenog foruma, "ignore" kojom se stavlja određeni korisnik na listu za ignoriranje i "unignore" kojom se briše korisnik sa liste za ignoriranje.
+\item \textbf{org.diskuto.translations} - u paketu se nalaze datoteke tipa Properties u kojima se za svaki jezik koji podržava aplikacija (engleski kao zadani i hrvatski) nalaze atributi kojima se pridružuju sadržaji za ispis na pojedinim web stranicama. Datoteke koje se nalaze u paketu su: "language.properties" (za zadani jezik), "language\_en.properties" (za engleski jezik) i "language\_hr.properties" (za hrvatski jezik).
+\end{itemize}
+
+Od ostalih datoteka u Java web-aplikaciji nalaze se .xhtml dokumenti koji su detaljnije objašnjeni u poglavlju 8 uz prikaz snimke zaslona i detaljan opis funkcionalnosti. U aplikaciji postoje sljedeće konfiguracijske datoteke: "web.xml" (definira slušače, Faces Servlet, trajanje sesije, početnu stranicu, stranicu koja se prikazuje prilikom pogrešaka i sl.), "glassfish-web.xml" (konfiguracijska datoteka na razini poslužitelja koji izvršava aplikaciju), "faces-config.xml" (konfiguracijska datoteka na razini JSF razvojnog okvira u kojoj se deklariraju jezici i paketi za lokalizaciju). U aplikaciji postoji direktorij "resources" koji je podijeljen na nekoliko sljedećih poddirektorija:
+\begin{itemize}
+\item \textbf{attachments} - u direktoriju se pohranjuju slike koje se mogu učitati kao prilog prilikom kreiranja nove objave. Svaka slika ima naziv u obliku "res-<id objave>".
+\item \textbf{css} - u direktoriju se nalaze .css datoteke kojim se uređuje izgled i raspored stranice.
+\item \textbf{js} - u direktoriju se nalaze .js datoteke koje se izvršavaju kada aplikacija pozove Ajax zahtjev. Pomoću njih se definira pokretanje animacije na određenim mjestima prilikom čekanja na dovršavanje zadatka kojeg aplikacija izvršava.
+\item \textbf{pages} - u direktoriju se nalaze razne dodatne vanjske datoteke i slike poput ikone aplikacije, animacije koja se pokreće prilikom čekanja na dovršavanje zadatka kojeg aplikacija izvršava, te razne druge ikone i logotipi.
+\end{itemize}
 
 \chapter{Primjeri korištenja}
 
-U ovom poglavlju ću opisati primjere korištenje izrađene web aplikacije. Svaka izrađena funkcionalnost će biti prikazana uz odgovarajuće slike zaslona i njihov opis.
+U ovom poglavlju će biti opisani primjeri korištenja izrađene web aplikacije. Svaka izrađena funkcionalnost će biti prikazana uz odgovarajuće slike zaslona i njihov opis.
 
 \section{Početna stranica}
 

@@ -39,9 +39,9 @@ public class Search implements Serializable {
         if (this.term != null && !"".equals(this.term)) {
             Retriever retriever = new Retriever(this.term);
 
-            userResults = retriever.searchUsers(term);
-            diskutoResults = retriever.searchForum(term);
-            postResults = retriever.searchPosts(term);
+            userResults = retriever.searchUsers();
+            diskutoResults = retriever.searchForum();
+            postResults = retriever.searchPosts();
         }
     }
 
